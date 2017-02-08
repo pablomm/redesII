@@ -1,6 +1,6 @@
 
-#ifndef redes2
-#define redes2
+#ifndef REDES2_H
+#define REDES2_H
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,4 +22,4 @@ void daemonizar(int logLevel);
 
 
 
-#endif /* REDES2 */
+#endif /* REDES2_H */
