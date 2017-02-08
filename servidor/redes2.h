@@ -9,6 +9,8 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <syslog.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 
 #define SERVICIO "Servidor IRC"
 #define DEFAULT_LOG LOG_INFO
@@ -17,7 +19,10 @@
 #define OK 0
 
 
+void abrirLog(int logLevel);
 void daemonizar(int logLevel);
+int crearSocketTCP(unsigned short port, int connections);
+int aceptar_conexion(int sockval);
 
 
 

@@ -1,4 +1,4 @@
-CC = gcc -pedantic
+CC = gcc -pedantic -g -Wall
 CFLAGS = -w
 EXE =  echo
 LDFLAGS = -lpthread

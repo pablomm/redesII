@@ -1,6 +1,18 @@
 
 #include "redes2.h"
 
+
+void abrirLog(int logLevel){
+
+	/* Cambiamos nivel de log */
+	setlogmask (LOG_UPTO (logLevel));
+
+	/* Abrimos log */
+	openlog (SERVICIO, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_USER);
+
+}
+
+
 /**
  * @ingroup No lo se
  *
@@ -30,7 +42,6 @@
  *
  *<hr>
  */
-
 void daemonizar(int logLevel){
 
 	unsigned short i;
@@ -51,11 +62,8 @@ void daemonizar(int logLevel){
 	/* Cambiamos mascara */
 	umask(0);
 
-	/* Cambiamos nivel de log */
-	setlogmask (LOG_UPTO (logLevel));
-
 	/* Abrimos log */
-	openlog (SERVICIO, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_USER);
+	abrirLog(logLevel);
 
 	/* Creamos nueva sesion */
 	if(setsid() < 0){
@@ -117,18 +125,18 @@ int crearSocketTCP(unsigned short port, int connections){
 	}
 
 	/* Inicializamos estructura sockaddr_in */
-	direccion.sin_family = AF_INET; /∗ TCP/IP ∗/
-	direccion.sin_port = htons(port); /∗ Puerto asociado ∗/
-	direccion.sin_addr.s_addr = htonl(INADDR_ANY); /∗ Cualquier direccion ∗/
-	memset((void ∗)&(direccion.sin_zero), 0, 8);
+	direccion.sin_family = AF_INET;
+	direccion.sin_port = htons(port); /* Puerto asociado */
+	direccion.sin_addr.s_addr = htonl(0); /* Cualquier direccion */
+	memset((void *)&(direccion.sin_zero), 0, 8);
 
 	/* Ligamos socket al puerto correspondiente */
 	if(bind(sockfd, &direccion, sizeof(direccion)) < 0){
-		syslog (LOG_ERR, "Error creando socket TCP en llamada a blind()");
+		syslog (LOG_ERR, "Error creando socket TCP en llamada a bind()");
 		return ERROR;
 	}
 
-	if (listen(sockval, connections)<0){
+	if (listen(sockfd, connections)<0){
 		syslog(LOG_ERR, "Error creando socket TCP en llamada a listen()");
 		return ERROR;
 	}
@@ -137,6 +145,21 @@ int crearSocketTCP(unsigned short port, int connections){
 	syslog (LOG_DEBUG, "Creado socket TCP correctamente");
 
 	return sockfd;
+}
+
+int aceptar_conexion(int sockval){
+
+	int desc, len;
+	struct sockaddr conexion;
+
+	len = sizeof(conexion);
+
+	if((desc = accept(sockval, &conexion, &len)) < 0 ){
+		syslog(LOG_ERR, "Error aceptando conexion");
+		return ERROR;
+	}
+
+	return desc;
 }
 
 
