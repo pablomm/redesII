@@ -12,7 +12,6 @@ void abrirLog(int logLevel){
 
 }
 
-
 /**
  * @ingroup No lo se
  *
@@ -147,17 +146,19 @@ int crearSocketTCP(unsigned short port, int connections){
 	return sockfd;
 }
 
-int aceptar_conexion(int sockval){
+int aceptar_conexion(int sockval, struct sockaddr *conexion){
 
 	int desc, len;
-	struct sockaddr conexion;
 
-	len = sizeof(conexion);
+	len = sizeof(*conexion);
 
-	if((desc = accept(sockval, &conexion, &len)) < 0 ){
+	if((desc = accept(sockval, conexion, &len)) < 0 ){
 		syslog(LOG_ERR, "Error aceptando conexion");
 		return ERROR;
 	}
+
+	/* Informacion de debugeo */
+	syslog (LOG_DEBUG, "Conexion aceptada correctamente");
 
 	return desc;
 }

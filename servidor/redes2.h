@@ -22,8 +22,7 @@
 void abrirLog(int logLevel);
 void daemonizar(int logLevel);
 int crearSocketTCP(unsigned short port, int connections);
-int aceptar_conexion(int sockval);
-
+int aceptar_conexion(int sockval, struct sockaddr *conexion);
 
 
 
