@@ -1,6 +1,7 @@
 
 #include "redes2.h"
 #include <signal.h>
+ #include <ctype.h>
 
 #define BUFFER_ECHO 100
 #define PUERTO_ECHO 1235
@@ -35,17 +36,15 @@ void upper(char* toUpper){
 
 int procesarCliente(int descr){
 	char buffer[BUFFER_ECHO] = {0};
-	int nbytes;
 
-	nbytes = recv(descr, buffer, BUFFER_ECHO,0);
-	if (nbytes <= 0)
+	if (recv(descr, buffer, BUFFER_ECHO,0) <= 0)
 		return -1;
 
 	/* Data read. */
 	fprintf (stderr, "Descriptor %d: %s", descr, buffer);
 
 	upper(buffer);
-	send(descr, buffer, nbytes, 0);
+	send(descr, buffer, strlen(buffer), 0);
 
 	return 0;
 }
@@ -56,8 +55,6 @@ int main(void){
 
 	int sckt, desc;
 	int i;
-	char echo[BUFFER_ECHO] = {0};
-	struct sockaddr_in direccion;
 	fd_set active_fd_set, read_fd_set;
 
 
@@ -102,7 +99,7 @@ int main(void){
 				if (i == sckt){
 		            
 					/* Aceptamos nueva conexion */
-					desc = aceptar_conexion(sckt,&direccion);
+					desc = aceptarConexion(sckt);
 		            if (desc < 0){
 		                syslog(LOG_ERR, "No se ha podido procesar nueva conexion");
 		            }

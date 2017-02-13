@@ -130,7 +130,7 @@ int crearSocketTCP(unsigned short port, int connections){
 	memset((void *)&(direccion.sin_zero), 0, 8);
 
 	/* Ligamos socket al puerto correspondiente */
-	if(bind(sockfd, &direccion, sizeof(direccion)) < 0){
+	if(bind(sockfd,(struct sockaddr *) &direccion, sizeof(direccion)) < 0){
 		syslog (LOG_ERR, "Error creando socket TCP en llamada a bind()");
 		return ERROR;
 	}
@@ -146,13 +146,11 @@ int crearSocketTCP(unsigned short port, int connections){
 	return sockfd;
 }
 
-int aceptar_conexion(int sockval, struct sockaddr *conexion){
+int aceptarConexion(int sockval){
 
-	int desc, len;
+	int desc;
 
-	len = sizeof(*conexion);
-
-	if((desc = accept(sockval, conexion, &len)) < 0 ){
+	if((desc = accept(sockval, NULL, NULL)) < 0 ){
 		syslog(LOG_ERR, "Error aceptando conexion");
 		return ERROR;
 	}
@@ -162,5 +160,21 @@ int aceptar_conexion(int sockval, struct sockaddr *conexion){
 
 	return desc;
 }
+
+int nuevaConexion(int sockval){
+
+	int desc = aceptarConexion(sockval);
+	if(desc < 0){
+		return ERROR;
+	}
+
+	/* Procesar cliente */
+
+	return OK;
+
+}
+
+
+
 
 
