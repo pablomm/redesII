@@ -1,21 +1,53 @@
-CC = gcc -pedantic -Wall
-DEBUG = -g
-EXE =  servidor
-PRUEBAS = echo
-LDFLAGS = -lpthread -lircinterface -lircredes -lirctad -lsoundredes
+# Makefile 
+################################################################################
 
-all : $(EXE)
-	rm -f *.o
+# banderas de compilacion
+CC = gcc
+CFLAGS = -Wall -g -ansi -pedantic
+LDLIBS = -lpthread -lircinterface -lircredes -lirctad -lsoundredes 
+#endif
 
-.PHONY : clean
-clean :
-	rm -f *.o core $(EXE) $(PRUEBAS)
+# fuentes a considerar
+SOURCES = config.c red_servidor.c funciones_servidor.c servidor.c
 
-test : $(PRUEBAS)
-	rm -f *.o
+#SOURCES_LIB = semaforos.c pares.c daemonizar.c TCPSocket.c auxiliarIRC.c
 
-$(EXE) : % : %.o redes2.o
-	$(CC) -o $@ $@.o redes2.o $(LDFLAGS)
+OBJECTS = obj/config.o obj/red_servidor.o obj/funciones_servidor.o obj/servidor.o
 
-%.o : %.c redes2.h
-	$(CC) $(CFLAGS) -c $<
+#LIBRERIAS = lib/libredes2.a lib/libsemaforos.a lib/libpares.a
+
+
+# ejecutable
+EXEC_SOURCES = src/servidor.c
+
+all: $(OBJECTS) exe
+
+exe: servidor
+
+# receta para hacer un .o de src
+obj/%.o : src/%.c
+	@echo -n compilando objeto \'$<\'...
+	@$(CC) -c $(CFLAGS) $< -c -o $@
+	@echo [OK]
+
+# receta para hacer un ejecutable
+servidor : $(OBJECTS)
+	@echo -n compilando ejecutable \'$@\'...
+	@$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
+	@echo [OK]
+
+# para ejecutar el programa
+run:
+	@./servidor
+
+# limpieza
+clean:	
+	@rm -f servidor
+	@rm -f */*~
+	@rm -f *~
+
+#para hacer el tar.gz
+comprimir: clean
+	@rm -f G-2301-02-P1.tar.gz
+	@tar -czvf ../comprimido.gz ../G-2301-02-P1/
+	@mv ../comprimido.gz G-2301-02-P1.tar.gz
