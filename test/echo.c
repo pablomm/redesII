@@ -1,7 +1,16 @@
 
-#include "redes2.h"
+/*
+Compilar make test
+Servidor echo de pruebas
+Abre un socket tcp en el puerto 1235
+imprime por salida estandar lo recibido 
+y reenvia el texto en mayusculas
+
+*/
+
+#include "../include/red_servidor.h"
 #include <signal.h>
- #include <ctype.h>
+#include <ctype.h>
 
 #define BUFFER_ECHO 100
 #define PUERTO_ECHO 1235
