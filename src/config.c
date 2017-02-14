@@ -88,3 +88,21 @@ void abrirLog(char * identificacion, int logLevel){
 	openlog (servicio, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_USER);
 
 }
+
+
+void inicializarServidor(void){
+
+	mutex = PTHREAD_MUTEX_INITIALIZER;
+	mutex = PTHREAD_MUTEX_INITIALIZER;
+
+}
+
+void cerrarServidor(void){
+
+
+}
+
+
+
+
+

@@ -21,7 +21,7 @@ int main(int argc, char * argv[]){
 
 	/* montamos manejadores */
 
-
+	inicializarServidor();
 	/* Creamos socket TCP */
 	sckt = crearSocketTCP(PUERTO_ECHO, MAX_QUEUE);
 	if(sckt < 0){
@@ -52,6 +52,7 @@ int main(int argc, char * argv[]){
 				/* Caso conexion nueva */		        
 				if (i == sckt){
 
+						/* down */
 					/* Aceptamos conexion */
 		            if ((desc = aceptarConexion(sckt))  < 0){
 		                syslog(LOG_WARNING, "No se ha podido procesar nueva conexion");
@@ -69,6 +70,10 @@ int main(int argc, char * argv[]){
 				} else {
 		            /* Crea un hilo para procesar el mensaje */
 					/* hay que usar semaforo ?? */
+
+					/* DOwn */
+					descraux = i;
+					
 		         	if (pthread_create(&hiloAux , NULL, procesarMensaje, (void *) &i)  < 0) {
 
 		                if(close(i) < 0){
@@ -76,6 +81,7 @@ int main(int argc, char * argv[]){
 						}
 		                FD_CLR (i, &active_fd_set);
 					}
+
 				}
 			}
 		}	
@@ -84,7 +90,7 @@ int main(int argc, char * argv[]){
 		/* liberar lo que sea */
 
  	closelog(void);
-	/* liberarEstructuras(void); */
+	cerrarServidor(void);
 
 	exit(EXIT_SUCCESS);
 }
