@@ -16,8 +16,8 @@ int main(int argc, char * argv[]){
 
 
 	/* deomonizamos / no si flag -h */
-	abrirLog(LOG_DEBUG);
-	/* daemonizar(LOG_DEBUG); */
+	abrirLog(SERVICIO, LOG_DEBUG);
+	/* daemonizar(SERVICIO, LOG_DEBUG); */
 
 	/* montamos manejadores */
 
@@ -92,6 +92,6 @@ int main(int argc, char * argv[]){
  	closelog(void);
 	cerrarServidor(void);
 
-	exit(EXIT_SUCCESS);
+	exit(EXIT_FAILURE);
 }
 

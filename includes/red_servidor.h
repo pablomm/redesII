@@ -12,7 +12,6 @@
 status crearSocketTCP(unsigned short port, int connections);
 status aceptarConexion(int sockval);
 status nuevaConexion(int sockval, void *(*procesarUsuario) (void *));
-status cerrarConexion(int sockval);
 
 
 #endif /* RED_SERVIDOR_H */

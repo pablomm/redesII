@@ -95,15 +95,6 @@ status nuevaConexion(int sockval, void *(*procesarUsuario) (void *)){
 	return RED_OK;
 }
 
-status cerrarConexion(int sockval){
-
-	if (shutdown (sockval, MT-Safe) < 0){
-		syslog(LOG_ERR, "Error cerrando socket en llamada a shutdown()");
-		return RED_ERROR;
-	}
-
-	return RED_OK;
-}
 
 
 

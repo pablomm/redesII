@@ -52,7 +52,7 @@ void daemonizar(char *servicio, int logLevel){
 	umask(0);
 
 	/* Abrimos log */
-	abrirLog(logLevel);
+	abrirLog(servicio, logLevel);
 
 	/* Creamos nueva sesion */
 	if(setsid() < 0){
@@ -81,19 +81,19 @@ void daemonizar(char *servicio, int logLevel){
 
 void abrirLog(char * identificacion, int logLevel){
 
-	/* Cambiamos nivel de log */
+	/* CambiamologLevels nivel de log */
 	setlogmask (LOG_UPTO (logLevel));
 
 	/* Abrimos log */
-	openlog (servicio, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_USER);
+	openlog (identificacion, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_USER);
 
 }
 
 
 void inicializarServidor(void){
 
-	mutex = PTHREAD_MUTEX_INITIALIZER;
-	mutex = PTHREAD_MUTEX_INITIALIZER;
+	pthread_mutex_init(&mutexnuevo, NULL);  
+	pthread_mutex_init(&mutexdescr, NULL);
 
 }
 

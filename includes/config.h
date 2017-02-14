@@ -7,6 +7,7 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <syslog.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -38,7 +39,7 @@
  
 #define UPDESCR() pthread_mutex_unlock(&mutexdescr)
 
-typedef status int;
+typedef int status;
 
 pthread_mutex_t mutexnuevo;
 pthread_mutex_t mutexdescr;
