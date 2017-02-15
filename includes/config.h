@@ -12,12 +12,17 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <sys/select.h>
+#include <sys/time.h>
+
 
 #define SERVICIO "ServidorIRC"
 
 #define DEFAULT_LOG LOG_INFO
 
 #define DEFAULT_PORT 194
+
+#define MAX_QUEUE 15
 
 #define PING_TIME 30
 

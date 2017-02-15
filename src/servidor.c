@@ -1,14 +1,16 @@
 
-#include "../includes/red_servidor.h"
 #include "../includes/config.h"
+#include "../includes/funciones_servidor.h"
+#include "../includes/red_servidor.h"
+
 
 
 int main(int argc, char * argv[]){
 
-	int sckt, desc, auxdesc;
+	int sckt, desc, descraux;
 	int i;
 	fd_set active_fd_set, read_fd_set;
-	ptread_t hiloAux;
+	pthread_t hiloAux;
 
 	/* Recepcion de argumentos */
 
@@ -23,7 +25,7 @@ int main(int argc, char * argv[]){
 
 	inicializarServidor();
 	/* Creamos socket TCP */
-	sckt = crearSocketTCP(PUERTO_ECHO, MAX_QUEUE);
+	sckt = crearSocketTCP(DEFAULT_PORT, MAX_QUEUE);
 	if(sckt < 0){
 		exit(EXIT_FAILURE);
 	}
@@ -54,7 +56,7 @@ int main(int argc, char * argv[]){
 
 						/* down */
 					/* Aceptamos conexion */
-		            if ((desc = aceptarConexion(sckt))  < 0){
+		            if((desc = aceptarConexion(sckt))  < 0){
 		                syslog(LOG_WARNING, "No se ha podido procesar nueva conexion");
 		            }
 
@@ -74,7 +76,7 @@ int main(int argc, char * argv[]){
 					/* DOwn */
 					descraux = i;
 					
-		         	if (pthread_create(&hiloAux , NULL, procesarMensaje, (void *) &i)  < 0) {
+		         	if (pthread_create(&hiloAux , NULL, procesaMensaje, (void *) &descraux)  < 0) {
 
 		                if(close(i) < 0){
  							syslog(LOG_WARNING, "No se ha podido cerrar conexion");
@@ -89,8 +91,7 @@ int main(int argc, char * argv[]){
 
 		/* liberar lo que sea */
 
- 	closelog(void);
-	cerrarServidor(void);
+	cerrarServidor();
 
 	exit(EXIT_FAILURE);
 }

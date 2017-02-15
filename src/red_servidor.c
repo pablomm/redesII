@@ -2,34 +2,6 @@
 #include "../includes/red_servidor.h"
 
 
-
-
-/**
- * @ingroup No lo se
- *
- * @page No lo se
- *
- * @brief Crea un socket TCP
- *
- * @synopsis
- * @code
- *	#include "redes2.h"
- *
- * 	int crearSocketTCP(unsigned short port, int connections);
- * @endcode
- * 
- * @description 
- * Crea un socket TCP con el protocolo TCP, lo asocia al puerto
- * correspondiente y lo pone a escuchar en el puerto a la espera 
- * de aceptar conexiones entrantes
- * 
- *
- *
- * @author
- * Pablo Marcos (pablo.marcosm@estudiante.uam.es)
- *
- *<hr>
- */
 status crearSocketTCP(unsigned short port, int connections){
 	int sockfd;
 	struct sockaddr_in direccion;
@@ -78,27 +50,6 @@ status aceptarConexion(int sockval){
 
 	return desc;
 }
-
-status nuevaConexion(int sockval, void *(*procesarUsuario) (void *)){
-
-	int desc = aceptarConexion(sockval);
-	if(desc < 0){
-		return RED_ERROR;
-	}
-
-	/* Procesar cliente */
-	if (pthread_create(NULL, NULL, procesarUsuario, &desc) < 0) {
-		syslog(LOG_ERR, "Error creando hilo en llamada a pthread_create()");
-		return RED_ERROR;
-	}
-
-	return RED_OK;
-}
-
-
-
-
-
 
 
 

@@ -1,35 +1,6 @@
 
 #include "../includes/config.h"
 
-/**
- * @ingroup No lo se
- *
- * @page No lo se
- *
- * @brief Daemoniza el proceso desde el que es lanzado
- *
- * @synopsis
- * @code
- *	#include "redes2.h"
- *
- * 	int daemonizar(void);
- * @endcode
- * 
- * @description 
- * Crea un proceso hijo, y mata al padre para depender del proceso
- * init, además se hace lider de la sesión, cierra todos los descriptores
- * abiertos, cambia la carpeta de trabajo al directorio raiz y hace una
- * llamada a log para volcar información en el log del sistema
- * Si hay un error durante la ejecución de esta función se finalizará la
- * ejecucion del programa
- * 
- *
- *
- * @author
- * Pablo Marcos (pablo.marcosm@estudiante.uam.es)
- *
- *<hr>
- */
 void daemonizar(char *servicio, int logLevel){
 
 	unsigned short i;
@@ -98,7 +69,7 @@ void inicializarServidor(void){
 }
 
 void cerrarServidor(void){
-
+ 	closelog();
 
 }
 
