@@ -21,7 +21,7 @@ status crearSocketTCP(int * sckfd, unsigned short port){
 	memset((void *)&(direccion.sin_zero), 0, 8); /* Poner a 0 (no obligatorio) */
 
 	/* Permitimos reutilizar el socket */
-     if (setsockopt(sckfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(int)) < 0) { 
+     if (setsockopt(*sckfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(int)) < 0) { 
 		syslog (LOG_ERR, "Error creando socket TCP en llamada a setsockopt()");
         return RED_ERROR;
      }  
@@ -44,17 +44,16 @@ status crearSocketTCP(int * sckfd, unsigned short port){
 	return RED_OK;
 }
 
-status aceptarConexion(int sockval, pRedinf addrinf){
+status aceptarConexion(int sockval,int *sckfd, struct sockaddr_in * address){
+
+	size_t c = sizeof(struct sockaddr_in);
 
 	/* Aceptamos conexion guardando valores en estructura Redinf */
-	addrinf->sckfd = accept(sockval, (struct sockaddr *) &(addrinf->address),&(addrinf->len);
-	if(addrinf->sckfd) < 0 ){
+	*sckfd = accept(sockval, (struct sockaddr *) address,(socklen_t*) &c);
+	if((*sckfd) < 0 ){
 		syslog(LOG_ERR, "Error aceptando conexion en llamada a accept()");
 		return RED_ERROR;
 	}
-
-	/* Valor para la lista enlazada */
-	addrinf->next = NULL;
 
 	/* Informacion de debugeo */
 	syslog (LOG_DEBUG, "Conexion aceptada correctamente");
