@@ -10,11 +10,7 @@ LDLIBS = -lpthread -lircinterface -lircredes -lirctad -lsoundredes
 # fuentes a considerar
 SOURCES = config.c red_servidor.c funciones_servidor.c servidor.c
 
-#SOURCES_LIB = semaforos.c pares.c daemonizar.c TCPSocket.c auxiliarIRC.c
-
 OBJECTS = obj/config.o obj/red_servidor.o obj/funciones_servidor.o obj/servidor.o
-
-#LIBRERIAS = lib/libredes2.a lib/libsemaforos.a lib/libpares.a
 
 
 # ejecutable
@@ -45,6 +41,7 @@ clean:
 	@rm -f servidor
 	@rm -f */*~
 	@rm -f *~
+	@rm -f obj/*.o
 
 #para hacer el tar.gz
 comprimir: clean
