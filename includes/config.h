@@ -14,46 +14,40 @@
 #include <unistd.h>
 #include <sys/select.h>
 #include <sys/time.h>
+#include <signal.h>
+
 
 
 #define SERVICIO "ServidorIRC"
-
 #define DEFAULT_LOG LOG_INFO
+#define DEFAULT_PORT 6667
+#define MAX_BUFFER 1000
 
-#define DEFAULT_PORT 194
+#define SERV_OK 0
+#define SERV_ERROR -1
 
-#define MAX_QUEUE 15
-
-#define PING_TIME 30
-
-#ifndef RED_ERROR 
-#define RED_ERROR -1
-#endif
-
-#ifndef RED_OK
-#define RED_OK 0
-#endif
-
-
-
-#define DOWNNUEVO() pthread_mutex_lock(&mutexnuevo)
- 
-#define DOWNDESCR() pthread_mutex_lock(&mutexdescr)
-
-#define UPNUEVO() pthread_mutex_unlock(&mutexnuevo)
- 
-#define UPDESCR() pthread_mutex_unlock(&mutexdescr)
 
 typedef int status;
 
-pthread_mutex_t mutexnuevo;
-pthread_mutex_t mutexdescr;
+pthread_mutex_t mutexDescr;
 
+int running;
+fd_set activeFD;
+pid_t pid;
 
-void inicializarServidor(void);
-void cerrarServidor(void);
+void daemonizar(char *servicio, int logLevel);
+void cerrarDescriptores(void);
 void abrirLog(char * identificacion, int logLevel);
-void daemonizar(char * identificacion, int logLevel);
+status inicializarServidor(void);
+void cerrarServidor(void);
+void manejadorSigint(int signal);
+void manejadorSIGUSR1(int signal);
+status inicializarFD(int sckt);
+status addFd(int sckt);
+status deleteFd(int sckt);
+status setReadFD(fd_set * readFD);
+status lanzarServidor(unsigned int puerto);
+
 
 #endif /* CONFIG_H */
 
