@@ -8,9 +8,9 @@ LDLIBS = -lpthread -lircinterface -lircredes -lirctad -lsoundredes
 #endif
 
 # fuentes a considerar
-SOURCES = config.c red_servidor.c funciones_servidor.c servidor.c
+SOURCES = config.c red_servidor.c funciones_servidor.c conexion_temp.c servidor.c 
 
-OBJECTS = obj/config.o obj/red_servidor.o obj/funciones_servidor.o obj/servidor.o
+OBJECTS = obj/config.o obj/red_servidor.o obj/funciones_servidor.o obj/conexion_temp.o obj/servidor.o 
 
 
 # ejecutable

@@ -30,14 +30,16 @@ void *manejaMensaje(void* pdesc){
 }
 status nuevaConexion(int desc, struct sockaddr_in address){
 
-	addFd(desc);
+	
 
 	printf("Llamada nueva conexion\n");
 
+	addFd(desc);
 	return 0;
 }
 
 void liberaDatosMensaje(pDatosMensaje datos){
+	
 	free(datos->msg);
 	datos->msg = NULL;
 	free(datos);
