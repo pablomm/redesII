@@ -4,6 +4,10 @@
 #include "config.h"
 #include "red_servidor.h"
 
+#define COM_OK 0
+#define COM_ERROR -1
+#define COM_QUIT -2
+
 
 #define N_COMANDOS 100
 

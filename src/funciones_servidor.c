@@ -1,5 +1,7 @@
 #include "../includes/funciones_servidor.h"
 
+/* #include <irc.h> */
+
 
 void liberarEstructuras(void){
 
@@ -11,23 +13,53 @@ void *manejaMensaje(void* pdesc){
 
 	pDatosMensaje datos;
 	datos = (pDatosMensaje) pdesc;
+	char *next;
 
-	/*
-    syslog(LOG_INFO, "Mensaje: [%s], len=%lu", (char*) datos->msg, strlen(datos->msg));
-    next = IRC_UnPipelineCommands (datos->msg, &comando, strlen(comando));
-    do {
-        procesaMensaje(comando, pdesc);
-        if(comando!=NULL) free(comando);
-        next = IRC_UnPipelineCommands(NULL, &comando, next);
-    }while(next=!NULL)  */
-
-	printf("Mensaje(%d): %s",datos->sckfd, datos->msg);
 	
-	liberaDatosMensaje(datos);
+    syslog(LOG_DEBUG, "Mensaje: [%s], len=%lu", (char*) datos->msg, strlen(datos->msg));
+
+    next = IRC_UnPipelineCommands (datos->msg, &comando, strlen(comando));
+
+    do {
+
+        if(procesaComando(comando, datos) == COM_QUIT){
+
+			printf("mal procesado implementar luego\n");
+			break;
+		}
+
+        if(comando!=NULL) {
+			free(comando);
+		}
+
+        next = IRC_UnPipelineCommands(NULL, &comando, next);
+
+    }while(next!=NULL)  
+	
 	addFd(datos->sckfd);
+    liberaDatosMensaje(datos);
 
 	return NULL;
 }
+
+status procesaComando(char *comando, pDatosMensaje datos){
+	long dev;
+	
+	if(comando == NULL){
+		return COM_ERROR;
+	}
+
+	dev = IRC_CommandQuery(comando);
+	
+	/* RECORDAR IRC_MAX_COMMANDS */
+	if(dev >= NCOMMANDS){
+		return COM_ERROR;
+	}
+
+	return comandos[dev](comando, datos);
+
+}
+
 status nuevaConexion(int desc, struct sockaddr_in address){
 
 	

@@ -2,6 +2,7 @@
 #include "../includes/config.h"
 #include "../includes/funciones_servidor.h"
 #include "../includes/red_servidor.h"
+#include "../includes/conexion_temp.h"
 
 void daemonizar(char *servicio, int logLevel){
 
@@ -81,10 +82,17 @@ status inicializarServidor(void){
 
 	pid = getpid();
 
+	/* Mutex conjunto de descriptores */
 	pthread_mutex_init(&mutexDescr, NULL);
 
-	return SERV_OK;
+	/* Mutex lista usuarios temporales */
+	pthread_mutex_init(&mutexTempUser, NULL);
 
+	usuarioPrimero = NULL;
+	usuarioUltimo = NULL;
+
+
+	return SERV_OK;
 }
 
 

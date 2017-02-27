@@ -1,19 +1,6 @@
 #include "../includes/conexion_temp.h"
 
 
-/*
-typedef struct _TempUser {
-
-	int socket;
-	char * nick;
-	char *host;
-	char IP[INET6_ADDRSTRLEN];
-	pTempUser previous;
-	pTempUser next;
-
-} TempUser, *pTempUser;
-*/
-
 status newTempUser(int socket,  char *ip, char *host){
 	pTempUser usuario;
 
@@ -73,26 +60,74 @@ status deleteTempUser(int socket){
 	pTempUser tuser;
 	tuser = pullTempUser (socket);
 	
-	if(tuser == NULL) return CON_ERROR;
-	if(tuser->previous == NULL) { /* Caso primero*/
-		(tuser->next)->previous = NULL;
-		liberaTempUser(tuser);
-	}	
+	if(tuser == NULL) 
+		return CON_ERROR;
 
-	if(tuser->next == NULL) { /* Caso último */
-		(tuser->previous)->next = NULL;
-		liberaTempUser(tuser);
+	/* Caso unico */
+	if(tuser->previous == NULL && tuser->next == NULL) {
+
+		usuarioPrimero = NULL;
+		usuarioUltimo = NULL;
+
+		return liberaTempUser(tuser);
+
 	}
 
-	/*Caso medio*/
 
+	/* Caso primero o ultimo (no unico)*/
+	if(tuser->previous == NULL || tuser->next == NULL) {
+
+		if(tuser->previous == NULL) { /* Caso primero*/
+			(tuser->next)->previous = NULL;
+			usuarioPrimero = tuser->next;
+		
+		} else { /* Caso último */
+			(tuser->previous)->next = NULL;
+			usuarioUltimo = tuser->next;
+		}
+		
+	} else { /*Caso medio*/
+
+		(tuser->previous)->next = tuser->next;
+		(tuser->next)->previous = tuser->previous;
+
+	}
+
+	return liberaTempUser(tuser);
 
 }
 
-status liberaTempUser (pTempUser usuario) {
+status liberaTempUser(pTempUser usuario) {
 
 	if(usuario == NULL) return CON_ERROR;
 	if(usuario->host != NULL) free(usuario->host);
 	if(usuario->nick != NULL) free(usuario->nick);
 	free(usuario);
+
+	return CON_OK;
 }
+
+
+
+status liberaTodosTempUser(void){
+
+	pTempUser aux = NULL;
+	pTempUser t = usuarioPrimero;
+
+	while(t != NULL){
+		aux = t->next;
+		liberaTempUser(t);
+		t = aux;
+	}
+
+	usuarioPrimero = NULL;
+	usuarioUltimo = NULL;
+
+	return CON_OK;
+
+}
+
+
+
+
+

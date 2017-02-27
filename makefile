@@ -7,10 +7,14 @@ CFLAGS = -Wall -g -ansi -pedantic
 LDLIBS = -lpthread -lircinterface -lircredes -lirctad -lsoundredes 
 #endif
 
-# fuentes a considerar
-SOURCES = config.c red_servidor.c funciones_servidor.c conexion_temp.c servidor.c 
+RED='\033[0;31m'
+NC='\033[0m'
+GREEN='\033[0;32m'
 
-OBJECTS = obj/config.o obj/red_servidor.o obj/funciones_servidor.o obj/conexion_temp.o obj/servidor.o 
+# fuentes a considerar
+SOURCES = config.c red_servidor.c funciones_servidor.c conexion_temp.c comandos.c servidor.c 
+
+OBJECTS = obj/config.o obj/red_servidor.o obj/funciones_servidor.o obj/comandos.o obj/conexion_temp.o obj/servidor.o 
 
 
 # ejecutable
@@ -24,13 +28,13 @@ exe: servidor
 obj/%.o : src/%.c
 	@echo -n compilando objeto \'$<\'...
 	@$(CC) -c $(CFLAGS) $< -c -o $@
-	@echo [OK]
+	@echo ${GREEN}[OK]${NC}
 
 # receta para hacer un ejecutable
 servidor : $(OBJECTS)
 	@echo -n compilando ejecutable \'$@\'...
 	@$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
-	@echo [OK]
+	@echo ${GREEN}[OK]${NC}
 
 # para ejecutar el programa
 run:

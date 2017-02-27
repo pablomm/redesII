@@ -2,6 +2,12 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+/* Macro para funcion kill */
+#define _POSIX_SOURCE
+
+#ifndef VERSION2
+extern int getdtablesize (void);
+#endif
 
 #include <errno.h>
 #include <pthread.h>
