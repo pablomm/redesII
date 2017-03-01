@@ -161,7 +161,8 @@ status setReadFD(fd_set * readFD){
 
 status lanzarServidor(unsigned int puerto){
 
-	int sckt, i,desc;
+	int sckt, i,desc,j;
+	ssize_t tam;
 	status ret;
 	pthread_t auxt;
 	fd_set readFD;
@@ -217,7 +218,7 @@ status lanzarServidor(unsigned int puerto){
 				/* Caso ya aceptado */		       
 				} else {
 
-					recv(i, (void*) buffer, MAX_BUFFER, 0);
+					tam = recv(i, (void*) buffer, MAX_BUFFER, 0);
 
 					datos = (pDatosMensaje) calloc (1, sizeof(DatosMensaje));
 					if(datos == NULL){
@@ -226,11 +227,17 @@ status lanzarServidor(unsigned int puerto){
 					}
 
 					datos->sckfd = i;
-					datos->len = strlen(buffer) + 1;
-					datos->msg = (char *) calloc (datos->len, sizeof(char));
-					strcpy(datos->msg, buffer);
+					datos->len = tam;
+					datos->msg = (char *) calloc(tam, sizeof(char));
+					memcpy(datos->msg, buffer, tam);
 					deleteFd(i);
-					memset((void*)buffer, 0, datos->len);
+					memset((void*)buffer, 0, tam);
+
+					printf("Config.c:");
+					for(j=0; j<tam; j++){
+
+						printf("%c", (datos->msg[j]));
+					}
 
 					/* Lanzamos hilo para procesar el mensaje */
 		         	if (pthread_create(&auxt , NULL, manejaMensaje, (void *) datos)  < 0) {
