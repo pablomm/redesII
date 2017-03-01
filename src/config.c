@@ -91,6 +91,8 @@ status inicializarServidor(void){
 	usuarioPrimero = NULL;
 	usuarioUltimo = NULL;
 
+	crea_comandos();
+
 
 	return SERV_OK;
 }
@@ -207,7 +209,7 @@ status lanzarServidor(unsigned int puerto){
 
 		            } else {
 						/* Creamos nueva conexion */
-						if(nuevaConexion(desc, address) < 0){
+						if(nuevaConexion(desc, &address) < 0){
 							syslog(LOG_WARNING, "Error en llamada a nuevaConexion()");
 						}
 					}

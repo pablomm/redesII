@@ -1,6 +1,7 @@
 #include "../includes/funciones_servidor.h"
+#include "../includes/conexion_temp.h"
 
-/* #include <irc.h> */
+#include <redes2/irc.h>
 
 
 void liberarEstructuras(void){
@@ -12,62 +13,98 @@ void liberarEstructuras(void){
 void *manejaMensaje(void* pdesc){
 
 	pDatosMensaje datos;
-	datos = (pDatosMensaje) pdesc;
 	char *next;
+	char *comando;
+	datos = (pDatosMensaje) pdesc;
+
+	/* Informacion de debugeo */
+    syslog(LOG_DEBUG, "Mensaje: [%s], len=%lu", (char*) datos->msg, datos->len);
 
 	
-    syslog(LOG_DEBUG, "Mensaje: [%s], len=%lu", (char*) datos->msg, strlen(datos->msg));
-
-    next = IRC_UnPipelineCommands (datos->msg, &comando, strlen(comando));
+    next = IRC_UnPipelineCommands (datos->msg, &comando);
 
     do {
 
-        if(procesaComando(comando, datos) == COM_QUIT){
+        if(procesaComando(comando, datos) == COM_QUIT) {
 
-			printf("mal procesado implementar luego\n");
+			/* Se cierra la conexion */
+			printf("Aqui ira llamada a cerrar conexion\n");
+
+		    if(comando!= NULL) {
+				free(comando);
+			}
 			break;
 		}
-
-        if(comando!=NULL) {
+		/* Libera memoria reservada comando */
+        if(comando!= NULL) {
 			free(comando);
 		}
 
-        next = IRC_UnPipelineCommands(NULL, &comando, next);
+		/* Calcula siguiente comando */
+        next = IRC_UnPipelineCommands(next, &comando);
 
-    }while(next!=NULL)  
+    } while(next != NULL);
 	
+	/* Incluimos el descriptor de nuevo y mandamos SIGUSR1 */
 	addFd(datos->sckfd);
+
+	/* Liberamos estructura de datos */
     liberaDatosMensaje(datos);
 
 	return NULL;
 }
 
 status procesaComando(char *comando, pDatosMensaje datos){
-	long dev;
 	
-	if(comando == NULL){
+	long dev;	
+
+	dev = IRC_CommandQuery(comando);
+
+	switch(dev){
+		case IRCERR_NOCOMMAND:
+
+		case IRCERR_NOPARAMS:
+
+		case IRCERR_UNKNOWNCOMMAND:
+			return comandoVacio(comando,datos);
+		
 		return COM_ERROR;
 	}
 
-	dev = IRC_CommandQuery(comando);
-	
-	/* RECORDAR IRC_MAX_COMMANDS */
-	if(dev >= NCOMMANDS){
+	/* Error en el comando */
+	if(dev >= IRC_MAX_COMMANDS || dev < 0 ){
+		
 		return COM_ERROR;
 	}
 
 	return comandos[dev](comando, datos);
-
 }
 
-status nuevaConexion(int desc, struct sockaddr_in address){
+status nuevaConexion(int desc, struct sockaddr_in * address){
+	status ret;
+	struct hostent * host;
+	char * ip_a = NULL;	
 
-	
 
-	printf("Llamada nueva conexion\n");
+	deleteTempUser(desc);
+
+	ip_a = inet_ntoa(address->sin_addr);
+	if(ip_a == NULL){
+		return COM_ERROR;
+	}
+
+	host = gethostbyaddr(address, sizeof(struct sockaddr_in), AF_INET);
+	if(host != NULL){
+		ret = newTempUser(desc,  ip_a, host->h_name);
+
+	} else {
+		ret = newTempUser(desc,  ip_a, "UNKNOWN_HOST");
+
+	}
 
 	addFd(desc);
-	return 0;
+
+	return ret;
 }
 
 void liberaDatosMensaje(pDatosMensaje datos){
@@ -76,18 +113,196 @@ void liberaDatosMensaje(pDatosMensaje datos){
 	datos->msg = NULL;
 	free(datos);
 }
-/*
-status crea_comandos() {
+
+status crea_comandos(void) {
     int i;    
-    for(i=0; i<N_COMANDOS; i++) {
+    for(i=0; i< IRC_MAX_COMMANDS; i++) {
         comandos[i] = comandoVacio; 
 	}
 
-    comandos[0]=nick;
-    comandos[1]=user; 
-	return 0;   
+    comandos[NICK]=nick;
+    comandos[USER]=user; 
+
+	return COM_OK;   
 }
 
-*/
 
+
+status liberarUserData(char *user, char *nick, char *real, char *host, char *IP, char *away){
+
+	if(user){ free(user); user = NULL; }
+	if(nick){ free(nick); nick = NULL; }
+	if(real){ free(real); real = NULL; }
+	if(host){ free(host); host = NULL; }
+	if(IP){ free(IP); IP = NULL; }
+	if(away){ free(away); away = NULL; }
+
+	return COM_OK;
+}
+
+status nick(char* comando, pDatosMensaje datos){
+	
+	char *prefijo = NULL, *prefijo2 = NULL, *nickk = NULL, *msg = NULL;
+	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
+	char *host = NULL, *IP = NULL, *away = NULL;
+	char * mensajeRespuesta = NULL;
+	long unknown_id = 0, ret=0;
+	long creationTS, actionTS;
+	int sock;	
+	pTempUser usuarioTemporal = NULL;
+
+	if(!datos || !comando){
+		return COM_ERROR;
+	}
+
+	sock =  datos->sckfd;
+
+	switch(IRCParse_Nick(comando,&prefijo,&nickk, &msg)){
+		case IRCERR_NOSTRING: /* Comando Invalido */
+		case IRCERR_ERRONEUSCOMMAND:
+			syslog(LOG_ERR, "Error en IRCParse_NICK");
+			IRCMsg_ErrNoNickNameGiven(&mensajeRespuesta, SERVICIO, "");
+			enviar(datos->sckfd, mensajeRespuesta);
+			if(prefijo) {free(prefijo); prefijo=NULL;}
+			if(msg) {free(msg); msg=NULL;}
+			free(mensajeRespuesta);
+			return COM_ERROR;
+	}
+
+	/* Comprobamos si el socket esta utilizado */
+	ret = IRCTADUser_GetData (&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
+	
+	/* Caso no hay suficiente memoria */
+	if(ret == IRCERR_NOENOUGHMEMORY) {
+		syslog(LOG_ERR, "Error Nick NOENOUGHMEMORY");
+		if(prefijo) free(prefijo);
+		if(nickk) free(nickk);
+		if(msg) free(msg);
+		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+
+		return COM_ERROR;
+	}
+
+	/* Caso Nuevo usuario */
+	if(unknown_id == 0) {
+
+		 usuarioTemporal = pullTempUser(datos->sckfd);
+
+		 /* Caso no se encuentra usuario temporal */
+		 if(usuarioTemporal == NULL) {
+			syslog(LOG_ERR, "Usuario %d temporal no encontrado", datos->sckfd);
+			liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+			return COM_ERROR;
+		}
+
+		setNickTemporal(usuarioTemporal, nickk);
+
+	} else { /* Cambio de NICK */
+
+		ret = IRCTADUser_Set(unknown_id, unknown_user, unknown_nick, unknown_real, NULL, nickk, NULL);
+		switch(ret){
+			/* no hay memoria suficiente */
+			case IRCERR_NOENOUGHMEMORY:
+				syslog(LOG_ERR, "No hay suficiente memoria llamada a nick");
+				break;
+	
+			/* Usuario no encontrado */
+			case IRCERR_INVALIDNICK:
+			case IRCERR_INVALIDREALNAME:
+			case IRCERR_INVALIDUSER:
+				syslog(LOG_ERR,"Oops el usuario se ha perdido por el camino");
+				break;
+	
+			/* Caso nuevo NICK en uso */
+			case IRCERR_NICKUSED:
+				IRCMsg_ErrNickNameInUse (&mensajeRespuesta, SERVICIO ,unknown_nick, nickk);
+				enviar(datos->sckfd, mensajeRespuesta);
+				break;
+
+			case IRC_OK:
+				// Complex USER para el prefijo???
+				//IRCMsg_Nick();
+				enviar(datos->sckfd, mensajeRespuesta);
+				break;
+		}
+	}
+
+	/* Liberamos estructuras */
+	if(mensajeRespuesta) free(mensajeRespuesta);
+	if(prefijo) free(prefijo);
+	if(prefijo2) free(prefijo2);
+	if(nickk) free(nickk);
+	if(msg) free(msg);
+	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+
+	return COM_OK;
+}
+
+
+status user(char* comando, pDatosMensaje datos){
+	char *prefijo = NULL, *prefijo2 = NULL, *nickk = NULL, *msg = NULL;
+	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
+	char *host = NULL, *IP = NULL, *away = NULL;
+	char * mensajeRespuesta = NULL;
+	long unknown_id = 0, ret=0;
+	long creationTS, actionTS;
+	int sock;	
+	pTempUser usuarioTemporal = NULL;
+
+
+
+
+
+	/* Comprobamos si el socket esta utilizado */
+	ret = IRCTADUser_GetData (&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
+	
+	/* Caso no hay suficiente memoria */
+	if(ret == IRCERR_NOENOUGHMEMORY) {
+		syslog(LOG_ERR, "Error Nick NOENOUGHMEMORY");
+		if(prefijo) free(prefijo);
+		if(nickk) free(nickk);
+		if(msg) free(msg);
+		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+
+		return COM_ERROR;
+	}
+
+
+
+
+}
+status comandoVacio(char* comando, pDatosMensaje datos){
+	char *mensajeRespuesta = NULL;
+	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
+	char *host = NULL, *IP = NULL, *away = NULL;
+	long unknown_id = 0;
+	long creationTS, actionTS;
+	int sock;
+
+	if(!comando || !datos){
+		return COM_ERROR;
+	}
+
+	sock = datos->sckfd;
+
+	/* Obtenemos identificador del usuario */
+	IRCTADUser_GetData(&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
+    syslog(LOG_DEBUG, "Comando No reconocido %s", comando);
+
+	/* Variante si el usuario no esta registrado */
+	if(unknown_nick){
+    	IRCMsg_ErrUnKnownCommand (&mensajeRespuesta, SERVICIO, unknown_nick, comando);
+	} else {
+		IRCMsg_ErrUnKnownCommand (&mensajeRespuesta, SERVICIO, "", comando);
+	}
+
+	/* Enviamos mensaje de datos */
+    enviar(datos->sckfd, mensajeRespuesta);
+
+	/* Liberamos estructuras */
+    if(mensajeRespuesta) free(mensajeRespuesta);
+	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+
+	return COM_OK;
+}
 

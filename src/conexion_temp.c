@@ -19,6 +19,7 @@ status newTempUser(int socket,  char *ip, char *host){
 		free(usuario);
 		return CON_ERROR;
 	}
+	strcpy(usuario->host, host);
 
 	usuario->nick = NULL;
 	usuario-> socket = socket;
@@ -30,10 +31,32 @@ status newTempUser(int socket,  char *ip, char *host){
 	if( usuarioPrimero == NULL){
 		usuarioPrimero = usuario;
 		usuarioUltimo = usuario;
-	}
+	} else {
 
 	usuarioUltimo->next = usuario;
 	usuarioUltimo = usuario;
+
+	}
+
+	return CON_OK;
+}
+
+status setNickTemporal(pTempUser usuario, char* nick){
+
+	if(usuario == NULL || nick == NULL){
+		return CON_ERROR;
+	}
+
+	if(usuario->nick){
+		free(usuario->nick);
+	}
+
+	usuario->nick = (char*) calloc(strlen(nick) + 1,  sizeof(char));
+	if(usuario->nick == NULL){
+		return CON_ERROR;
+	}
+
+	strcpy(usuario->nick, nick);
 
 	return CON_OK;
 }
@@ -122,6 +145,28 @@ status liberaTodosTempUser(void){
 
 	usuarioPrimero = NULL;
 	usuarioUltimo = NULL;
+
+	return CON_OK;
+
+}
+
+status printDebugUsers(void){
+	pTempUser aux = NULL;
+	pTempUser t = usuarioPrimero;
+
+	printf("Temp users:\n");
+	while(t != NULL){
+		aux = t->next;
+		printf("Socket: %d ", t->socket);
+		if(t->nick)
+			printf("Nick: %s ", t->nick);	
+		if(t->host)
+			printf("Host: %s", t->host);
+
+		printf("\n");
+
+		t = aux;
+	}
 
 	return CON_OK;
 

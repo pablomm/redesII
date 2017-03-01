@@ -1,6 +1,10 @@
 #ifndef FUNCIONES_SERVIDOR_H
 #define FUNCIONES_SERVIDOR_H
 
+#include <redes2/irc.h>
+#include <arpa/inet.h>
+
+
 #include "config.h"
 #include "red_servidor.h"
 
@@ -9,7 +13,6 @@
 #define COM_QUIT -2
 
 
-#define N_COMANDOS 100
 
 typedef struct _datosMensaje {
 	int sckfd;
@@ -19,12 +22,19 @@ typedef struct _datosMensaje {
 
 typedef status (*ArrayComandos)(char*, pDatosMensaje);
 
-ArrayComandos comandos[N_COMANDOS];
+ArrayComandos comandos[IRC_MAX_COMMANDS];
+
 
 void liberarEstructuras(void);
 void *manejaMensaje(void* pdesc);
-status nuevaConexion(int desc, struct sockaddr_in address);
+status nuevaConexion(int desc, struct sockaddr_in * address);
 void liberaDatosMensaje(pDatosMensaje datos);
-status crea_comandos();
+status procesaComando(char *comando, pDatosMensaje datos);
+
+status crea_comandos(void);
+status nick(char* comando, pDatosMensaje datos);
+status user(char* comando, pDatosMensaje datos);
+status comandoVacio(char* comando, pDatosMensaje datos);
+
 
 #endif /* FUNCIONES_SERVIDOR_H */

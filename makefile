@@ -3,18 +3,18 @@
 
 # banderas de compilacion
 CC = gcc
-CFLAGS = -Wall -g -ansi -pedantic
+CFLAGS = -Wall -g -pedantic
 LDLIBS = -lpthread -lircinterface -lircredes -lirctad -lsoundredes 
-#endif
+
 
 RED='\033[0;31m'
 NC='\033[0m'
 GREEN='\033[0;32m'
 
 # fuentes a considerar
-SOURCES = config.c red_servidor.c funciones_servidor.c conexion_temp.c comandos.c servidor.c 
+SOURCES = config.c red_servidor.c funciones_servidor.c conexion_temp.c servidor.c 
 
-OBJECTS = obj/config.o obj/red_servidor.o obj/funciones_servidor.o obj/comandos.o obj/conexion_temp.o obj/servidor.o 
+OBJECTS = obj/config.o obj/red_servidor.o obj/funciones_servidor.o obj/conexion_temp.o obj/servidor.o 
 
 
 # ejecutable

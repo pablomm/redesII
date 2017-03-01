@@ -2,12 +2,6 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-/* Macro para funcion kill */
-#define _POSIX_SOURCE
-
-#ifndef VERSION2
-extern int getdtablesize (void);
-#endif
 
 #include <errno.h>
 #include <pthread.h>
@@ -27,7 +21,7 @@ extern int getdtablesize (void);
 #define SERVICIO "ServidorIRC"
 #define DEFAULT_LOG LOG_INFO
 #define DEFAULT_PORT 6667
-#define MAX_BUFFER 1000
+#define MAX_BUFFER 1024
 
 #define SERV_OK 0
 #define SERV_ERROR -1
@@ -53,6 +47,8 @@ status addFd(int sckt);
 status deleteFd(int sckt);
 status setReadFD(fd_set * readFD);
 status lanzarServidor(unsigned int puerto);
+
+
 
 
 #endif /* CONFIG_H */

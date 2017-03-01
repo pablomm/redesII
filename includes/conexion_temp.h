@@ -9,8 +9,6 @@
 #define CON_OK 0
 #define CON_ERROR -1
 
-
-
 typedef struct _TempUser {
 
 	int socket;
@@ -32,6 +30,8 @@ status newTempUser(int socket,  char *ip, char *host);
 pTempUser pullTempUser(int socket);
 status liberaTempUser(pTempUser usuario);
 status liberaTodosTempUser(void);
+status printDebugUsers(void);
+status setNickTemporal(pTempUser usuario, char* nick);
 
 
 

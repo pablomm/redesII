@@ -28,6 +28,8 @@ status crearSocketTCP(int * sckfd, unsigned short port);
 */
 status aceptarConexion(int sockval,int *sckfd, struct sockaddr_in * address);
 
+status enviar(int sockfd, char *mensaje);
+
 
 #endif /* RED_SERVIDOR_H */
 
