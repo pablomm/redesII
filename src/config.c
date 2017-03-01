@@ -104,6 +104,7 @@ void cerrarServidor(void){
 
 	cerrarDescriptores(); 	
 	closelog();
+	liberarEstructuras();
 
 }
 
@@ -112,7 +113,6 @@ void manejadorSigint(int signal){
 	syslog(LOG_INFO, "Terminado por recepcion de sigint");
 	cerrarServidor();
 	exit(EXIT_SUCCESS);
-
 }
 
 status inicializarFD(int sckt){
@@ -161,7 +161,7 @@ status setReadFD(fd_set * readFD){
 
 status lanzarServidor(unsigned int puerto){
 
-	int sckt, i,desc,j;
+	int sckt, i, desc;
 	ssize_t tam;
 	status ret;
 	pthread_t auxt;
@@ -219,7 +219,16 @@ status lanzarServidor(unsigned int puerto){
 				} else {
 
 					tam = recv(i, (void*) buffer, MAX_BUFFER, 0);
+					if(tam == -1){
+						syslog(LOG_ERR, "Error n: %d al recibir mensaje del socket %d", errno, i);
+						continue;
 
+					} else if(tam == 0){ /* Caso socket cerrado */
+						cerrarConexion(i);
+						continue;
+					}
+
+					/* Empaquetamos el mensaje */
 					datos = (pDatosMensaje) calloc (1, sizeof(DatosMensaje));
 					if(datos == NULL){
 						syslog(LOG_ERR, "Error reservando memoria para datos");
@@ -233,12 +242,6 @@ status lanzarServidor(unsigned int puerto){
 					deleteFd(i);
 					memset((void*)buffer, 0, tam);
 
-					printf("Config.c:");
-					for(j=0; j<tam; j++){
-
-						printf("%c", (datos->msg[j]));
-					}
-
 					/* Lanzamos hilo para procesar el mensaje */
 		         	if (pthread_create(&auxt , NULL, manejaMensaje, (void *) datos)  < 0) {
 						liberaDatosMensaje(datos);
@@ -251,7 +254,6 @@ status lanzarServidor(unsigned int puerto){
 	}
 
 	return SERV_OK;
-
 }
 
 
