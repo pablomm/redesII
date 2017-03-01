@@ -28,6 +28,7 @@ ArrayComandos comandos[IRC_MAX_COMMANDS];
 void liberarEstructuras(void);
 void *manejaMensaje(void* pdesc);
 status nuevaConexion(int desc, struct sockaddr_in * address);
+status cerrarConexion(int socket);
 void liberaDatosMensaje(pDatosMensaje datos);
 status procesaComando(char *comando, pDatosMensaje datos);
 

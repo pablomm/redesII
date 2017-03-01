@@ -6,7 +6,10 @@
 
 void liberarEstructuras(void){
 
-	printf("Llamada libera estructura\n");
+	printf("Llamada libera estructura sin implementar\n");
+	/* Liberar lista usuarios temporales */
+	/* Liberar tads de eloy */
+	/* Liberar mutex creado (descriptores y usuarios temporales */
 
 }
 
@@ -28,7 +31,7 @@ void *manejaMensaje(void* pdesc){
 		    if(comando!= NULL) {
 				free(comando);
 			}
-			/* LLamar a cerrar conexion */
+			cerrarConexion(datos->sckfd);
 			return NULL;
 		}
 		/* Libera memoria reservada comando */
@@ -54,16 +57,14 @@ status procesaComando(char *comando, pDatosMensaje datos){
 
 	switch(dev){
 		case IRCERR_NOCOMMAND:
-
 		case IRCERR_NOPARAMS:
-
 		case IRCERR_UNKNOWNCOMMAND:
 			return comandoVacio(comando,datos);
 		
-		return COM_ERROR;
+		return COM_OK;
 	}
 
-	/* Error en el comando */
+	/* Comprobacion extra por si acaso */
 	if(dev >= IRC_MAX_COMMANDS || dev < 0 ){
 		return COM_ERROR;
 	}
@@ -89,13 +90,25 @@ status nuevaConexion(int desc, struct sockaddr_in * address){
 		ret = newTempUser(desc,  ip_a, host->h_name);
 
 	} else {
-		ret = newTempUser(desc,  ip_a, "UNKNOWN_HOST");
+		ret = newTempUser(desc,  ip_a, "*");
 
 	}
 
 	addFd(desc);
 
 	return ret;
+}
+
+status cerrarConexion(int socket){
+
+	syslog(LOG_DEBUG,"Cerrada conexion del socket %d", socket);
+	deleteFd(socket);
+	deleteTempUser(socket);
+	close(socket);
+	
+	//Borrar posible usuario de la base de datos
+
+	return COM_OK;
 }
 
 void liberaDatosMensaje(pDatosMensaje datos){
@@ -274,8 +287,6 @@ status user(char* comando, pDatosMensaje datos){
 	int sock;	
 	pTempUser usuarioTemporal = NULL;
 
-		printf("ihuhuhuhuhuh\n");
-
 	if(!datos || !comando){
 		return COM_ERROR;
 	}
@@ -405,9 +416,6 @@ status comandoVacio(char* comando, pDatosMensaje datos){
 	long creationTS, actionTS;
 	int sock;
 
-	printf("UNKNOWN\n");
-
-
 	if(!comando || !datos){
 		return COM_ERROR;
 	}
@@ -421,6 +429,9 @@ status comandoVacio(char* comando, pDatosMensaje datos){
 	/* Variante si el usuario esta registrado */
 	if(unknown_nick){
     	IRCMsg_ErrUnKnownCommand (&mensajeRespuesta, SERVICIO, unknown_nick, comando);
+	    enviar(datos->sckfd, mensajeRespuesta);
+	}  else {
+		IRCMsg_ErrUnKnownCommand (&mensajeRespuesta, SERVICIO, "*", comando);
 	    enviar(datos->sckfd, mensajeRespuesta);
 	}
 
