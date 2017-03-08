@@ -1,9 +1,21 @@
+/**
+  @file config.c
+  @brief daemonizar y funciones relacionadas con el servidor y descriptores
+  @author Pablo Marcos  <pablo.marcos@estudiante.uam.es>
+  @author Dionisio Perez  <dionisio.perez@estudiante.uam.es>
+*/
 
 #include "../includes/config.h"
 #include "../includes/funciones_servidor.h"
 #include "../includes/red_servidor.h"
 #include "../includes/conexion_temp.h"
 
+/**
+  @brief demoniza el proceso
+  @param servicio: identificacion para el log
+  @param logLevel: nivel de mascara del log
+  @return nada
+*/
 void daemonizar(char *servicio, int logLevel){
 
 	/* Creamos proceso hijo */
@@ -45,6 +57,11 @@ void daemonizar(char *servicio, int logLevel){
 
 }
 
+/**
+  @brief ciera el conjunto de descriptores
+  @param void
+  @return nada
+*/
 void cerrarDescriptores(void){
 	unsigned short i;
 
@@ -53,6 +70,12 @@ void cerrarDescriptores(void){
 		close(i);
 }
 
+/**
+  @brief abre el log para el envio de mensajes
+  @param identificacion: identificacion para el log
+  @param logLevel: nivel de mascara del log
+  @return nada
+*/
 void abrirLog(char * identificacion, int logLevel){
 
 	/* CambiamologLevels nivel de log */
@@ -62,7 +85,11 @@ void abrirLog(char * identificacion, int logLevel){
 	openlog (identificacion, LOG_CONS | LOG_PID | LOG_NDELAY, LOG_USER);
 }
 
-
+/**
+  @brief manejador de la sennal SIGUSR1
+  @param sennal: sennal
+  @return nada
+*/
 void manejadorSIGUSR1(int sennal){
 
 	if(signal(SIGUSR1, manejadorSIGUSR1) == SIG_ERR){
@@ -70,6 +97,11 @@ void manejadorSIGUSR1(int sennal){
 	}
 }
 
+/**
+  @brief inicializa el servidor
+  @param void
+  @return SERV_OK
+*/
 status inicializarServidor(void){
 
 	if(signal(SIGINT, manejadorSigint) == SIG_ERR){
@@ -97,9 +129,11 @@ status inicializarServidor(void){
 	return SERV_OK;
 }
 
-
-
-
+/**
+  @brief cierra el servidor
+  @param void
+  @return nada
+*/
 void cerrarServidor(void){
 
 	cerrarDescriptores(); 	
@@ -108,6 +142,11 @@ void cerrarServidor(void){
 
 }
 
+/**
+  @brief manejador de la sennal SIGINT
+  @param signal: sennal
+  @return nada
+*/
 void manejadorSigint(int signal){
 
 	syslog(LOG_INFO, "Terminado por recepcion de sigint");
@@ -115,6 +154,11 @@ void manejadorSigint(int signal){
 	exit(EXIT_SUCCESS);
 }
 
+/**
+  @brief inicializa descriptor del socket dado
+  @param sckt: el socket
+  @return SERV_OK
+*/
 status inicializarFD(int sckt){
 
 	pthread_mutex_lock(&mutexDescr);
@@ -126,6 +170,11 @@ status inicializarFD(int sckt){
 
 }
 
+/**
+  @brief annade descriptor al conjunto de descriptores activos
+  @param sckt: el socket
+  @return SERV_OK
+*/
 status addFd(int sckt){
 
 	pthread_mutex_lock(&mutexDescr);
@@ -139,6 +188,11 @@ status addFd(int sckt){
 	return SERV_OK;
 }
 
+/**
+  @brief elimina descriptor del socket dado 
+  @param sckt: el socket
+  @return SERV_OK
+*/
 status deleteFd(int sckt){
 
 	pthread_mutex_lock(&mutexDescr);
@@ -148,6 +202,11 @@ status deleteFd(int sckt){
 	return SERV_OK;
 }
 
+/**
+  @brief pone como leido el socket dado
+  @param sckt: el socket
+  @return SERV_OK
+*/
 status setReadFD(fd_set * readFD){
 
 	pthread_mutex_lock(&mutexDescr);
@@ -157,8 +216,11 @@ status setReadFD(fd_set * readFD){
 	return SERV_OK;
 }
 
-
-
+/**
+  @brief lanza el servidor
+  @param puerto: puerto para el que crear socket
+  @return SERV_OK
+*/
 status lanzarServidor(unsigned int puerto){
 
 	int sckt, i, desc;
@@ -255,10 +317,4 @@ status lanzarServidor(unsigned int puerto){
 
 	return SERV_OK;
 }
-
-
-
-
-
-
 

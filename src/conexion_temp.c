@@ -1,6 +1,19 @@
+/**
+  @file conexion_temp.c
+  @brief estructura y funciones del usuario temporal
+  @author Pablo Marcos  <pablo.marcos@estudiante.uam.es>
+  @author Dionisio Perez  <dionisio.perez@estudiante.uam.es>
+*/
+
 #include "../includes/conexion_temp.h"
 
-
+/**
+  @brief crea un nuevo usuario temporal
+  @param socket: el socket
+  @param ip: la direccion ip
+  @param host: el host
+  @return CON_OK si todo va bien. CON_ERROR en caso contrario
+*/
 status newTempUser(int socket,  char *ip, char *host){
 	pTempUser usuario;
 
@@ -41,6 +54,12 @@ status newTempUser(int socket,  char *ip, char *host){
 	return CON_OK;
 }
 
+/**
+  @brief modifica el nick del usuario temporal
+  @param usuario: el usuario
+  @param nick: el nuevo nick
+  @return CON_OK si todo va bien. CON_ERROR en caso contrario
+*/
 status setNickTemporal(pTempUser usuario, char* nick){
 
 	if(usuario == NULL || nick == NULL){
@@ -61,6 +80,11 @@ status setNickTemporal(pTempUser usuario, char* nick){
 	return CON_OK;
 }
 
+/**
+  @brief busca por socket un usuario temporal en la lista
+  @param socket: el socket
+  @return el usuario econtrado, o NULL
+*/
 pTempUser pullTempUser(int socket){
 
 	pTempUser useri;
@@ -78,6 +102,11 @@ pTempUser pullTempUser(int socket){
 	return NULL;
 }
 
+/**
+  @brief elimina un usario temporal
+  @param socket: el socket
+  @return CON_OK si todo va bien. CON_ERROR en caso contrario
+*/
 status deleteTempUser(int socket){
 
 	pTempUser tuser;
@@ -120,6 +149,11 @@ status deleteTempUser(int socket){
 
 }
 
+/**
+  @brief elimina de memoria un usuario temporal
+  @param usuario: el usuario
+  @return CON_OK
+*/
 status liberaTempUser(pTempUser usuario) {
 
 	if(usuario == NULL) return CON_ERROR;
@@ -130,8 +164,11 @@ status liberaTempUser(pTempUser usuario) {
 	return CON_OK;
 }
 
-
-
+/**
+  @brief elimina de memoria a todos los usuarios temporales
+  @param void
+  @return CON_OK
+*/
 status liberaTodosTempUser(void){
 
 	pTempUser aux = NULL;
@@ -150,6 +187,11 @@ status liberaTodosTempUser(void){
 
 }
 
+/**
+  @brief funcion pa debbugear que ni se pa que la comento
+  @param void
+  @return CON_OK
+*/
 status printDebugUsers(void){
 	pTempUser aux = NULL;
 	pTempUser t = usuarioPrimero;
@@ -171,8 +213,3 @@ status printDebugUsers(void){
 	return CON_OK;
 
 }
-
-
-
-
-

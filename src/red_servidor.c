@@ -1,7 +1,18 @@
-
+/**
+  @file red_servidor.c
+  @brief crear sockets, aceptar conexion y enviar
+  @author Pablo Marcos  <pablo.marcos@estudiante.uam.es>
+  @author Dionisio Perez  <dionisio.perez@estudiante.uam.es>
+*/
+	
 #include "../includes/red_servidor.h"
 
-
+/**
+  @brief crea un socket TCP
+  @param sckfd: el socket
+  @param port: el puerto
+  @return RED_OK si todo va bien. RED_ERROR en caso contrario
+*/
 status crearSocketTCP(int * sckfd, unsigned short port){
 
 	struct sockaddr_in direccion;
@@ -44,6 +55,13 @@ status crearSocketTCP(int * sckfd, unsigned short port){
 	return RED_OK;
 }
 
+/**
+  @brief acepta conexion entrante
+  @param sockval: socket del que extraer la conexion
+  @param sockfd: nuevo socket para manejar la conexion
+  @param address: estructura que almacena informacion de la direccion de internet
+  @return RED_OK si todo va bien. RED_ERROR en caso contrario
+*/
 status aceptarConexion(int sockval,int *sckfd, struct sockaddr_in * address){
 
 	size_t c = sizeof(struct sockaddr_in);
@@ -61,6 +79,12 @@ status aceptarConexion(int sockval,int *sckfd, struct sockaddr_in * address){
 	return RED_OK;
 }
 
+/**
+  @brief envia mensaje desde el socket especificado
+  @param sockfd: el socket 
+  @param mensaje: el mensaje
+  @return RED_OK si todo va bien. RED_ERROR en caso contrario
+*/
 status enviar(int sockfd, char *mensaje){
 	if(sockfd < 0 || mensaje==NULL){
 		syslog(LOG_ERR,"Error en el envio de paquete");

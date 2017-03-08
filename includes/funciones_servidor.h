@@ -35,6 +35,8 @@ status procesaComando(char *comando, pDatosMensaje datos);
 status crea_comandos(void);
 status nick(char* comando, pDatosMensaje datos);
 status user(char* comando, pDatosMensaje datos);
+status join(char* comando, pDatosMensaje datos);
+status list(char* comando, pDatosMensaje datos);
 status comandoVacio(char* comando, pDatosMensaje datos);
 
 
