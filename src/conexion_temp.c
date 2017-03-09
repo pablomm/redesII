@@ -21,6 +21,7 @@ status newTempUser(int socket,  char *ip, char *host){
 		return CON_ERROR;
 	}
 
+
 	usuario = (pTempUser) calloc(1, sizeof(TempUser));
 
 	if(usuario == NULL){
@@ -41,15 +42,18 @@ status newTempUser(int socket,  char *ip, char *host){
 	usuario->previous = NULL;
 	usuario->next = NULL;
 
+	pthread_mutex_lock(&mutexTempUser);
+
 	if( usuarioPrimero == NULL){
 		usuarioPrimero = usuario;
 		usuarioUltimo = usuario;
 	} else {
-
-	usuarioUltimo->next = usuario;
-	usuarioUltimo = usuario;
-
+		usuarioUltimo->next = usuario;
+		usuario->previous = usuarioUltimo;
+		usuarioUltimo = usuario;
 	}
+
+	pthread_mutex_unlock(&mutexTempUser);
 
 	return CON_OK;
 }
@@ -89,16 +93,19 @@ pTempUser pullTempUser(int socket){
 
 	pTempUser useri;
 
+	pthread_mutex_lock(&mutexTempUser);
+
 	useri = usuarioPrimero;
 	while (useri != NULL){
 		if(useri->socket == socket){
+			pthread_mutex_unlock(&mutexTempUser);
 			return useri; 
 		}
 
 		useri = useri->next;
 
 	}
-
+	pthread_mutex_unlock(&mutexTempUser);
 	return NULL;
 }
 
@@ -115,12 +122,15 @@ status deleteTempUser(int socket){
 	if(tuser == NULL) 
 		return CON_ERROR;
 
+	pthread_mutex_lock(&mutexTempUser);
+
 	/* Caso unico */
 	if(tuser->previous == NULL && tuser->next == NULL) {
 
 		usuarioPrimero = NULL;
 		usuarioUltimo = NULL;
 
+		pthread_mutex_unlock(&mutexTempUser);
 		return liberaTempUser(tuser);
 
 	}
@@ -135,16 +145,16 @@ status deleteTempUser(int socket){
 		
 		} else { /* Caso último */
 			(tuser->previous)->next = NULL;
-			usuarioUltimo = tuser->next;
+			usuarioUltimo = tuser->previous;
 		}
 		
 	} else { /*Caso medio*/
-
 		(tuser->previous)->next = tuser->next;
 		(tuser->next)->previous = tuser->previous;
 
 	}
 
+	pthread_mutex_unlock(&mutexTempUser);
 	return liberaTempUser(tuser);
 
 }
@@ -172,7 +182,11 @@ status liberaTempUser(pTempUser usuario) {
 status liberaTodosTempUser(void){
 
 	pTempUser aux = NULL;
-	pTempUser t = usuarioPrimero;
+	pTempUser t = NULL;
+
+	pthread_mutex_lock(&mutexTempUser);
+
+	t = usuarioPrimero;
 
 	while(t != NULL){
 		aux = t->next;
@@ -183,6 +197,7 @@ status liberaTodosTempUser(void){
 	usuarioPrimero = NULL;
 	usuarioUltimo = NULL;
 
+	pthread_mutex_unlock(&mutexTempUser);
 	return CON_OK;
 
 }
