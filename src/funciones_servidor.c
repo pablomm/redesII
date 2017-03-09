@@ -35,7 +35,6 @@ void *manejaMensaje(void* pdesc){
 	char *comando;
 	datos = (pDatosMensaje) pdesc;
 
-	printDebugUsers();
 	/* Informacion de debugeo */
 	next = datos->msg;
 	while(next != NULL) {
