@@ -2,3 +2,6 @@ obj/
 *.o
 servidor
 r2d2
+irc/
+sound/
+xchat2*
