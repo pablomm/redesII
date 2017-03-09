@@ -601,13 +601,24 @@ status join(char *comando, pDatosMensaje datos){
 }
 
 /**
+  @brief Muestra los usuarios del canal
+  @param
+  @param
+  @return 
+*/
+void listarUsuariosCanal(char** lista, ) {
+
+
+
+}
+/**
   @brief ejecuta el comando LIST
   @param comando: comando a ejecutar
   @param datos: estructura con la informacion del mensaje
   @return COM_OK si todo va bien. Error en otro caso
 */
 status list(char *comando, pDatosMensaje datos){
-	char *prefijo = NULL, *prefijo2 = NULL;
+	char *prefijo = NULL;
 	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
 	char *host = NULL, *IP = NULL, *away = NULL;
 	char * mensajeRespuesta = NULL;
@@ -615,8 +626,10 @@ status list(char *comando, pDatosMensaje datos){
 	long creationTS, actionTS;
 	int sock;	
 	char *canal=NULL, *objetivo=NULL;
-	char *lista = NULL;
+	char **lista = NULL;
 	long num=0;
+    char mascara=0;
+    int i = 0;
 
 	printf("LIST\n");
 	sock = datos->sckfd;	
@@ -655,7 +668,22 @@ status list(char *comando, pDatosMensaje datos){
 	}
 
 	printf("Despues del parse list\n");
-	/* Caso usuarios un canal concreto */
+
+   /* Obtenemos listas de canales */ 
+    IRCTADChan_GetList(&lista, &num, NULL);
+        
+    /* Caso usuarios un canal concreto */
+    if(canal!=NULL) {
+        for (i=0; i<num; i++) {
+            if(lista[i] == canal) {
+                listarUsuariosCanal(lista[i], canal);
+                break;
+            }
+        }
+    
+
+    }
+    
 	if(canal != NULL) {
 		printf("Dentro de canal\n");
 		switch(IRCTAD_ListNicksOnChannel(canal, &lista, &num)){
@@ -670,6 +698,7 @@ status list(char *comando, pDatosMensaje datos){
 
 			case IRCERR_NOVALIDCHANNEL:
 				IRCMsg_ErrNoSuchChannel(&mensajeRespuesta, SERVICIO, unknown_nick, canal);
+                printf("No valid channel\n");
 				enviar(datos->sckfd, mensajeRespuesta);
 				break;
 
@@ -677,9 +706,14 @@ status list(char *comando, pDatosMensaje datos){
 				if(lista != NULL){
 					IRCMsg_RplList(&mensajeRespuesta, SERVICIO, unknown_nick, canal, NULL, NULL);
 					enviar(datos->sckfd, mensajeRespuesta);
-					printf("Lista no null");
+                    if(mensajeRespuesta) printf("%s\n", mensajeRespuesta);
+					printf("Lista no null\n");
+                    break;
 				}
+                printf ("Lista null\n");
 				break;
+            default:
+                printf("Caso no reconocido\n");
 
 		}
 	}
