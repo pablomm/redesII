@@ -35,9 +35,9 @@ void *manejaMensaje(void* pdesc){
 	char *comando;
 	datos = (pDatosMensaje) pdesc;
 
+	printDebugUsers();
 	/* Informacion de debugeo */
 	next = datos->msg;
-
 	while(next != NULL) {
         next = IRC_UnPipelineCommands(next, &comando);
 
@@ -104,7 +104,6 @@ status nuevaConexion(int desc, struct sockaddr_in * address){
 	struct hostent * host;
 	char * ip_a = NULL;	
 
-
 	deleteTempUser(desc);
 
 	ip_a = inet_ntoa(address->sin_addr);
@@ -113,13 +112,7 @@ status nuevaConexion(int desc, struct sockaddr_in * address){
 	}
 
 	host = gethostbyaddr(address, sizeof(struct sockaddr_in), AF_INET);
-	if(host != NULL){
-		ret = newTempUser(desc,  ip_a, host->h_name);
-
-	} else {
-		ret = newTempUser(desc,  ip_a, "*");
-
-	}
+	ret = newTempUser(desc,  ip_a, host ? host->h_name : "*");
 
 	addFd(desc);
 
@@ -314,7 +307,7 @@ status nick(char* comando, pDatosMensaje datos){
 						prefijo2 = NULL;
 					}
 				}
-				IRCMsg_Nick(&mensajeRespuesta, prefijo2, nickk, NULL);
+				IRCMsg_Nick(&mensajeRespuesta, SERVICIO, NULL, nickk);
 				enviar(datos->sckfd, mensajeRespuesta);
 				break;
 		}
@@ -600,15 +593,20 @@ status join(char *comando, pDatosMensaje datos){
 
 }
 
-/**
-  @brief Muestra los usuarios del canal
-  @param
-  @param
-  @return 
-*/
-void listarUsuariosCanal(char** lista, ) {
 
+void listarUsuariosCanal(char *canal, int sckfd, char *prefijo, char *nicku) {
+	char *mensajeRespuesta = NULL;
+	char *topico = NULL;
+	char *mode=NULL;
 
+	mode = IRCTADChan_GetModeChar(canal);
+	IRCTAD_GetTopic(canal, &topico);
+	IRCMsg_RplList(&mensajeRespuesta, SERVICIO, nicku, canal, mode, topico?topico:"");
+	enviar(sckfd, mensajeRespuesta);
+	
+	if(mode) free(mode);
+	if(mensajeRespuesta) free(mensajeRespuesta);
+	if(topico) free(topico);
 
 }
 /**
@@ -623,15 +621,14 @@ status list(char *comando, pDatosMensaje datos){
 	char *host = NULL, *IP = NULL, *away = NULL;
 	char * mensajeRespuesta = NULL;
 	long unknown_id = 0, ret=0;
-	long creationTS, actionTS;
-	int sock;	
+	long creationTS=0, actionTS=0;
+	int sock=0;	
 	char *canal=NULL, *objetivo=NULL;
 	char **lista = NULL;
 	long num=0;
-    char mascara=0;
     int i = 0;
+	char *next=NULL;
 
-	printf("LIST\n");
 	sock = datos->sckfd;	
 
 	ret = IRCTADUser_GetData (&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
@@ -651,11 +648,10 @@ status list(char *comando, pDatosMensaje datos){
 		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
 		return COM_OK;
 	}
-	printf("antes del parse list\n");
+
 	switch(IRCParse_List(comando, &prefijo, &canal, &objetivo)){
 		case IRCERR_NOSTRING:
 		case IRCERR_ERRONEUSCOMMAND:
-			printf( "Error en IRCLIST");
 			IRCMsg_ErrNeedMoreParams (&mensajeRespuesta, SERVICIO ,unknown_nick, comando);
 			enviar(datos->sckfd, mensajeRespuesta);
 			if(mensajeRespuesta) free(mensajeRespuesta);
@@ -667,63 +663,40 @@ status list(char *comando, pDatosMensaje datos){
 			return COM_OK;
 	}
 
-	printf("Despues del parse list\n");
+	/* Caso listar todos los canales */
+	if(canal == NULL){
 
-   /* Obtenemos listas de canales */ 
-    IRCTADChan_GetList(&lista, &num, NULL);
-        
-    /* Caso usuarios un canal concreto */
-    if(canal!=NULL) {
-        for (i=0; i<num; i++) {
-            if(lista[i] == canal) {
-                listarUsuariosCanal(lista[i], canal);
-                break;
-            }
-        }
-    
-
-    }
-    
-	if(canal != NULL) {
-		printf("Dentro de canal\n");
-		switch(IRCTAD_ListNicksOnChannel(canal, &lista, &num)){
-			case IRCERR_NOENOUGHMEMORY:
-				syslog(LOG_ERR, "Error IRCTAD_JOIN NOENOUGHMEMORY");
-				if(prefijo) free(prefijo);
-				if(canal) free(canal);
-				if(objetivo) free(objetivo);
-				if(lista) free(lista);
-				liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
-				return COM_ERROR;
-
-			case IRCERR_NOVALIDCHANNEL:
-				IRCMsg_ErrNoSuchChannel(&mensajeRespuesta, SERVICIO, unknown_nick, canal);
-                printf("No valid channel\n");
-				enviar(datos->sckfd, mensajeRespuesta);
-				break;
-
-			case IRC_OK:
-				if(lista != NULL){
-					IRCMsg_RplList(&mensajeRespuesta, SERVICIO, unknown_nick, canal, NULL, NULL);
-					enviar(datos->sckfd, mensajeRespuesta);
-                    if(mensajeRespuesta) printf("%s\n", mensajeRespuesta);
-					printf("Lista no null\n");
-                    break;
-				}
-                printf ("Lista null\n");
-				break;
-            default:
-                printf("Caso no reconocido\n");
-
+    	IRCTADChan_GetList(&lista, &num, NULL);
+		for(i=0; i<num; i++){
+			listarUsuariosCanal(lista[i], datos->sckfd, SERVICIO, unknown_nick);
 		}
+    
+		/* Liberamos lista y mensaje respuesta */
+		if(lista){
+			for(i=0; i < num; i++){
+				if(lista[i]) free(lista[i]);
+			}
+			free(lista);
+		}
+
+	/* Caso una lista de canales */
+    } else {
+    
+		next = strtok(canal,",");
+		while(next != NULL){
+			listarUsuariosCanal(next, datos->sckfd, SERVICIO, unknown_nick);
+			next = strtok(NULL,",");
+		}
+		free(canal);
 	}
-/*
+
+		IRCMsg_RplListEnd(&mensajeRespuesta, SERVICIO,unknown_nick);
+		enviar(datos->sckfd, mensajeRespuesta);
+
 		if(mensajeRespuesta) free(mensajeRespuesta);
 		if(prefijo) free(prefijo);
-		if(canal) free(canal);
 		if(objetivo) free(objetivo);
-		if(lista) free(lista);
-		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);*/
+		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
 	return COM_OK;
 }
 
@@ -738,7 +711,7 @@ status comandoVacio(char* comando, pDatosMensaje datos){
 	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
 	char *host = NULL, *IP = NULL, *away = NULL;
 	long unknown_id = 0;
-	long creationTS, actionTS;
+	long creationTS=0, actionTS=0;
 	int sock;
 
 	if(!comando || !datos){
