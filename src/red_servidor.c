@@ -87,10 +87,11 @@ status aceptarConexion(int sockval,int *sckfd, struct sockaddr_in * address){
 */
 status enviar(int sockfd, char *mensaje){
 	if(sockfd < 0 || mensaje==NULL){
-		syslog(LOG_ERR,"Error en el envio de paquete");
+		syslog(LOG_INFO,"Error en el envio de paquete");
 		return RED_ERROR;
 	}
 
+	printf("Mensaje %s\n", mensaje);
 	send(sockfd, mensaje, strlen(mensaje), 0);
 
 	return RED_OK;

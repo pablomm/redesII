@@ -1304,6 +1304,8 @@ status kick(char *comando, pDatosMensaje datos){
 	long creationTS=0, actionTS=0;
 	int sock;
 	char *prefijo=NULL, *canal=NULL, *usuario=NULL,*comentario=NULL;
+	char *prefijo2=NULL;
+
 
 	if(!comando || !datos){
 		return COM_ERROR;
@@ -1345,30 +1347,50 @@ status kick(char *comando, pDatosMensaje datos){
 	}
 
 	//Falta comprobar permisos para echar al usuario
+	
+	IRC_ComplexUser(&prefijo2, unknown_nick, unknown_real, host, SERVICIO);
+	ret = IRCTAD_GetUserModeOnChannel(canal, unknown_nick);
 
-	/* Caso se puede kickear al usuario */
-	//printf("canal: %s usuario: %s\n");
-	switch(IRCTAD_KickUserFromChannel (canal, usuario)){
-		case IRCERR_NOVALIDUSER:
-			IRCMsg_ErrNotOnChannel (&mensajeRespuesta, SERVICIO, usuario, unknown_real, canal);
-			break;
-		case IRCERR_NOVALIDCHANNEL:
-			IRCMsg_ErrNoSuchChannel (&mensajeRespuesta, SERVICIO, usuario, canal);
-			break;
-		case IRCERR_UNDELETABLECHANNEL:
-			syslog(LOG_INFO, "No se ha podido borrar el canal %s", canal);
-		case IRC_OK:
-			IRCMsg_Kick (&mensajeRespuesta, SERVICIO, canal,usuario, comentario);
-			break;
-		default:
-			printf("Se escapa algo\n");
+	if(ret == IRCERR_NOVALIDCHANNEL) { /* Canal no valido */
+			IRCMsg_ErrNoSuchChannel(&mensajeRespuesta, SERVICIO, unknown_nick, canal);
+			enviar(datos->sckfd, mensajeRespuesta);
+
+	/* No privilegios suficientes */
+	} else if (!(ret&(IRCUMODE_CREATOR|IRCUMODE_OPERATOR|IRCUMODE_LOCALOPERATOR))){
+		IRCMsg_ErrChanOPrivsNeeded(&mensajeRespuesta, SERVICIO, unknown_nick, canal);
+		enviar(datos->sckfd, mensajeRespuesta);
+
+
+	} else { /* Caso se puede kickear al usuario */
+		switch(IRCTAD_KickUserFromChannel (canal, usuario)){
+			case IRCERR_NOVALIDUSER:
+				IRCMsg_ErrNotOnChannel (&mensajeRespuesta, SERVICIO, usuario, unknown_real, canal);
+				enviar(datos->sckfd, mensajeRespuesta);
+				break;
+			case IRCERR_NOVALIDCHANNEL:
+				IRCMsg_ErrNoSuchChannel (&mensajeRespuesta, SERVICIO, usuario, canal);
+				enviar(datos->sckfd, mensajeRespuesta);
+				break;
+			case IRCERR_UNDELETABLECHANNEL:
+				syslog(LOG_INFO, "No se ha podido borrar el canal %s", canal);
+				IRCMsg_Kick (&mensajeRespuesta, prefijo2, canal,usuario, comentario);
+				enviar(datos->sckfd, mensajeRespuesta);
+				enviarMensajePrivado(datos->sckfd, mensajeRespuesta, canal, unknown_nick);
+				break;
+
+			case IRC_OK:
+				IRCMsg_Kick (&mensajeRespuesta, prefijo2, canal,usuario, comentario);
+				enviarMensajeACanal(datos->sckfd, mensajeRespuesta, canal, usuario);
+				enviarMensajePrivado(datos->sckfd, mensajeRespuesta, usuario, usuario);
+
+				break;
+		}
 	}
 
-	
-	enviar(datos->sckfd, mensajeRespuesta);
 	if(mensajeRespuesta) free(mensajeRespuesta);
 	if(canal)free(canal);
 	if(prefijo)free(prefijo);
+	if(prefijo2)free(prefijo2);
 	if(usuario)free(usuario);
 	if(comentario) free(comentario);
 	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
