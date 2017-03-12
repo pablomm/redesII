@@ -35,6 +35,9 @@ void *manejaMensaje(void* pdesc){
 	char *comando;
 	datos = (pDatosMensaje) pdesc;
 
+
+	//IRCTAD_ShowAll();
+
 	/* Informacion de debugeo */
 	next = datos->msg;
 	while(next != NULL) {
@@ -124,13 +127,36 @@ status nuevaConexion(int desc, struct sockaddr_in * address){
   @return nada
 */
 status cerrarConexion(int socket){
+	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
+	char *host = NULL, *IP = NULL, *away = NULL;
+	long unknown_id = 0;
+	long creationTS=0, actionTS=0;
+	int sock =socket;
+	char **lista = NULL;
+	long num=0,i;
 
-	syslog(LOG_DEBUG,"Cerrada conexion del socket %d", socket);
-	deleteFd(socket);
+	IRCTADUser_GetData(&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
+
+	/* Abandona todos los canales */
+	/*
+	IRCTAD_ListChannelsOfUserArray(unknown_user, unknown_nick, &lista, &num);
+	for(i=0; i<num; i++){
+		IRCTAD_Part(lista[i], unknown_nick);
+	}*/
+
+	/* Eliminamos de la base de datos */
+	IRCTADUser_Delete(unknown_id, unknown_user, unknown_nick, unknown_real);
+	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+
+	if(lista){
+		for(i=0; i<num; i++){
+			if(lista[i]) free(lista[i]);
+		}
+		free(lista);
+	}
 	deleteTempUser(socket);
 	close(socket);
-	
-	//Borrar posible usuario de la base de datos
+	deleteFd(socket);
 
 	return COM_OK;
 }
@@ -171,6 +197,7 @@ status crea_comandos(void) {
 	comandos[KICK] = kick;
 	comandos[AWAY] = away;
 	comandos[MODE] = mode;
+	comandos[QUIT] = quit;
 
 	return COM_OK;   
 }
@@ -511,7 +538,6 @@ status join(char *comando, pDatosMensaje datos){
 			return COM_OK;
 	}
 
-	/* Generamos prefijo usuario */
 	
 	switch(IRCTAD_Join(canal, unknown_nick, NULL, clave)){
 
@@ -1505,7 +1531,6 @@ status mode(char *comando, pDatosMensaje datos){
 	long creationTS=0, actionTS=0;
 	int sock;
 	char *canal=NULL,*mode=NULL,*user=NULL,*prefijo=NULL;
-	char *modo2 = NULL;
 
 	if(!comando || !datos){
 		return COM_ERROR;
@@ -1551,23 +1576,24 @@ status mode(char *comando, pDatosMensaje datos){
 
 			if(ret == IRCERR_NOVALIDCHANNEL) { /* Canal no valido */
 				IRCMsg_ErrNoSuchChannel(&mensajeRespuesta, SERVICIO, unknown_nick, canal);
-				
+	
 
 			} else if (!(ret&(IRCUMODE_CREATOR|IRCUMODE_OPERATOR|IRCUMODE_LOCALOPERATOR))){
 				IRCMsg_ErrChanOPrivsNeeded(&mensajeRespuesta, SERVICIO, unknown_nick, canal);
 
-			} else {
+			} else { /* Caso comandos necesitan permisos */
+				if(!strcmp("\\+k", mode)){
+					IRCTADChan_SetPassword(canal,user);
+				}
+
 				IRCTAD_Mode(canal, unknown_nick, mode);
 				IRCMsg_Mode(&mensajeRespuesta, SERVICIO, canal, mode, unknown_nick);
-
 			}
-			enviar(datos->sckfd, mensajeRespuesta);
-
 	} else {
-		printf("Modos usuario no implementados\n");
-
+		IRCMsg_ErrChanOPrivsNeeded(&mensajeRespuesta, SERVICIO, unknown_nick, "*");
 	}
 
+	enviar(datos->sckfd, mensajeRespuesta);
 	if(mensajeRespuesta) free(mensajeRespuesta);
 	if(canal)free(canal);
 	if(prefijo)free(prefijo);
@@ -1577,6 +1603,38 @@ status mode(char *comando, pDatosMensaje datos){
 
 	return COM_OK;
 }
+
+/**
+  @brief ejecuta el comando QUIT
+  @param comando: comando a ejecutar
+  @param datos: estructura con la informacion del mensaje
+  @return COM_OK si todo va bien. Error en otro caso
+*/
+status quit(char *comando, pDatosMensaje datos){
+	char *mensajeRespuesta = NULL;
+	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
+	char *host = NULL, *IP = NULL, *away = NULL;
+	long unknown_id = 0;
+	long creationTS=0, actionTS=0;
+	int sock;
+
+	if(!comando || !datos){
+		return COM_ERROR;
+	}
+
+	sock = datos->sckfd;
+	IRCTADUser_GetData(&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
+	IRCMsg_Notice(&mensajeRespuesta, SERVICIO, unknown_nick, "Ta lue");
+	enviar(datos->sckfd, mensajeRespuesta);
+	if(mensajeRespuesta) free(mensajeRespuesta);
+
+	/* Se cierra la conexion */
+	IRCTADUser_Delete(unknown_id, unknown_user, unknown_nick, unknown_real);
+	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+
+	return COM_QUIT;
+}
+
 
 
 /**

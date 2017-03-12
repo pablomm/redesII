@@ -46,6 +46,7 @@ status topic(char* comando, pDatosMensaje datos);
 status kick(char* comando, pDatosMensaje datos);
 status away(char* comando, pDatosMensaje datos);
 status mode(char* comando, pDatosMensaje datos);
+status quit(char* comando, pDatosMensaje datos);
 
 
 status comandoVacio(char* comando, pDatosMensaje datos);
