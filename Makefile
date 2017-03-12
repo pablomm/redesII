@@ -11,6 +11,8 @@ RED='\033[0;31m'
 NC='\033[0m'
 GREEN='\033[0;32m'
 
+TAR_FILE= G-2302-01-P1.tar.gz
+
 # fuentes a considerar
 SOURCES = config.c red_servidor.c funciones_servidor.c conexion_temp.c servidor.c 
 
@@ -40,15 +42,22 @@ servidor : $(OBJECTS)
 run:
 	@./servidor
 
-# limpieza
-clean:	
-	@rm -f servidor
-	@rm -f */*~
-	@rm -f *~
-	@rm -f obj/*.o
-
 #para hacer el tar.gz
 comprimir: clean
-	@rm -f G-2301-02-P1.tar.gz
-	@tar -czvf ../comprimido.gz ../G-2301-02-P1/
-	@mv ../comprimido.gz G-2301-02-P1.tar.gz
+	@rm -fv G-2302-01-P1.tar.gz
+	@tar -zcvf ../$(TAR_FILE) ../G-2302-01-P1/
+	@mv ../$(TAR_FILE) $(TAR_FILE)
+
+doc: 
+	doxygen
+
+# limpieza
+.PHONY: clean
+clean:	
+	@rm -fv servidor
+	@rm -r -fv G-2302-01-P1
+	@rm -fv */*~
+	@rm -fv *~
+	@rm -fv obj/*.o
+	@rm -fv $(TAR_FILE)
+
