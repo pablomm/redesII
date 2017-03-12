@@ -165,6 +165,8 @@ status crea_comandos(void) {
 	comandos[WHOIS] = whois;
 	comandos[NAMES] = names;
 	comandos[PRIVMSG] = privmsg;
+	comandos[PING] = ping;
+	comandos[PART] = part;
 
 	return COM_OK;   
 }
@@ -808,11 +810,10 @@ void listarNamesCanal(char *canal, int sckfd, char *prefijo, char *nicku) {
 	char *lista;
 	long num=0;
 
-	IRCTAD_ListNicksOnChannel(canal, &lista, &num);
-
-	IRCMsg_RplNamReply (&mensajeRespuesta, SERVICIO, nicku, "=", canal, lista);
-	enviar(sckfd, mensajeRespuesta);
-	
+	if(IRCTAD_ListNicksOnChannel(canal, &lista, &num) == IRC_OK){
+		IRCMsg_RplNamReply (&mensajeRespuesta, SERVICIO, nicku, "=", canal, lista);
+		enviar(sckfd, mensajeRespuesta);
+	}
 	if(mensajeRespuesta) free(mensajeRespuesta);
 	if(lista) free(lista);
 
@@ -1054,6 +1055,156 @@ status privmsg(char *comando, pDatosMensaje datos){
 	if(msg) free(msg);
 	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
 
+	return COM_OK;
+}
+
+/**
+  @brief ejecuta el comando PING
+  @param comando: comando a ejecutar
+  @param datos: estructura con la informacion del mensaje
+  @return COM_OK si todo va bien. Error en otro caso
+*/
+status ping(char *comando, pDatosMensaje datos){
+	char *mensajeRespuesta = NULL;
+	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
+	char *host = NULL, *IP = NULL, *away = NULL;
+	long unknown_id = 0, ret=0;
+	long creationTS=0, actionTS=0;
+	int sock;
+	char *prefijo=NULL, *server=NULL, *server2=NULL,*msg=NULL;
+
+	if(!comando || !datos){
+		return COM_ERROR;
+	}
+
+	sock = datos->sckfd;
+
+	/* Obtenemos identificador del usuario */
+	IRCTADUser_GetData(&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
+
+	/* Caso no hay suficiente memoria */
+	if(ret == IRCERR_NOENOUGHMEMORY) {
+		syslog(LOG_ERR, "Error WHOIS NOENOUGHMEMORY");
+		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+		return COM_ERROR;
+	}
+
+	/* ERRNOTREGISTERD */
+	if(unknown_id == 0){
+		IRCMsg_ErrNotRegisterd(&mensajeRespuesta, SERVICIO, "*");
+		enviar(datos->sckfd, mensajeRespuesta);
+		if(mensajeRespuesta) free(mensajeRespuesta);
+		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+		return COM_OK;
+	}
+
+	/* Parseamos el comando */
+	switch(IRCParse_Ping (comando,&prefijo, &server, &server2, &msg)){
+		case IRCERR_NOSTRING:
+		case IRCERR_ERRONEUSCOMMAND:
+			IRCMsg_ErrNoOrigin(&mensajeRespuesta, SERVICIO, unknown_nick, "No origin specified");
+			break;
+		default:	
+			IRCMsg_Pong (&mensajeRespuesta, SERVICIO, SERVICIO, msg, server);
+		break;
+	}
+
+	enviar(datos->sckfd, mensajeRespuesta);
+	if(mensajeRespuesta) free(mensajeRespuesta);
+	if(prefijo) free(prefijo);
+	if(server) free(server);
+	if(server2) free(server2);
+	if(msg) free(msg);
+	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+
+	return COM_OK;
+}
+
+
+void partirCanal(int sckfd, char * canal, char *nick, char *real, char *msg){
+
+	char *mensaje=NULL;
+
+	switch(IRCTAD_Part (canal, nick)){
+		case IRCERR_NOVALIDUSER:
+		case IRCERR_NOVALIDCHANNEL:
+			IRCMsg_ErrNotOnChannel (&mensaje, SERVICIO, nick, real, canal);
+			break;
+		case IRCERR_UNDELETABLECHANNEL:
+			syslog(LOG_INFO, "No se ha podido borrar el canal %s", canal);
+		case IRC_OK:
+			IRCMsg_Part (&mensaje, SERVICIO, canal, msg);
+			break;
+	}
+
+	enviar(sckfd, mensaje);
+	if(mensaje) free(mensaje);
+
+}
+
+/**
+  @brief ejecuta el comando PART
+  @param comando: comando a ejecutar
+  @param datos: estructura con la informacion del mensaje
+  @return COM_OK si todo va bien. Error en otro caso
+*/
+status part(char *comando, pDatosMensaje datos){
+	char *mensajeRespuesta = NULL;
+	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
+	char *host = NULL, *IP = NULL, *away = NULL;
+	long unknown_id = 0, ret=0;
+	long creationTS=0, actionTS=0;
+	int sock;
+	char *prefijo=NULL, *canal=NULL, *mensaje=NULL, *next=NULL;
+
+
+	if(!comando || !datos){
+		return COM_ERROR;
+	}
+
+	sock = datos->sckfd;
+
+	/* Obtenemos identificador del usuario */
+	IRCTADUser_GetData(&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
+
+	/* Caso no hay suficiente memoria */
+	if(ret == IRCERR_NOENOUGHMEMORY) {
+		syslog(LOG_ERR, "Error PART NOENOUGHMEMORY");
+		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+		return COM_ERROR;
+	}
+
+	/* ERRNOTREGISTERD */
+	if(unknown_id == 0){
+		IRCMsg_ErrNotRegisterd(&mensajeRespuesta, SERVICIO, "*");
+		enviar(datos->sckfd, mensajeRespuesta);
+		if(mensajeRespuesta) free(mensajeRespuesta);
+		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+		return COM_OK;
+	}
+
+	switch(IRCParse_Part(comando, &prefijo, &canal, &mensaje)){
+		case IRCERR_NOSTRING:
+		case IRCERR_ERRONEUSCOMMAND:
+			IRCMsg_ErrNeedMoreParams(&mensajeRespuesta, SERVICIO ,unknown_nick, comando);
+			enviar(datos->sckfd, mensajeRespuesta);
+			if(mensajeRespuesta) free(mensajeRespuesta);
+			break;
+
+		case IRC_OK:
+		default:			
+			next = strtok(canal,",");
+			while(next != NULL){
+				partirCanal(datos->sckfd, next, unknown_nick, unknown_real, mensaje);
+				next = strtok(NULL,",");
+			}
+			break;
+	}
+
+	if(prefijo) free(prefijo);
+	if(canal) free(canal);
+	if(mensaje) free(mensaje);
+	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
 	return COM_OK;
 }
 
