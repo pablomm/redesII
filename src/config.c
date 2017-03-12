@@ -299,7 +299,9 @@ status lanzarServidor(unsigned int puerto){
 
 					datos->sckfd = i;
 					datos->len = tam;
-					datos->msg = (char *) calloc(tam, sizeof(char));
+					/* +1 para evitar que funciones de eloy no hagan accesos invalidos si 
+						acaba en \n unicamente */
+					datos->msg = (char *) calloc(tam+1, sizeof(char));
 					memcpy(datos->msg, buffer, tam);
 					deleteFd(i);
 					memset((void*)buffer, 0, tam);
