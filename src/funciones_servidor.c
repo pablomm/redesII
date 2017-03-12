@@ -168,6 +168,7 @@ status crea_comandos(void) {
 	comandos[PING] = ping;
 	comandos[PART] = part;
 	comandos[TOPIC] = topic;
+	comandos[KICK] = kick;
 
 	return COM_OK;   
 }
@@ -1128,8 +1129,10 @@ void partirCanal(int sckfd, char * canal, char *nick, char *real, char *msg){
 
 	switch(IRCTAD_Part (canal, nick)){
 		case IRCERR_NOVALIDUSER:
-		case IRCERR_NOVALIDCHANNEL:
 			IRCMsg_ErrNotOnChannel (&mensaje, SERVICIO, nick, real, canal);
+			break;
+		case IRCERR_NOVALIDCHANNEL:
+			IRCMsg_ErrNoSuchChannel (&mensaje, SERVICIO, nick, canal);
 			break;
 		case IRCERR_UNDELETABLECHANNEL:
 			syslog(LOG_INFO, "No se ha podido borrar el canal %s", canal);
@@ -1284,6 +1287,92 @@ status topic(char *comando, pDatosMensaje datos){
 	if(prefijo)free(prefijo);
 	if(topico)free(topico);
 	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+	return COM_OK;
+}
+
+/**
+  @brief ejecuta el comando KICK
+  @param comando: comando a ejecutar
+  @param datos: estructura con la informacion del mensaje
+  @return COM_OK si todo va bien. Error en otro caso
+*/
+status kick(char *comando, pDatosMensaje datos){
+	char *mensajeRespuesta = NULL;
+	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
+	char *host = NULL, *IP = NULL, *away = NULL;
+	long unknown_id = 0, ret=0;
+	long creationTS=0, actionTS=0;
+	int sock;
+	char *prefijo=NULL, *canal=NULL, *usuario=NULL,*comentario=NULL;
+
+	if(!comando || !datos){
+		return COM_ERROR;
+	}
+
+	sock = datos->sckfd;
+
+	/* Obtenemos identificador del usuario */
+	IRCTADUser_GetData(&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
+
+	/* Caso no hay suficiente memoria */
+	if(ret == IRCERR_NOENOUGHMEMORY) {
+		syslog(LOG_ERR, "Error KICK NOENOUGHMEMORY");
+		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+		return COM_ERROR;
+	}
+
+	/* ERRNOTREGISTERD */
+	if(unknown_id == 0){
+		IRCMsg_ErrNotRegisterd(&mensajeRespuesta, SERVICIO, "*");
+		enviar(datos->sckfd, mensajeRespuesta);
+		if(mensajeRespuesta) free(mensajeRespuesta);
+		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+		return COM_OK;
+	}
+
+	switch(IRCParse_Kick (comando, &prefijo, &canal, &usuario, &comentario)){
+		case IRCERR_NOSTRING:
+		case IRCERR_ERRONEUSCOMMAND:
+			IRCMsg_ErrNeedMoreParams(&mensajeRespuesta, SERVICIO ,unknown_nick, comando);
+			enviar(datos->sckfd, mensajeRespuesta);
+			if(mensajeRespuesta) free(mensajeRespuesta);
+			if(canal)free(canal);
+			if(prefijo)free(prefijo);
+			if(usuario)free(usuario);
+			if(comentario) free(comentario);
+			liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+			return COM_OK;
+	}
+
+	//Falta comprobar permisos para echar al usuario
+
+	/* Caso se puede kickear al usuario */
+	//printf("canal: %s usuario: %s\n");
+	switch(IRCTAD_KickUserFromChannel (canal, usuario)){
+		case IRCERR_NOVALIDUSER:
+			IRCMsg_ErrNotOnChannel (&mensajeRespuesta, SERVICIO, usuario, unknown_real, canal);
+			break;
+		case IRCERR_NOVALIDCHANNEL:
+			IRCMsg_ErrNoSuchChannel (&mensajeRespuesta, SERVICIO, usuario, canal);
+			break;
+		case IRCERR_UNDELETABLECHANNEL:
+			syslog(LOG_INFO, "No se ha podido borrar el canal %s", canal);
+		case IRC_OK:
+			IRCMsg_Kick (&mensajeRespuesta, SERVICIO, canal,usuario, comentario);
+			break;
+		default:
+			printf("Se escapa algo\n");
+	}
+
+	
+	enviar(datos->sckfd, mensajeRespuesta);
+	if(mensajeRespuesta) free(mensajeRespuesta);
+	if(canal)free(canal);
+	if(prefijo)free(prefijo);
+	if(usuario)free(usuario);
+	if(comentario) free(comentario);
+	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+
 	return COM_OK;
 }
 
