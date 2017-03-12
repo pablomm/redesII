@@ -158,10 +158,13 @@ status crea_comandos(void) {
         comandos[i] = comandoVacio; 
 	}
 
-    comandos[NICK]=nick;
-    comandos[USER]=user; 
-	comandos[JOIN]=join;
-	comandos[LIST]=list;
+    comandos[NICK] = nick;
+    comandos[USER] = user; 
+	comandos[JOIN] = join;
+	comandos[LIST] = list;
+	comandos[WHOIS] = whois;
+	comandos[NAMES] = names;
+	comandos[PRIVMSG] = privmsg;
 
 	return COM_OK;   
 }
@@ -196,7 +199,7 @@ status liberarUserData(char *user, char *nick, char *real, char *host, char *IP,
 */
 status nick(char* comando, pDatosMensaje datos){
 	
-	char *prefijo = NULL, *prefijo2 = NULL, *nickk = NULL, *msg = NULL;
+	char *prefijo = NULL, *nickk = NULL, *msg = NULL;
 	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
 	char *host = NULL, *IP = NULL, *away = NULL;
 	char * mensajeRespuesta = NULL;
@@ -299,13 +302,6 @@ status nick(char* comando, pDatosMensaje datos){
 
 			case IRC_OK:
 
-				/* Creamos prefijo para mensajes respuesta */
-				if(IRC_ComplexUser1459(&prefijo2, nickk, unknown_user, host, NULL) != IRC_OK){
-					if(prefijo2){
-						free(prefijo2);
-						prefijo2 = NULL;
-					}
-				}
 				IRCMsg_Nick(&mensajeRespuesta, SERVICIO, NULL, nickk);
 				enviar(datos->sckfd, mensajeRespuesta);
 				break;
@@ -315,7 +311,6 @@ status nick(char* comando, pDatosMensaje datos){
 	/* Liberamos estructuras */
 	if(mensajeRespuesta) free(mensajeRespuesta);
 	if(prefijo) free(prefijo);
-	if(prefijo2) free(prefijo2);
 	if(nickk) free(nickk);
 	if(msg) free(msg);
 	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
@@ -332,7 +327,7 @@ status nick(char* comando, pDatosMensaje datos){
   @return COM_OK si todo va bien. Error en otro caso
 */
 status user(char* comando, pDatosMensaje datos){
-	char *prefijo = NULL, *prefijo2 = NULL, *user = NULL;
+	char *prefijo = NULL, *user = NULL;
 	char *modehost = NULL, *server = NULL, *realname = NULL;
 	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
 	char *host = NULL, *IP = NULL, *away = NULL;
@@ -437,15 +432,8 @@ status user(char* comando, pDatosMensaje datos){
 			break;
 
 		case IRC_OK:
-			/* Creamos prefijo para mensajes respuesta */
-			if(IRC_ComplexUser1459(&prefijo2,  usuarioTemporal->nick, user, usuarioTemporal->host, NULL) != IRC_OK){
-				if(prefijo2){
-					free(prefijo2);
-					prefijo2 = NULL;
-				}
-			}
 
-			IRCMsg_RplWelcome(&mensajeRespuesta, prefijo2, usuarioTemporal->nick, realname, user, SERVICIO);
+			IRCMsg_RplWelcome(&mensajeRespuesta, SERVICIO, usuarioTemporal->nick, realname, user, SERVICIO);
 			enviar(datos->sckfd, mensajeRespuesta);
 			usuarioTemporal = NULL;
 			deleteTempUser(datos->sckfd);
@@ -471,7 +459,7 @@ status user(char* comando, pDatosMensaje datos){
   @return COM_OK si todo va bien. Error en otro caso
 */
 status join(char *comando, pDatosMensaje datos){
-	char *prefijo = NULL, *prefijo2 = NULL;
+	char *prefijo = NULL;
 	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
 	char *host = NULL, *IP = NULL, *away = NULL;
 	char * mensajeRespuesta = NULL;
@@ -558,16 +546,9 @@ status join(char *comando, pDatosMensaje datos){
 			break;
 
 		case IRC_OK:
-			/* Creamos prefijo para mensajes respuesta */
-			if(IRC_ComplexUser1459(&prefijo2,  unknown_nick, unknown_user, host, NULL) != IRC_OK){
-				if(prefijo2){
-					free(prefijo2);
-					prefijo2 = NULL;
-				}
-			}
 
 			/* Primero respondemos JOIN */
-			IRCMsg_Join(&mensajeRespuesta,prefijo2, NULL, NULL, canal);
+			IRCMsg_Join(&mensajeRespuesta,SERVICIO, NULL, NULL, canal);
 			enviar(datos->sckfd, mensajeRespuesta);
 			if(mensajeRespuesta){ free(mensajeRespuesta); mensajeRespuesta=NULL; }
 
@@ -583,7 +564,6 @@ status join(char *comando, pDatosMensaje datos){
 
 	enviar(datos->sckfd, mensajeRespuesta);
 	if(prefijo) free(prefijo);
-	if(prefijo2) free(prefijo2);
 	if(canal) free(canal);
 	if(msg) free(msg);	
 	if(clave) free(clave);
@@ -593,7 +573,7 @@ status join(char *comando, pDatosMensaje datos){
 }
 
 
-void listarUsuariosCanal(char *canal, int sckfd, char *prefijo, char *nicku) {
+void listarCanalesUsuario(char *canal, int sckfd, char *prefijo, char *nicku) {
 	char *mensajeRespuesta = NULL;
 	char *topico = NULL;
 	char *mode=NULL;
@@ -667,7 +647,7 @@ status list(char *comando, pDatosMensaje datos){
 
     	IRCTADChan_GetList(&lista, &num, NULL);
 		for(i=0; i<num; i++){
-			listarUsuariosCanal(lista[i], datos->sckfd, SERVICIO, unknown_nick);
+			listarCanalesUsuario(lista[i], datos->sckfd, SERVICIO, unknown_nick);
 		}
     
 		/* Liberamos lista y mensaje respuesta */
@@ -683,7 +663,7 @@ status list(char *comando, pDatosMensaje datos){
     
 		next = strtok(canal,",");
 		while(next != NULL){
-			listarUsuariosCanal(next, datos->sckfd, SERVICIO, unknown_nick);
+			listarCanalesUsuario(next, datos->sckfd, SERVICIO, unknown_nick);
 			next = strtok(NULL,",");
 		}
 		free(canal);
@@ -696,6 +676,384 @@ status list(char *comando, pDatosMensaje datos){
 		if(prefijo) free(prefijo);
 		if(objetivo) free(objetivo);
 		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+	return COM_OK;
+}
+
+
+void whoischannels(int sckfd, char *nick1, char *nick2, char* user, char *target){
+	char *mensajeRespuesta=NULL;
+	char *lista = NULL;
+	long num=0;
+
+	IRCTAD_ListChannelsOfUser (user, nick2, &lista, &num);
+	IRCMsg_RplWhoIsChannels (&mensajeRespuesta, SERVICIO, nick1, nick2, lista);
+	enviar(sckfd, mensajeRespuesta);
+
+	if(mensajeRespuesta) free(mensajeRespuesta);
+	if(lista) free(lista);
+}
+
+
+
+/**
+  @brief ejecuta el comando WHOIS
+  @param comando: comando a ejecutar
+  @param datos: estructura con la informacion del mensaje
+  @return COM_OK si todo va bien. Error en otro caso
+*/
+status whois(char *comando, pDatosMensaje datos){
+	char *mensajeRespuesta = NULL;
+	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
+	char *host = NULL, *IP = NULL, *away = NULL;
+	long unknown_id = 0, ret=0;
+	long creationTS=0, actionTS=0;
+	int sock;
+	char *prefijo=NULL,*target=NULL,*mask=NULL;
+	char *next;
+	int sock1;
+	long id1;
+	char *user1,*real1,*host1,*ip1,*away1;
+
+	if(!comando || !datos){
+		return COM_ERROR;
+	}
+
+	sock = datos->sckfd;
+
+	/* Obtenemos identificador del usuario */
+	IRCTADUser_GetData(&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
+
+	/* Caso no hay suficiente memoria */
+	if(ret == IRCERR_NOENOUGHMEMORY) {
+		syslog(LOG_ERR, "Error WHOIS NOENOUGHMEMORY");
+		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+		return COM_ERROR;
+	}
+
+	/* ERRNOTREGISTERD */
+	if(unknown_id == 0){
+		IRCMsg_ErrNotRegisterd(&mensajeRespuesta, SERVICIO, "*");
+		enviar(datos->sckfd, mensajeRespuesta);
+		if(mensajeRespuesta) free(mensajeRespuesta);
+		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+		return COM_OK;
+	}
+
+	/* Parseamos el comando */
+	switch(IRCParse_Whois (comando, &prefijo, &target, &mask)){
+		case IRCERR_NOSTRING:
+		case IRCERR_ERRONEUSCOMMAND:
+			IRCMsg_ErrNoNickNameGiven(&mensajeRespuesta, SERVICIO, unknown_nick);
+			enviar(datos->sckfd, mensajeRespuesta);
+			if(mensajeRespuesta) free(mensajeRespuesta);
+			if(prefijo) free(prefijo);
+			if(target) free(target);
+			if(mask) free(mask);
+			liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+			return COM_OK;
+			break;
+	}
+
+	next = strtok(mask,",");
+	while(next != NULL){
+
+		id1 =0;
+		user1 = NULL;
+		real1 = NULL;
+		host1 = NULL;
+		ip1 = NULL;
+		sock1 = 0;
+		creationTS = 0;
+		actionTS = 0;
+		away1 = NULL;
+
+		/* Sacamos informacion del usuario especifico */
+		IRCTADUser_GetData(&id1, &user1, &next, &real1, &host1, &ip1, &sock1, &creationTS, &actionTS, &away1);
+		if(id1 == 0){
+			IRCMsg_ErrNoSuchNick (&mensajeRespuesta, SERVICIO, unknown_nick, next);
+			enviar(datos->sckfd, mensajeRespuesta);
+			if(mensajeRespuesta) { free(mensajeRespuesta); mensajeRespuesta=NULL;}
+		} else {
+			/* Envio whois channels */
+			whoischannels(datos->sckfd, unknown_nick, next, user1, target);
+			/* Who is user */
+			IRCMsg_RplWhoIsUser(&mensajeRespuesta, SERVICIO, unknown_nick, next, user1, host1, real1);
+			enviar(datos->sckfd, mensajeRespuesta);
+			if(mensajeRespuesta) {free(mensajeRespuesta); mensajeRespuesta=NULL; }
+			/* Who is server */
+			IRCMsg_RplWhoIsServer (&mensajeRespuesta, SERVICIO, unknown_nick, next, SERVICIO, "Servidor IRC Redes II");
+			enviar(datos->sckfd, mensajeRespuesta);
+			if(mensajeRespuesta) {free(mensajeRespuesta); mensajeRespuesta=NULL; }
+		}
+	
+		IRCMsg_RplEndOfWhoIs (&mensajeRespuesta, SERVICIO, unknown_nick, next);
+		enviar(datos->sckfd, mensajeRespuesta);
+		if(mensajeRespuesta) {free(mensajeRespuesta); mensajeRespuesta=NULL; }
+		liberarUserData(user1, NULL, real1, host1, ip1, away1);
+
+		next = strtok(NULL, ",");
+	}
+	
+	if(prefijo) free(prefijo);
+	if(target) free(target);
+	if(mask) free(mask);
+	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+
+	return COM_OK;
+}
+
+
+void listarNamesCanal(char *canal, int sckfd, char *prefijo, char *nicku) {
+	char *mensajeRespuesta = NULL;
+	char *lista;
+	long num=0;
+
+	IRCTAD_ListNicksOnChannel(canal, &lista, &num);
+
+	IRCMsg_RplNamReply (&mensajeRespuesta, SERVICIO, nicku, "=", canal, lista);
+	enviar(sckfd, mensajeRespuesta);
+	
+	if(mensajeRespuesta) free(mensajeRespuesta);
+	if(lista) free(lista);
+
+}
+
+/**
+  @brief ejecuta el comando NAMES
+  @param comando: comando a ejecutar
+  @param datos: estructura con la informacion del mensaje
+  @return COM_OK si todo va bien. Error en otro caso
+*/
+status names(char *comando, pDatosMensaje datos){
+	char *mensajeRespuesta = NULL;
+	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
+	char *host = NULL, *IP = NULL, *away = NULL;
+	long unknown_id = 0, ret=0;
+	long creationTS=0, actionTS=0;
+	int sock;
+	char *canal=NULL, *prefijo=NULL, *objetivo=NULL;
+	char **lista =NULL;
+	int i;
+	char *next = NULL;
+	long num;
+
+	if(!comando || !datos){
+		return COM_ERROR;
+	}
+
+	sock = datos->sckfd;
+
+	/* Obtenemos identificador del usuario */
+	IRCTADUser_GetData(&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
+
+	/* Caso no hay suficiente memoria */
+	if(ret == IRCERR_NOENOUGHMEMORY) {
+		syslog(LOG_ERR, "Error NAMES NOENOUGHMEMORY");
+		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+		return COM_ERROR;
+	}
+
+	/* ERRNOTREGISTERD */
+	if(unknown_id == 0){
+		IRCMsg_ErrNotRegisterd(&mensajeRespuesta, SERVICIO, "*");
+		enviar(datos->sckfd, mensajeRespuesta);
+		if(mensajeRespuesta) free(mensajeRespuesta);
+		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+		return COM_OK;
+	}
+
+
+	switch(IRCParse_Names (comando, &prefijo, &canal, &objetivo)){
+		case IRCERR_NOSTRING:
+		case IRCERR_ERRONEUSCOMMAND:
+			IRCMsg_ErrNeedMoreParams (&mensajeRespuesta, SERVICIO ,unknown_nick, comando);
+			enviar(datos->sckfd, mensajeRespuesta);
+			if(mensajeRespuesta) free(mensajeRespuesta);
+			if(prefijo) free(prefijo);
+			if(canal) free(canal);
+			if(objetivo) free(objetivo);	
+			liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+
+			return COM_OK;
+	}
+
+	/* Caso listar todos los canales */
+	if(canal == NULL){
+
+    	IRCTADChan_GetList(&lista, &num, NULL);
+		for(i=0; i<num; i++){
+			listarNamesCanal(lista[i], datos->sckfd, SERVICIO, unknown_nick);
+		}
+    
+		/* Liberamos lista y mensaje respuesta */
+		if(lista){
+			for(i=0; i < num; i++){
+				if(lista[i]) free(lista[i]);
+			}
+			free(lista);
+		}
+
+		// Habria que mandar lista usuarios privados
+
+		IRCMsg_RplEndOfNames (&mensajeRespuesta, SERVICIO, unknown_nick, "*");
+		enviar(datos->sckfd, mensajeRespuesta);
+		if(mensajeRespuesta) { free(mensajeRespuesta); mensajeRespuesta=NULL;}
+
+	/* Caso una lista de canales */
+    } else {
+    
+		next = strtok(canal,",");
+		while(next != NULL){
+			listarNamesCanal(next, datos->sckfd, SERVICIO, unknown_nick);
+			IRCMsg_RplEndOfNames (&mensajeRespuesta, SERVICIO, unknown_nick, next);
+			enviar(datos->sckfd, mensajeRespuesta);
+			if(mensajeRespuesta) { free(mensajeRespuesta); mensajeRespuesta=NULL;}
+
+			next = strtok(NULL,",");
+		}
+		free(canal);
+	}
+
+		if(mensajeRespuesta) free(mensajeRespuesta);
+		if(prefijo) free(prefijo);
+		if(objetivo) free(objetivo);
+		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+	return COM_OK;
+}
+
+
+void enviarMensajePrivado(int sckfd, char *mensaje, char *nick, char * nickorigin){
+	char *mensajeError = NULL;
+	char *unknown_user = NULL, *unknown_real = NULL;
+	char *host = NULL, *IP = NULL, *away = NULL;
+	long unknown_id = 0;
+	long creationTS=0, actionTS=0;
+	int sock = 0;
+
+	/* Obtenemos datos usuario target con el nick */
+	IRCTADUser_GetData(&unknown_id, &unknown_user, &nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
+	if(unknown_id == 0){
+		IRCMsg_ErrNoSuchNick (&mensajeError, SERVICIO, nickorigin, nick);
+		enviar(sckfd, mensajeError);	
+		if(mensajeError) free(mensajeError);
+	} else {
+		enviar(sock, mensaje);
+	}
+	liberarUserData(unknown_user, NULL, unknown_real, host, IP, away);
+}
+
+
+void enviarMensajeACanal(int sckfd, char *mensaje, char *canal, char * nickorigin){
+	char *mensajeError = NULL;
+	char **lista = NULL;
+	long num = 0;
+	long i;
+
+	// Habria que comprobar si tiene permisos
+
+	/* Obtenemos datos usuario target con el nick */
+	if(IRCTAD_ListNicksOnChannelArray(canal, &lista, &num) != IRC_OK){
+
+		IRCMsg_ErrNoSuchNick (&mensajeError, SERVICIO, nickorigin, canal);
+		enviar(sckfd, mensajeError);
+		if(mensajeError) free(mensajeError);
+		return;	
+	}
+
+	/* Enviamos mensajes a usuarios del canal */	
+	for(i=0; i<num; i++) {
+		enviarMensajePrivado(sckfd, mensaje, lista[i], nickorigin);
+	}
+
+	/* Liberamos la lista de usuarios */
+	if(lista){
+		for(i=0; i<num; i++){
+			if(lista[i]) free(lista[i]);
+		}
+		free(lista);
+	}
+}
+
+/**
+  @brief ejecuta el comando PRIVMSG
+  @param comando: comando a ejecutar
+  @param datos: estructura con la informacion del mensaje
+  @return COM_OK si todo va bien. Error en otro caso
+*/
+status privmsg(char *comando, pDatosMensaje datos){
+	char *mensajeRespuesta = NULL;
+	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
+	char *host = NULL, *IP = NULL, *away = NULL;
+	long unknown_id = 0, ret=0;
+	long creationTS=0, actionTS=0;
+	int sock;
+	char *msgtarget=NULL, *msg=NULL,*prefijo=NULL, *target=NULL;
+	char *mensaje=NULL, *prefijo2=NULL;
+
+	if(!comando || !datos){
+		return COM_ERROR;
+	}
+
+	sock = datos->sckfd;
+
+	/* Obtenemos identificador del usuario */
+	IRCTADUser_GetData(&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
+
+	/* Caso no hay suficiente memoria */
+	if(ret == IRCERR_NOENOUGHMEMORY) {
+		syslog(LOG_ERR, "Error WHOIS NOPRIV");
+		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+		return COM_ERROR;
+	}
+
+	/* ERRNOTREGISTERD */
+	if(unknown_id == 0){
+		IRCMsg_ErrNotRegisterd(&mensajeRespuesta, SERVICIO, "*");
+		enviar(datos->sckfd, mensajeRespuesta);
+		if(mensajeRespuesta) free(mensajeRespuesta);
+		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+		return COM_OK;
+	}
+
+	switch(IRCParse_Privmsg (comando, &prefijo, &msgtarget, &msg)){
+		case IRCERR_NOSTRING:
+		case IRCERR_ERRONEUSCOMMAND:
+			IRCMsg_ErrNoTextToSend(&mensajeRespuesta, SERVICIO ,unknown_nick);
+			enviar(datos->sckfd, mensajeRespuesta);
+			if(mensajeRespuesta) free(mensajeRespuesta);
+			if(prefijo) free(prefijo);
+			if(msgtarget) free(msgtarget);
+			if(msg) free(msg);
+			liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+
+			return COM_OK;
+	}
+
+
+	IRC_ComplexUser(&prefijo2, unknown_nick, unknown_real, host, SERVICIO);
+		
+	target = strtok(msgtarget,",");
+	while(target != NULL){
+
+		/* Creamos el mensaje */
+		IRCMsg_Privmsg (&mensaje, prefijo2, target, msg);
+
+		/* Caso mensaje a canal */
+		if(*target == '#' || *target == '&'){
+			enviarMensajeACanal(datos->sckfd, mensaje, target,unknown_nick );
+		} else { /* Caso mensaje a usuario */
+			enviarMensajePrivado(datos->sckfd, mensaje, target,unknown_nick );
+		}
+
+		target = strtok(NULL,",");
+		if(mensaje) { free(mensaje); mensaje=NULL;}
+	}
+	if(prefijo) free(prefijo);
+	if(prefijo2) free(prefijo2);
+	if(msgtarget) free(msgtarget);
+	if(msg) free(msg);
+	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+
 	return COM_OK;
 }
 

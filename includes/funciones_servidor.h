@@ -37,6 +37,9 @@ status nick(char* comando, pDatosMensaje datos);
 status user(char* comando, pDatosMensaje datos);
 status join(char* comando, pDatosMensaje datos);
 status list(char* comando, pDatosMensaje datos);
+status whois(char* comando, pDatosMensaje datos);
+status names(char* comando, pDatosMensaje datos);
+status privmsg(char* comando, pDatosMensaje datos);
 status comandoVacio(char* comando, pDatosMensaje datos);
 
 
