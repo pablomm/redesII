@@ -373,7 +373,7 @@ status user(char* comando, pDatosMensaje datos){
 	if(!datos || !comando){
 		return COM_ERROR;
 	}
-
+	sock = datos->sckfd;
 	ret = IRCTADUser_GetData (&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
 
 	/* Caso no hay suficiente memoria */
