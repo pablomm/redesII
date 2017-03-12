@@ -91,7 +91,6 @@ status enviar(int sockfd, char *mensaje){
 		return RED_ERROR;
 	}
 
-	printf("Mensaje %s\n", mensaje);
 	send(sockfd, mensaje, strlen(mensaje), 0);
 
 	return RED_OK;

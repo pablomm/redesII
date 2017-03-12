@@ -44,6 +44,8 @@ status ping(char* comando, pDatosMensaje datos);
 status part(char* comando, pDatosMensaje datos);
 status topic(char* comando, pDatosMensaje datos);
 status kick(char* comando, pDatosMensaje datos);
+status away(char* comando, pDatosMensaje datos);
+status mode(char* comando, pDatosMensaje datos);
 
 
 status comandoVacio(char* comando, pDatosMensaje datos);
