@@ -6,8 +6,8 @@ CC = gcc
 CFLAGS = -Wall -g -pedantic
 LDLIBS = -lpthread -lircinterface -lircredes -lirctad -lsoundredes 
 
-
-RED='\033[0;31m'
+MAGENTA='\033[35m'
+BLUE='\033[34m'
 NC='\033[0m'
 GREEN='\033[0;32m'
 
@@ -48,9 +48,10 @@ run:
 
 #para hacer el tar.gz
 comprimir: clean
-	@rm -fv G-2302-01-P1.tar.gz
-	@tar -zcvf ../$(TAR_FILE) ../G-2302-01-P1/
+	@rm -f G-2302-01-P1.tar.gz
+	@tar -zcf ../$(TAR_FILE) ../G-2302-01-P1/
 	@mv ../$(TAR_FILE) $(TAR_FILE)
+	@echo ${MAGENTA}[COMP]${NC}
 
 doc: 
 	doxygen
@@ -60,8 +61,9 @@ doc:
 clean:	
 	@rm -fv servidor
 	@rm -r -fv G-2302-01-P1
-	@rm -fv */*~
-	@rm -fv *~
-	@rm -fv obj/*.o
+	@rm -f */*~
+	@rm -f *~
+	@rm -f obj/*.o
 	@rm -fv $(TAR_FILE)
+	@echo ${BLUE}[DEL]${NC}
 
