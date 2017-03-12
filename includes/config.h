@@ -16,12 +16,13 @@
 #include <sys/time.h>
 #include <signal.h>
 
-
+#include "../lib/thpool.h"
 
 #define SERVICIO "ServidorIRC"
 #define DEFAULT_LOG LOG_INFO
 #define DEFAULT_PORT 6667
 #define MAX_BUFFER 1024
+#define NTHREADS 25
 
 #define SERV_OK 0
 #define SERV_ERROR -1
@@ -30,6 +31,8 @@
 typedef int status;
 
 pthread_mutex_t mutexDescr;
+
+threadpool thpool;
 
 int running;
 fd_set activeFD;

@@ -14,7 +14,10 @@
   @param void
   @return EXIT_SUCCESS
 */
-int main(void){
+int main(int argc, char *argv[]){
+
+
+
 
 	/* deomonizamos */
 	abrirLog(SERVICIO, LOG_DEBUG);

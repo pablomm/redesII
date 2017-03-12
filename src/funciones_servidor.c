@@ -12,14 +12,13 @@
 
 /**
   @brief libera estructuras antes de cerrar servidor
-  @return nada
 */
 void liberarEstructuras(void){
 
-	printf("Llamada libera estructura sin implementar\n");
-	/* Liberar lista usuarios temporales */
-	/* Liberar tads de eloy */
-	/* Liberar mutex creado (descriptores y usuarios temporales */
+	liberaTodosTempUser();
+	pthread_mutex_destroy(&mutexDescr);
+	pthread_mutex_destroy(&mutexTempUser);
+	/* Liberar tads de eloy?? */
 
 }
 
@@ -35,10 +34,6 @@ void *manejaMensaje(void* pdesc){
 	char *comando;
 	datos = (pDatosMensaje) pdesc;
 
-
-	//IRCTAD_ShowAll();
-
-	/* Informacion de debugeo */
 	next = datos->msg;
 	while(next != NULL) {
         next = IRC_UnPipelineCommands(next, &comando);
@@ -142,8 +137,8 @@ status cerrarConexion(int socket){
 	IRCTAD_ListChannelsOfUserArray(unknown_user, unknown_nick, &lista, &num);
 	for(i=0; i<num; i++){
 		IRCTAD_Part(lista[i], unknown_nick);
-	}*/
-
+	}
+	*/
 	/* Eliminamos de la base de datos */
 	IRCTADUser_Delete(unknown_id, unknown_user, unknown_nick, unknown_real);
 	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
@@ -198,6 +193,7 @@ status crea_comandos(void) {
 	comandos[AWAY] = away;
 	comandos[MODE] = mode;
 	comandos[QUIT] = quit;
+	comandos[MOTD] = motd;
 
 	return COM_OK;   
 }
@@ -584,14 +580,7 @@ status join(char *comando, pDatosMensaje datos){
 			enviar(datos->sckfd, mensajeRespuesta);
 			if(mensajeRespuesta){ free(mensajeRespuesta); mensajeRespuesta=NULL; }
 
-
-			// Enviamos el topic 
-			//enviar lista usuariaros canal
-			//IRCMsg_RplNamReply(&mensajeRespuesta, SERVICIO, unknown_nick, "=", canal,
 			break;
-
-
-
 	}
 
 	enviar(datos->sckfd, mensajeRespuesta);
@@ -941,8 +930,6 @@ status names(char *comando, pDatosMensaje datos){
 			free(lista);
 		}
 
-		// Habria que mandar lista usuarios privados
-
 		IRCMsg_RplEndOfNames (&mensajeRespuesta, SERVICIO, unknown_nick, "*");
 		enviar(datos->sckfd, mensajeRespuesta);
 		if(mensajeRespuesta) { free(mensajeRespuesta); mensajeRespuesta=NULL;}
@@ -999,8 +986,6 @@ void enviarMensajeACanal(int sckfd, char *mensaje, char *canal, char * nickorigi
 	char **lista = NULL;
 	long num = 0;
 	long i;
-
-	// Habria que comprobar si tiene permisos
 
 	/* Obtenemos datos usuario target con el nick */
 	if(IRCTAD_ListNicksOnChannelArray(canal, &lista, &num) != IRC_OK){
@@ -1394,8 +1379,6 @@ status kick(char *comando, pDatosMensaje datos){
 			return COM_OK;
 	}
 
-	//Falta comprobar permisos para echar al usuario
-	
 	IRC_ComplexUser(&prefijo2, unknown_nick, unknown_real, host, SERVICIO);
 	ret = IRCTAD_GetUserModeOnChannel(canal, unknown_nick);
 
@@ -1633,6 +1616,90 @@ status quit(char *comando, pDatosMensaje datos){
 	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
 
 	return COM_QUIT;
+}
+
+char * getMOTD(void){
+	return FMOTD;
+}
+
+
+
+/**
+  @brief ejecuta el comando MOTD
+  @param comando: comando a ejecutar
+  @param datos: estructura con la informacion del mensaje
+  @return COM_OK si todo va bien. Error en otro caso
+*/
+status motd(char *comando, pDatosMensaje datos){
+	char *mensajeRespuesta = NULL;
+	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
+	char *host = NULL, *IP = NULL, *away = NULL;
+	long unknown_id = 0, ret=0;
+	long creationTS=0, actionTS=0;
+	int sock;
+	char *prefijo=NULL, *target=NULL;
+	char *mtd=NULL;
+	FILE *fp=NULL;
+	char line[256];
+
+	if(!comando || !datos){
+		return COM_ERROR;
+	}
+
+	sock = datos->sckfd;
+
+	/* Obtenemos identificador del usuario */
+	IRCTADUser_GetData(&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
+
+	/* Caso no hay suficiente memoria */
+	if(ret == IRCERR_NOENOUGHMEMORY) {
+		syslog(LOG_ERR, "Error MOTD NOENOUGHMEMORY");
+		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+		return COM_ERROR;
+	}
+
+	/* ERRNOTREGISTERD */
+	if(unknown_id == 0){
+		IRCMsg_ErrNotRegisterd(&mensajeRespuesta, SERVICIO, "*");
+		enviar(datos->sckfd, mensajeRespuesta);
+		if(mensajeRespuesta) free(mensajeRespuesta);
+		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+		return COM_OK;
+	}
+
+
+	IRCParse_Motd(comando, &prefijo, &target);
+
+	IRCMsg_RplMotdStart(&mensajeRespuesta, SERVICIO,  unknown_nick, SERVICIO);
+	enviar(datos->sckfd, mensajeRespuesta);
+	if(mensajeRespuesta) { free(mensajeRespuesta); mensajeRespuesta=NULL; }
+
+
+	fp = fopen(getMOTD(),"r");
+	if(!fp) {
+		IRCMsg_RplMotd(&mensajeRespuesta, SERVICIO,  unknown_nick,  "Oops algo ha ocurrido");
+		enviar(datos->sckfd, mensajeRespuesta);
+		if(mensajeRespuesta) { free(mensajeRespuesta); mensajeRespuesta=NULL; }
+
+	} else {
+		while(fgets(line,256,fp)) {
+			line[strlen(line)-1] = '\0';
+			IRCMsg_RplMotd(&mensajeRespuesta, SERVICIO,  unknown_nick,  line);
+			enviar(datos->sckfd, mensajeRespuesta);
+			if(mensajeRespuesta) { free(mensajeRespuesta); mensajeRespuesta=NULL; }
+		}
+		fclose(fp);
+	}
+	IRCMsg_RplEndOfMotd(&mensajeRespuesta, SERVICIO,  unknown_nick);
+	enviar(datos->sckfd, mensajeRespuesta);
+	if(mensajeRespuesta) { free(mensajeRespuesta); mensajeRespuesta=NULL; }
+
+	if(mtd) free(mtd);
+	if(prefijo) free(prefijo);
+	if(target) free(target);
+	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+
+	return COM_OK;
 }
 
 

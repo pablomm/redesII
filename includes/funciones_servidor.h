@@ -1,6 +1,8 @@
 #ifndef FUNCIONES_SERVIDOR_H
 #define FUNCIONES_SERVIDOR_H
 
+#define _GNU_SOURCE
+
 #include <redes2/irc.h>
 #include <arpa/inet.h>
 
@@ -11,6 +13,8 @@
 #define COM_OK 0
 #define COM_ERROR -1
 #define COM_QUIT -2
+
+#define FMOTD "motd"
 
 
 
@@ -47,9 +51,7 @@ status kick(char* comando, pDatosMensaje datos);
 status away(char* comando, pDatosMensaje datos);
 status mode(char* comando, pDatosMensaje datos);
 status quit(char* comando, pDatosMensaje datos);
-
-
+status motd(char* comando, pDatosMensaje datos);
 status comandoVacio(char* comando, pDatosMensaje datos);
-
 
 #endif /* FUNCIONES_SERVIDOR_H */

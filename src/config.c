@@ -120,11 +120,15 @@ status inicializarServidor(void){
 	/* Mutex lista usuarios temporales */
 	pthread_mutex_init(&mutexTempUser, NULL);
 
+	/* Inicializamos pool de threads */
+	/* thpool = thpool_init(NTHREADS); */
+
+	/* Inicializamos listas temporales */
 	usuarioPrimero = NULL;
 	usuarioUltimo = NULL;
 
+	/* Inicializamos array de comandos */
 	crea_comandos();
-
 
 	return SERV_OK;
 }
@@ -135,11 +139,11 @@ status inicializarServidor(void){
   @return nada
 */
 void cerrarServidor(void){
-
+	syslog(LOG_INFO, "Cerrando el servidor...");
 	cerrarDescriptores(); 	
 	closelog();
 	liberarEstructuras();
-
+	/* thpool_destroy(thpool); */
 }
 
 /**
