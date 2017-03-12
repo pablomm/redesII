@@ -167,6 +167,7 @@ status crea_comandos(void) {
 	comandos[PRIVMSG] = privmsg;
 	comandos[PING] = ping;
 	comandos[PART] = part;
+	comandos[TOPIC] = topic;
 
 	return COM_OK;   
 }
@@ -1204,6 +1205,84 @@ status part(char *comando, pDatosMensaje datos){
 	if(prefijo) free(prefijo);
 	if(canal) free(canal);
 	if(mensaje) free(mensaje);
+	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+	return COM_OK;
+}
+
+/**
+  @brief ejecuta el comando TOPIC
+  @param comando: comando a ejecutar
+  @param datos: estructura con la informacion del mensaje
+  @return COM_OK si todo va bien. Error en otro caso
+*/
+status topic(char *comando, pDatosMensaje datos){
+	char *mensajeRespuesta = NULL;
+	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
+	char *host = NULL, *IP = NULL, *away = NULL;
+	long unknown_id = 0, ret=0;
+	long creationTS=0, actionTS=0;
+	int sock;
+	char *prefijo=NULL, *canal=NULL, *topico=NULL;
+
+	if(!comando || !datos){
+		return COM_ERROR;
+	}
+
+	sock = datos->sckfd;
+
+	/* Obtenemos identificador del usuario */
+	IRCTADUser_GetData(&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
+
+	/* Caso no hay suficiente memoria */
+	if(ret == IRCERR_NOENOUGHMEMORY) {
+		syslog(LOG_ERR, "Error TOPIC NOENOUGHMEMORY");
+		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+		return COM_ERROR;
+	}
+
+	/* ERRNOTREGISTERD */
+	if(unknown_id == 0){
+		IRCMsg_ErrNotRegisterd(&mensajeRespuesta, SERVICIO, "*");
+		enviar(datos->sckfd, mensajeRespuesta);
+		if(mensajeRespuesta) free(mensajeRespuesta);
+		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+		return COM_OK;
+	}
+
+	switch(IRCParse_Topic (comando, &prefijo, &canal, &topico)){
+		case IRCERR_NOSTRING:
+		case IRCERR_ERRONEUSCOMMAND:
+			IRCMsg_ErrNeedMoreParams(&mensajeRespuesta, SERVICIO ,unknown_nick, comando);
+			enviar(datos->sckfd, mensajeRespuesta);
+			if(mensajeRespuesta) free(mensajeRespuesta);
+			if(canal)free(canal);
+			if(prefijo)free(prefijo);
+			if(topico)free(topico);
+			liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+			return COM_OK;
+			
+	}
+
+	if(!topico){ /* Caso obtener topic */
+		IRCTAD_GetTopic (canal,&topico);
+		if(!topico){ /* El canal no tiene topico */
+			IRCMsg_RplNoTopic (&mensajeRespuesta, SERVICIO, unknown_nick, canal);
+		} else { /* Devolvemos el topico */
+			IRCMsg_RplTopic (&mensajeRespuesta, SERVICIO, unknown_nick, canal,topico);
+		}
+	} else { /* Cambio de topic */
+		ret = IRCTAD_SetTopic (canal, unknown_nick, topico);
+		if(ret == IRC_OK) /* Cambio realizado */
+			IRCMsg_Topic (&mensajeRespuesta, SERVICIO, canal, topico);
+		else /* Error al cambiar topico */
+			IRCMsg_ErrNoOperHost(&mensajeRespuesta, SERVICIO, unknown_nick); // ESTE ERROR NO ES deberia ser 482
+	}
+
+	enviar(datos->sckfd, mensajeRespuesta);
+	if(mensajeRespuesta) free(mensajeRespuesta);
+	if(canal)free(canal);
+	if(prefijo)free(prefijo);
+	if(topico)free(topico);
 	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
 	return COM_OK;
 }

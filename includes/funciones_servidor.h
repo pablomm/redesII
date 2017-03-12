@@ -42,6 +42,7 @@ status names(char* comando, pDatosMensaje datos);
 status privmsg(char* comando, pDatosMensaje datos);
 status ping(char* comando, pDatosMensaje datos);
 status part(char* comando, pDatosMensaje datos);
+status topic(char* comando, pDatosMensaje datos);
 status comandoVacio(char* comando, pDatosMensaje datos);
 
 
