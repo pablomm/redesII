@@ -5,3 +5,6 @@ r2d2
 irc/
 sound/
 xchat2*
+*.3
+*.odt
+*.tar.gz
