@@ -3,13 +3,13 @@
 
 # banderas de compilacion
 CC = gcc
-CFLAGS = -Wall -g 
+CFLAGS = -W -Wall -g
 LDLIBS = -lpthread -lircinterface -lircredes -lirctad -lsoundredes 
 
 NC='\033[0m'
 GREEN='\033[0;32m'
 
-TAR_FILE= G-2302-01-P1.tar.gz
+TAR_FILE= G-2302-02-P1.tar.gz
 
 # fuentes a considerar
 SOURCES = thpool.c config.c red_servidor.c funciones_servidor.c conexion_temp.c servidor.c 
@@ -46,8 +46,8 @@ run:
 
 #para hacer el tar.gz
 comprimir: clean
-	@rm -f G-2302-01-P1.tar.gz
-	@tar -zcf ../$(TAR_FILE) ../G-2302-01-P1/
+	@rm -f G-2302-02-P1.tar.gz
+	@tar -zcf ../$(TAR_FILE) ../G-2302-02-P1/
 	@mv ../$(TAR_FILE) $(TAR_FILE)
 
 doc: 
@@ -57,7 +57,7 @@ doc:
 .PHONY: clean
 clean:	
 	@rm -fv servidor
-	@rm -r -f G-2302-01-P1
+	@rm -r -f G-2302-02-P1
 	@rm -f */*~
 	@rm -f *~
 	@rm -f obj/*.o

@@ -35,6 +35,8 @@ status nuevaConexion(int desc, struct sockaddr_in * address);
 status cerrarConexion(int socket);
 void liberaDatosMensaje(pDatosMensaje datos);
 status procesaComando(char *comando, pDatosMensaje datos);
+status liberarUserData(char *user, char *nick, char *real, char *host, char *IP, char *away);
+status rutinaPingPong(void);
 
 status crea_comandos(void);
 status nick(char* comando, pDatosMensaje datos);

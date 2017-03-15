@@ -93,9 +93,26 @@ void abrirLog(char * identificacion, int logLevel){
 void manejadorSIGUSR1(int sennal){
 
 	if(signal(SIGUSR1, manejadorSIGUSR1) == SIG_ERR){
-		syslog(LOG_WARNING, "No se ha podido montar manejador SIGUSR1");
+		syslog(LOG_WARNING, "No se ha podido montar manejador SIGUSR1(%d)", sennal);
 	}
 }
+
+/**
+  @brief manejador de la sennal SIGUSR1
+  @param sennal: sennal
+  @return nada
+*/
+void manejadorSIGALRM(int sennal){
+
+	
+
+
+	if(signal(SIGALRM, manejadorSIGALRM) == SIG_ERR){
+		syslog(LOG_WARNING, "No se ha podido montar manejador SIGALRM(%d)", sennal);
+	}
+}
+
+
 
 /**
   @brief inicializa el servidor
@@ -153,7 +170,7 @@ void cerrarServidor(void){
 */
 void manejadorSigint(int signal){
 
-	syslog(LOG_INFO, "Terminado por recepcion de sigint");
+	syslog(LOG_INFO, "Terminado por recepcion de sigint(%d)", signal);
 	cerrarServidor();
 	exit(EXIT_SUCCESS);
 }

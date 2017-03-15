@@ -232,7 +232,8 @@ status nick(char* comando, pDatosMensaje datos){
 	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
 	char *host = NULL, *IP = NULL, *away = NULL;
 	char * mensajeRespuesta = NULL;
-	long unknown_id = 0, ret=0;
+	long unknown_id = 0;
+	unsigned long ret = 0;
 	long creationTS, actionTS;
 	int sock;	
 	pTempUser usuarioTemporal = NULL;
@@ -309,6 +310,9 @@ status nick(char* comando, pDatosMensaje datos){
 
 	} else { /* Cambio de NICK */
 
+		/* Actualizamos tiempo action ts */
+		IRCTADUser_SetActionTS(unknown_id, unknown_user, unknown_nick, unknown_real);
+
 		ret = IRCTADUser_Set(unknown_id, unknown_user, unknown_nick, unknown_real, NULL, nickk, NULL);
 		switch(ret){
 			/* no hay memoria suficiente */
@@ -361,7 +365,8 @@ status user(char* comando, pDatosMensaje datos){
 	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
 	char *host = NULL, *IP = NULL, *away = NULL;
 	char * mensajeRespuesta = NULL;
-	long unknown_id = 0, ret=0;
+	long unknown_id = 0;
+	unsigned long ret = 0;
 	long creationTS, actionTS;
 	int sock;	
 	pTempUser usuarioTemporal = NULL;
@@ -383,6 +388,10 @@ status user(char* comando, pDatosMensaje datos){
 	if(unknown_id!= 0){
 		IRCMsg_ErrAlreadyRegistred(&mensajeRespuesta, SERVICIO, unknown_nick);
 		enviar(datos->sckfd, mensajeRespuesta);
+
+		/* Actualizamos tiempo action ts */
+		IRCTADUser_SetActionTS(unknown_id, unknown_user, unknown_nick, unknown_real);
+
 		if(mensajeRespuesta) free(mensajeRespuesta);
 		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
 		return COM_OK;
@@ -492,8 +501,9 @@ status join(char *comando, pDatosMensaje datos){
 	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
 	char *host = NULL, *IP = NULL, *away = NULL;
 	char * mensajeRespuesta = NULL;
+	unsigned long ret = 0;
 	char *canal, *clave, *msg;
-	long unknown_id = 0, ret=0;
+	long unknown_id = 0;
 	long creationTS, actionTS;
 	int sock;	
 
@@ -517,6 +527,9 @@ status join(char *comando, pDatosMensaje datos){
 		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
 		return COM_OK;
 	}
+
+	/* Actualizamos tiempo action ts */
+	IRCTADUser_SetActionTS(unknown_id, unknown_user, unknown_nick, unknown_real);
 
 	switch(IRCParse_Join(comando, &prefijo, &canal, &clave, &msg)){
 		case IRCERR_NOSTRING:
@@ -627,13 +640,14 @@ status list(char *comando, pDatosMensaje datos){
 	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
 	char *host = NULL, *IP = NULL, *away = NULL;
 	char * mensajeRespuesta = NULL;
-	long unknown_id = 0, ret=0;
+	long unknown_id = 0;
 	long creationTS=0, actionTS=0;
 	int sock=0;	
 	char *canal=NULL, *objetivo=NULL;
 	char **lista = NULL;
 	long num=0;
     int i = 0;
+	unsigned long ret = 0;
 	char *next=NULL;
 
 	sock = datos->sckfd;	
@@ -655,6 +669,9 @@ status list(char *comando, pDatosMensaje datos){
 		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
 		return COM_OK;
 	}
+
+	/* Actualizamos tiempo action ts */
+	IRCTADUser_SetActionTS(unknown_id, unknown_user, unknown_nick, unknown_real);
 
 	switch(IRCParse_List(comando, &prefijo, &canal, &objetivo)){
 		case IRCERR_NOSTRING:
@@ -775,6 +792,9 @@ status whois(char *comando, pDatosMensaje datos){
 		return COM_OK;
 	}
 
+	/* Actualizamos tiempo action ts */
+	IRCTADUser_SetActionTS(unknown_id, unknown_user, unknown_nick, unknown_real);
+
 	/* Parseamos el comando */
 	switch(IRCParse_Whois (comando, &prefijo, &target, &mask)){
 		case IRCERR_NOSTRING:
@@ -847,7 +867,7 @@ void listarNamesCanal(char *canal, int sckfd, char *prefijo, char *nicku) {
 	long num=0;
 
 	if(IRCTAD_ListNicksOnChannel(canal, &lista, &num) == IRC_OK){
-		IRCMsg_RplNamReply (&mensajeRespuesta, SERVICIO, nicku, "=", canal, lista);
+		IRCMsg_RplNamReply (&mensajeRespuesta, prefijo, nicku, "=", canal, lista);
 		enviar(sckfd, mensajeRespuesta);
 	}
 	if(mensajeRespuesta) free(mensajeRespuesta);
@@ -899,6 +919,8 @@ status names(char *comando, pDatosMensaje datos){
 		return COM_OK;
 	}
 
+	/* Actualizamos tiempo action ts */
+	IRCTADUser_SetActionTS(unknown_id, unknown_user, unknown_nick, unknown_real);
 
 	switch(IRCParse_Names (comando, &prefijo, &canal, &objetivo)){
 		case IRCERR_NOSTRING:
@@ -1051,6 +1073,9 @@ status privmsg(char *comando, pDatosMensaje datos){
 		return COM_OK;
 	}
 
+	/* Actualizamos tiempo action ts */
+	IRCTADUser_SetActionTS(unknown_id, unknown_user, unknown_nick, unknown_real);
+
 	switch(IRCParse_Privmsg (comando, &prefijo, &msgtarget, &msg)){
 		case IRCERR_NOSTRING:
 		case IRCERR_ERRONEUSCOMMAND:
@@ -1132,6 +1157,9 @@ status ping(char *comando, pDatosMensaje datos){
 		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
 		return COM_OK;
 	}
+
+	/* Actualizamos tiempo action ts */
+	IRCTADUser_SetActionTS(unknown_id, unknown_user, unknown_nick, unknown_real);
 
 	/* Parseamos el comando */
 	switch(IRCParse_Ping (comando,&prefijo, &server, &server2, &msg)){
@@ -1220,6 +1248,9 @@ status part(char *comando, pDatosMensaje datos){
 		return COM_OK;
 	}
 
+	/* Actualizamos tiempo action ts */
+	IRCTADUser_SetActionTS(unknown_id, unknown_user, unknown_nick, unknown_real);
+
 	switch(IRCParse_Part(comando, &prefijo, &canal, &mensaje)){
 		case IRCERR_NOSTRING:
 		case IRCERR_ERRONEUSCOMMAND:
@@ -1284,6 +1315,9 @@ status topic(char *comando, pDatosMensaje datos){
 		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
 		return COM_OK;
 	}
+
+	/* Actualizamos tiempo action ts */
+	IRCTADUser_SetActionTS(unknown_id, unknown_user, unknown_nick, unknown_real);
 
 	switch(IRCParse_Topic (comando, &prefijo, &canal, &topico)){
 		case IRCERR_NOSTRING:
@@ -1364,6 +1398,9 @@ status kick(char *comando, pDatosMensaje datos){
 		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
 		return COM_OK;
 	}
+
+	/* Actualizamos tiempo action ts */
+	IRCTADUser_SetActionTS(unknown_id, unknown_user, unknown_nick, unknown_real);
 
 	switch(IRCParse_Kick (comando, &prefijo, &canal, &usuario, &comentario)){
 		case IRCERR_NOSTRING:
@@ -1469,6 +1506,9 @@ status away(char *comando, pDatosMensaje datos){
 		return COM_OK;
 	}
 
+	/* Actualizamos tiempo action ts */
+	IRCTADUser_SetActionTS(unknown_id, unknown_user, unknown_nick, unknown_real);
+
 	switch(IRCParse_Away(comando,&prefijo, &mensaje)){
 		case IRCERR_NOSTRING:
 		case IRCERR_ERRONEUSCOMMAND:
@@ -1539,6 +1579,9 @@ status mode(char *comando, pDatosMensaje datos){
 		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
 		return COM_OK;
 	}
+
+	/* Actualizamos tiempo action ts */
+	IRCTADUser_SetActionTS(unknown_id, unknown_user, unknown_nick, unknown_real);
 
 	switch(IRCParse_Mode(comando, &prefijo, &canal, &mode, &user)){
 		case IRCERR_NOSTRING:
@@ -1619,6 +1662,7 @@ status quit(char *comando, pDatosMensaje datos){
 }
 
 char * getMOTD(void){
+	system("./motd.bash");
 	return FMOTD;
 }
 
@@ -1667,6 +1711,8 @@ status motd(char *comando, pDatosMensaje datos){
 		return COM_OK;
 	}
 
+	/* Actualizamos tiempo action ts */
+	IRCTADUser_SetActionTS(unknown_id, unknown_user, unknown_nick, unknown_real);
 
 	IRCParse_Motd(comando, &prefijo, &target);
 
@@ -1727,6 +1773,11 @@ status comandoVacio(char* comando, pDatosMensaje datos){
 	/* Obtenemos identificador del usuario */
 	IRCTADUser_GetData(&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
     syslog(LOG_DEBUG, "Comando No reconocido %s", comando);
+	
+	if(unknown_id != 0) {
+		/* Actualizamos tiempo action ts */
+		IRCTADUser_SetActionTS(unknown_id, unknown_user, unknown_nick, unknown_real);
+	}
 
 	/* Variante si el usuario esta registrado */
    	IRCMsg_ErrUnKnownCommand (&mensajeRespuesta, SERVICIO, unknown_nick ? unknown_nick : "*", comando);
