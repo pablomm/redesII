@@ -1,0 +1,120 @@
+.TH "_cliente" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+_cliente \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <cliente\&.h>\fP
+.SS "Campos de datos"
+
+.in +1c
+.ti -1c
+.RI "int \fBsocket\fP"
+.br
+.ti -1c
+.RI "int \fBpuerto\fP"
+.br
+.ti -1c
+.RI "char * \fBserver\fP"
+.br
+.ti -1c
+.RI "char * \fBnick\fP"
+.br
+.ti -1c
+.RI "char * \fBrealname\fP"
+.br
+.ti -1c
+.RI "char * \fBuser\fP"
+.br
+.ti -1c
+.RI "char * \fBprefijo\fP"
+.br
+.ti -1c
+.RI "char * \fBinterfaz\fP"
+.br
+.ti -1c
+.RI "int \fBplaying\fP"
+.br
+.ti -1c
+.RI "\fBstatus\fP \fBregistro\fP"
+.br
+.ti -1c
+.RI "pthread_t \fBrecv_thread_th\fP"
+.br
+.ti -1c
+.RI "\fBstatus\fP \fBenvio\fP"
+.br
+.ti -1c
+.RI "pthread_t \fBfile_thread_th\fP"
+.br
+.ti -1c
+.RI "\fBstatus\fP \fBrecepcion\fP"
+.br
+.ti -1c
+.RI "pthread_t \fBfile_recv_thread_th\fP"
+.br
+.ti -1c
+.RI "pthread_mutex_t \fBenvio_thread_mutex\fP"
+.br
+.ti -1c
+.RI "int \fBaudiochatsend\fP"
+.br
+.ti -1c
+.RI "pthread_t \fBaudio_send_thread_th\fP"
+.br
+.ti -1c
+.RI "int \fBaudiochatrecv\fP"
+.br
+.ti -1c
+.RI "pthread_t \fBaudio_recv_thread_th\fP"
+.br
+.in -1c
+.SH "Documentación de los campos"
+.PP 
+.SS "pthread_t audio_recv_thread_th"
+
+.SS "pthread_t audio_send_thread_th"
+
+.SS "int audiochatrecv"
+
+.SS "int audiochatsend"
+
+.SS "\fBstatus\fP envio"
+
+.SS "pthread_mutex_t envio_thread_mutex"
+
+.SS "pthread_t file_recv_thread_th"
+
+.SS "pthread_t file_thread_th"
+
+.SS "char* interfaz"
+
+.SS "char* nick"
+
+.SS "int playing"
+
+.SS "char* prefijo"
+
+.SS "int puerto"
+
+.SS "char* realname"
+
+.SS "\fBstatus\fP recepcion"
+
+.SS "pthread_t recv_thread_th"
+
+.SS "\fBstatus\fP registro"
+
+.SS "char* server"
+
+.SS "int socket"
+
+.SS "char* user"
+
+
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

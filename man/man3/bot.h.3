@@ -1,0 +1,64 @@
+.TH "includes/bot.h" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+includes/bot.h \- 
+.PP
+Funciones para lanzar el bot\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "int \fBconectar_bot\fP (char *server, int port, char *channel, char *\fBnick\fP, char *\fBuser\fP, char *realname, int ssl)"
+.br
+.RI "\fIFuncion para conectar el botIRC\&. \fP"
+.ti -1c
+.RI "ssize_t \fBrecibir_bot\fP (int sckfd, char *buffer, int max)"
+.br
+.RI "\fIFuncion para recibir mensajes desde el bot\&. \fP"
+.ti -1c
+.RI "int \fBenviar_bot\fP (char *mensaje, int socket)"
+.br
+.RI "\fIFuncion para enviar mensajes desde el bot\&. \fP"
+.ti -1c
+.RI "void \fBprocesar_privmsg_bot\fP (int sckfd, int(*procesar)(char *, char *))"
+.br
+.RI "\fIFuncion para tratar los mensajes privados desde el bot\&. \fP"
+.ti -1c
+.RI "void \fBusage_bot\fP (void)"
+.br
+.RI "\fIImprime por stderr la ayuda de usuario\&. \fP"
+.ti -1c
+.RI "int \fBprivmsg_bot\fP (int argc, char **argv, int(*procesar)(char *, char *), char *name)"
+.br
+.RI "\fIFuncion para enviar un mensaje privado desde el bot\&. \fP"
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "int \fBsocket_bot\fP"
+.br
+.in -1c
+.SH "Descripción detallada"
+.PP 
+Funciones para lanzar el bot\&. 
+
+
+.SH "AUTHOR"
+.PP
+Pablo Marcos pablo.marcos@estudiante.uam.es 
+.SH "AUTHOR"
+.PP
+Dionisio Perez dionisio.perez@estudiante.uam.es 
+.SH "Documentación de las variables"
+.PP 
+.SS "int socket_bot"
+
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

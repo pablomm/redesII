@@ -1,0 +1,1227 @@
+.TH "ClienteIRC" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ClienteIRC \- 
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "void * \fBrecv_pthread\fP (void *sckfd)"
+.br
+.RI "\fIFuncion del hilo de recepcion de mensajes\&. \fP"
+.ti -1c
+.RI "void \fBrplWelcome\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplWelcome y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBstartMotd\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando startMotd y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplMotd\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplMotd y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBendMotd\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando endMotd y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplNotice\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplNotice y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplPing\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplPing y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplJoin\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplJoin y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplPrivMsg\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplPrivMsg y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplNamReply\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplNamReply y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplNick\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplNick y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplQuit\fP (char *command)"
+.br
+.RI "\fIProcesa el comando rplQuit y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplWhoisUser\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplWhoisUser y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplWhoisChannels\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplWhoisChannels y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplWhoisOperator\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplWhoisOperator y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplWhoisServer\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplWhoisServer y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplWhoisIdle\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplWhoisIdle y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplList\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplList y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBerrBannedFromChannel\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando errBannedFromChannel y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplNewTopic\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplNewTopic y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplTopic\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplTopic y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplNoTopic\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplNoTopic y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBerrChanOpPrivIsNeeded\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando errChanOpPrivIsNeeded y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBerrNoSuchNick\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando errNoSuchNick y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBerrNoSuchChannel\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando errNoSuchChannel y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplPart\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplPart y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplKick\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplKick y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplNowAway\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplNowAway y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplUnAway\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplUnAway y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplAway\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplAway y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplChannelModeIs\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplChannelModeIs y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplWhoReply\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplWhoReply y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplMode\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplMode y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBerrNickNameInUse\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando errNickNameInUse y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBerrPassMismatch\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando errPassMismatch y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBerrAlreadyRegistred\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando errAlreadyRegistred y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBerrNoNickNameGiven\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando errNoNickNameGiven y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBerrErroneusNickName\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando errErroneusNickName y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplYourHost\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplYourHost y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplMyInfo\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplMyInfo y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBignorar\fP (char *comando)"
+.br
+.RI "\fIIgnora el comando\&. \fP"
+.ti -1c
+.RI "void \fBdesconocido\fP (char *comando)"
+.br
+.RI "\fIProcesa un comando desconocido, imprime el comando en system\&. \fP"
+.ti -1c
+.RI "void \fBinicializar_comandos_recv\fP (void)"
+.br
+.RI "\fIInicializa el array de comandos\&. \fP"
+.in -1c
+.SH "Descripción detallada"
+.PP 
+
+.PP
+.PP
+Comprende los comandos de respuestas y errores de clientes
+.PP
+.PP
+ 
+.SH "Documentación de las funciones"
+.PP 
+.SS "void desconocido (char *comando)"
+
+.PP
+Procesa un comando desconocido, imprime el comando en system\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void desconocido(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void endMotd (char *comando)"
+
+.PP
+Procesa el comando endMotd y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void endMotd(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void errAlreadyRegistred (char *comando)"
+
+.PP
+Procesa el comando errAlreadyRegistred y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void errAlreadyRegistred(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void errBannedFromChannel (char *comando)"
+
+.PP
+Procesa el comando errBannedFromChannel y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void errBannedFromChannel(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void errChanOpPrivIsNeeded (char *comando)"
+
+.PP
+Procesa el comando errChanOpPrivIsNeeded y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void errChanOpPrivIsNeeded(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void errErroneusNickName (char *comando)"
+
+.PP
+Procesa el comando errErroneusNickName y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void errErroneusNickName(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void errNickNameInUse (char *comando)"
+
+.PP
+Procesa el comando errNickNameInUse y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void errNickNameInUse(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void errNoNickNameGiven (char *comando)"
+
+.PP
+Procesa el comando errNoNickNameGiven y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void errNoNickNameGiven(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void errNoSuchChannel (char *comando)"
+
+.PP
+Procesa el comando errNoSuchChannel y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void errNoSuchChannel(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void errNoSuchNick (char *comando)"
+
+.PP
+Procesa el comando errNoSuchNick y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void errNoSuchNick(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void errPassMismatch (char *comando)"
+
+.PP
+Procesa el comando errPassMismatch y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void errPassMismatch(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void ignorar (char *comando)"
+
+.PP
+Ignora el comando\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void ignorar(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void inicializar_comandos_recv (void)"
+
+.PP
+Inicializa el array de comandos\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void inicializar_comandos_recv(void)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void* recv_pthread (void *sckfd)"
+
+.PP
+Funcion del hilo de recepcion de mensajes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void *recv_pthread(void *sckfd)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsckfd\fP puntero a numero de descriptor del socket
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplAway (char *comando)"
+
+.PP
+Procesa el comando rplAway y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplAway(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplChannelModeIs (char *comando)"
+
+.PP
+Procesa el comando rplChannelModeIs y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplChannelModeIs(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplJoin (char *comando)"
+
+.PP
+Procesa el comando rplJoin y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplJoin(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplKick (char *comando)"
+
+.PP
+Procesa el comando rplKick y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplKick(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplList (char *comando)"
+
+.PP
+Procesa el comando rplList y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplList(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplMode (char *comando)"
+
+.PP
+Procesa el comando rplMode y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplMode(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplMotd (char *comando)"
+
+.PP
+Procesa el comando rplMotd y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplMotd(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplMyInfo (char *comando)"
+
+.PP
+Procesa el comando rplMyInfo y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplMyInfo(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplNamReply (char *comando)"
+
+.PP
+Procesa el comando rplNamReply y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplNamReply(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplNewTopic (char *comando)"
+
+.PP
+Procesa el comando rplNewTopic y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplNewTopic(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplNick (char *comando)"
+
+.PP
+Procesa el comando rplNick y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplNick(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplNotice (char *comando)"
+
+.PP
+Procesa el comando rplNotice y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplNotice(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplNoTopic (char *comando)"
+
+.PP
+Procesa el comando rplNoTopic y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplNoTopic(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplNowAway (char *comando)"
+
+.PP
+Procesa el comando rplNowAway y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplNowAway(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplPart (char *comando)"
+
+.PP
+Procesa el comando rplPart y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplPart(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplPing (char *comando)"
+
+.PP
+Procesa el comando rplPing y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplPing(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplPrivMsg (char *comando)"
+
+.PP
+Procesa el comando rplPrivMsg y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplPrivMsg(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplQuit (char *command)"
+
+.PP
+Procesa el comando rplQuit y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplQuit(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplTopic (char *comando)"
+
+.PP
+Procesa el comando rplTopic y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplTopic(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplUnAway (char *comando)"
+
+.PP
+Procesa el comando rplUnAway y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplUnAway(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplWelcome (char *comando)"
+
+.PP
+Procesa el comando rplWelcome y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplWelcome(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplWhoisChannels (char *comando)"
+
+.PP
+Procesa el comando rplWhoisChannels y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplWhoisChannels(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplWhoisIdle (char *comando)"
+
+.PP
+Procesa el comando rplWhoisIdle y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplWhoisIdle(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplWhoisOperator (char *comando)"
+
+.PP
+Procesa el comando rplWhoisOperator y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplWhoisOperator(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplWhoisServer (char *comando)"
+
+.PP
+Procesa el comando rplWhoisServer y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplWhoisServer(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplWhoisUser (char *comando)"
+
+.PP
+Procesa el comando rplWhoisUser y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplWhoisUser(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplWhoReply (char *comando)"
+
+.PP
+Procesa el comando rplWhoReply y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplWhoReply(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void rplYourHost (char *comando)"
+
+.PP
+Procesa el comando rplYourHost y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void rplYourHost(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SS "void startMotd (char *comando)"
+
+.PP
+Procesa el comando startMotd y ejecuta las acciones correspondientes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <irc_cliente\&.h>
+
+void startMotd(char *comando)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear 
+.PP
+ 
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

@@ -1,0 +1,1053 @@
+.TH "Callbaks" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Callbaks \- 
+Funciones que van a ser llamadas desde el interface y que deben ser implementadas por el usuario\&. Todas estas funciones pertenecen al hilo del interfaz\&.
+.PP
+El programador puede, por supuesto, separar todas estas funciones en múltiples ficheros a efectos de desarrollo y modularización\&.
+.PP
+.PP
+ IRCInterface_ActivateChannelKey
+Llamada por el botón de activación de la clave del canal\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_ActivateChannelKey (char *channel, char * key)
+.fi
+.PP
+.PP
+Llamada por el botón de activación de la clave del canal\&. El segundo parámetro es la clave del canal que se desea poner\&. Si es NULL deberá impedirse la activación con la función implementada a tal efecto\&. En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. Las strings recibidas no deben ser manipuladas por el programador, sólo leídas\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIchannel\fP canal sobre el que se va a activar la clave\&. 
+.br
+\fIkey\fP clave para el canal indicado\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_ActivateExternalMessages"
+Llamada por el botón de activación de la recepción de mensajes externos\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_ActivateExternalMessages (char *channel)
+.fi
+.PP
+.PP
+Llamada por el botón de activación de la recepción de mensajes externos\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. La string recibida no debe ser manipulada por el programador, sólo leída\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIchannel\fP canal sobre el que se activará la recepción de mensajes externos\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_ActivateInvite"
+Llamada por el botón de activación de canal de sólo invitación\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_ActivateInvite (char *channel)
+.fi
+.PP
+.PP
+Llamada por el botón de activación de canal de sólo invitación\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. La string recibida no debe ser manipulada por el programador, sólo leída\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIchannel\fP canal sobre el que se activará la invitación\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_ActivateModerated"
+Llamada por el botón de activación de la moderación del canal\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_ActivateModerated (char *channel)
+.fi
+.PP
+.PP
+Llamada por el botón de activación de la moderación del canal\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. La string recibida no debe ser manipulada por el programador, sólo leída\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIchannel\fP canal sobre el que se activará la moderación\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_ActivateNicksLimit"
+Llamada por el botón de activación del límite de usuarios en el canal\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_ActivateNicksLimit (char *channel, int * limit)
+.fi
+.PP
+.PP
+Llamada por el botón de activación del límite de usuarios en el canal\&. El segundo es el límite de usuarios que se desea poner\&. Si el valor es 0 se sobrentiende que se desea eliminar este límite\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. La string recibida no debe ser manipulada por el programador, sólo leída\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIchannel\fP canal sobre el que se activará el límite de usuarios\&. 
+.br
+\fIlimit\fP límite de usuarios en el canal indicado\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_ActivatePrivate"
+Llamada por el botón de activación del modo privado\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_ActivatePrivate (char *channel)
+.fi
+.PP
+.PP
+Llamada por el botón de activación del modo privado\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. La string recibida no debe ser manipulada por el programador, sólo leída\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIchannel\fP canal sobre el que se va a activar la privacidad\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_ActivateProtectTopic"
+Llamada por el botón de activación de la protección de tópico\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_ActivateProtectTopic (char *channel)
+.fi
+.PP
+.PP
+Llamada por el botón de activación de la protección de tópico\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. La string recibida no debe ser manipulada por el programador, sólo leída\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIchannel\fP canal sobre el que se va a activar la protección de tópico\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_ActivateSecret"
+Llamada por el botón de activación de canal secreto\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_ActivateSecret (char *channel)
+.fi
+.PP
+.PP
+Llamada por el botón de activación de canal secreto\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. La string recibida no debe ser manipulada por el programador, sólo leída\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIchannel\fP canal sobre el que se va a activar el estado de secreto\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_BanNick"
+Llamada por el botón 'Banear'\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_BanNick (char *channel, char *nick)
+.fi
+.PP
+.PP
+Llamada por el botón 'Banear'\&. Previamente debe seleccionarse un nick del canal para darle voz a dicho usuario\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. Las strings recibidas no deben ser manipuladas por el programador, sólo leídas\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIchannel\fP canal sobre el que se va a realizar el baneo\&. En principio es un valor innecesario\&. 
+.br
+\fInick\fP nick del usuario que va a ser baneado
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_Connect"
+Llamada por los distintos botones de conexión\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+long IRCInterface_Connect (char *nick, char * user, char * realname, char * password, char * server, int port, boolean ssl)
+.fi
+.PP
+.PP
+Función a implementar por el programador\&. Llamada por los distintos botones de conexión\&. Si implementará la comunicación completa, incluido el registro del usuario en el servidor\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. Las strings recibidas no deben ser manipuladas por el programador, sólo leída\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fInick\fP nick con el que se va a realizar la conexíón\&. 
+.br
+\fIuser\fP usuario con el que se va a realizar la conexión\&. 
+.br
+\fIrealname\fP nombre real con el que se va a realizar la conexión\&. 
+.br
+\fIpassword\fP password del usuario si es necesaria, puede valer NULL\&. 
+.br
+\fIserver\fP nombre o ip del servidor con el que se va a realizar la conexión\&. 
+.br
+\fIport\fP puerto del servidor con el que se va a realizar la conexión\&. 
+.br
+\fIssl\fP puede ser TRUE si la conexión tiene que ser segura y FALSE si no es así\&.
+.RE
+.PP
+\fBValores devueltos:\fP
+.RS 4
+\fIIRC_OK\fP si todo ha sido correcto (debe devolverlo)\&. 
+.br
+\fIIRCERR_NOSSL\fP si el valor de SSL es TRUE y no se puede activar la conexión SSL pero sí una conexión no protegida (debe devolverlo)\&. 
+.br
+\fIIRCERR_NOCONNECT\fP en caso de que no se pueda realizar la comunicación (debe devolverlo)\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_DeactivateChannelKey"
+Llamada por el botón de desactivación de la clave del canal\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_DeactivateChannelKey (char *channel)
+.fi
+.PP
+.PP
+Llamada por el botón de desactivación de la clave del canal\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. La string recibida no debe ser manipulada por el programador, sólo leída\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIchannel\fP canal sobre el que se va a desactivar la clave\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_DeactivateExternalMessages"
+Llamada por el botón de desactivación de la recepción de mensajes externos\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_DeactivateExternalMessages (char *channel)
+.fi
+.PP
+.PP
+Llamada por el botón de desactivación de la recepción de mensajes externos\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. La string recibida no debe ser manipulada por el programador, sólo leída\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIchannel\fP canal sobre el que se va a deactivar la recepción de mensajes externos\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_DeactivateInvite"
+Llamada por el botón de desactivación de canal de sólo invitación\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_DeactivateInvite (char *channel)
+.fi
+.PP
+.PP
+Llamada por el botón de desactivación de canal de sólo invitación\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. La string recibida no debe ser manipulada por el programador, sólo leída\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIchannel\fP canal sobre el que se va a desactivar la invitación\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_DeactivateModerated"
+Llamada por el botón de desactivación de la moderación del canal\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_DeactivateModerated (char *channel)
+.fi
+.PP
+.PP
+Llamada por el botón de desactivación de la moderación del canal\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. La string recibida no debe ser manipulada por el programador, sólo leída\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIchannel\fP canal sobre el que se va a desactivar la moderación\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_DeactivateNicksLimit"
+Llamada por el botón de desactivación de la protección de tópico\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_DeactivateNicksLimit (char *channel)
+.fi
+.PP
+.PP
+Llamada por el botón de desactivación del límite de usuarios en el canal\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. La string recibida no debe ser manipulada por el programador, sólo leída\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIchannel\fP canal sobre el que se va a desactivar el límite de usuarios\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_DeactivatePrivate"
+Llamada por el botón de desactivación del modo privado\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_DeactivatePrivate (char *channel)
+.fi
+.PP
+.PP
+Llamada por el botón de desactivación del modo privado\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. La string recibida no debe ser manipulada por el programador, sólo leída\&.
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIchannel\fP canal sobre el que se va a desactivar la privacidad\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_DeactivateProtectTopic"
+Llamada por el botón de desactivación de la protección de tópico\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_DeactivateProtectTopic (char *channel)
+.fi
+.PP
+.PP
+Llamada por el botón de desactivación de la protección de tópico\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. La string recibida no debe ser manipulada por el programador, sólo leída\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIchannel\fP canal sobre el que se va a desactivar la protección de tópico\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_DeactivateSecret"
+Llamada por el botón de desactivación de canal secreto\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_DeactivateSecret (char *channel)
+.fi
+.PP
+.PP
+Llamada por el botón de desactivación de canal secreto\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. La string recibida no debe ser manipulada por el programador, sólo leída\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIchannel\fP canal sobre el que se va a desactivar la propiedad de canal secreto\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_DisconnectServer"
+Llamada por los distintos botones de desconexión\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+boolean IRCInterface_DisconnectServer (char * server, int port)
+.fi
+.PP
+.PP
+Llamada por los distintos botones de desconexión\&. Debe cerrar la conexión con el servidor\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. La string recibida no debe ser manipulada por el programador, sólo leída\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIserver\fP nombre o ip del servidor del que se va a realizar la desconexión\&. 
+.br
+\fIport\fP puerto sobre el que se va a realizar la desconexión\&.
+.RE
+.PP
+\fBValores devueltos:\fP
+.RS 4
+\fITRUE\fP si se ha cerrado la conexión (debe devolverlo)\&. 
+.br
+\fIFALSE\fP en caso contrario (debe devolverlo)\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_ExitAudioChat"
+Llamada por el botón 'Cancelar' del diálogo de chat de voz\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_ExitAudioChat (char *nick)
+.fi
+.PP
+.PP
+Llamada por el botón 'Parar' del diálogo de chat de voz\&. Previamente debe seleccionarse un nick del canal para darle voz a dicho usuario\&. Esta función cierrala comunicación\&. Evidentemente tiene que actuar sobre el hilo de chat de voz\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. La string recibida no debe ser manipulada por el programador, sólo leída\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fInick\fP nick del usuario que solicita la parada del chat de audio\&.
+.RE
+.PP
+\fBValores devueltos:\fP
+.RS 4
+\fITRUE\fP si se ha cerrado la comunicación (debe devolverlo)\&. 
+.br
+\fIFALSE\fP en caso contrario (debe devolverlo)\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_GiveOp"
+Llamada por el botón 'Op'\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_GiveOp (char *channel, char *nick)
+.fi
+.PP
+.PP
+Llamada por el botón 'Op'\&. Previamente debe seleccionarse un nick del canal para darle 'op' a dicho usuario\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. Las strings recibidas no deben ser manipuladas por el programador, sólo leídas\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIchannel\fP canal sobre el que se va dar op al usuario\&. 
+.br
+\fInick\fP nick al que se le va a dar el nivel de op\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_GiveVoice"
+Llamada por el botón 'Dar voz'\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_GiveVoice (char *channel, char *nick)
+.fi
+.PP
+.PP
+Llamada por el botón 'Dar voz'\&. Previamente debe seleccionarse un nick del canal para darle voz a dicho usuario\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. Las strings recibidas no deben ser manipuladas por el programador, sólo leídas\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIchannel\fP canal sobre el que se va dar voz al usuario\&. 
+.br
+\fInick\fP nick al que se le va a dar voz\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_KickNick"
+Llamada por el botón 'Echar'\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_KickNick (char *channel, char *nick)
+.fi
+.PP
+.PP
+Llamada por el botón 'Echar'\&. Previamente debe seleccionarse un nick del canal para darle voz a dicho usuario\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. Las strings recibidas no deben ser manipuladas por el programador, sólo leídas\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIchannel\fP canal sobre el que se va a expulsar al usuario\&. 
+.br
+\fInick\fP nick del usuario que va a ser expulsado\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_NewCommandText"
+Llamada la tecla ENTER en el campo de texto y comandos\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_NewCommandText (char *command)
+.fi
+.PP
+.PP
+Llamada de la tecla ENTER en el campo de texto y comandos\&. El texto deberá ser enviado y el comando procesado por las funciones de 'parseo' de comandos de usuario\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. La string recibida no debe ser manipulada por el programador, sólo leída\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP introducido por el usuario\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_NewTopicEnter"
+Llamada cuando se pulsa la tecla ENTER en el campo de tópico\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_NewTopicEnter (char * topicdata)
+.fi
+.PP
+.PP
+Llamada cuando se pulsa la tecla ENTER en el campo de tópico\&. Deberá intentarse cambiar el tópico del canal\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. La string recibida no debe ser manipulada por el programador, sólo leída\&.
+.PP
+param[in] topicdata string con el tópico que se desea poner en el canal\&.
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_SendFile"
+Llamada por el botón 'Enviar Archivo'\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_SendFile (char * filename, char *nick, char *data, long unsigned int length)
+.fi
+.PP
+.PP
+Llamada por el botón 'Enviar Archivo'\&. Previamente debe seleccionarse un nick del canal para darle voz a dicho usuario\&. Esta función como todos los demás callbacks bloquea el interface y por tanto es el programador el que debe determinar si crea un nuevo hilo para enviar el archivo o no lo hace\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. Las strings recibidas no deben ser manipuladas por el programador, sólo leídas\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIfilename\fP nombre del fichero a enviar\&. 
+.br
+\fInick\fP nick del usuario que enviará el fichero\&. 
+.br
+\fIdata\fP datos a ser enviados\&. 
+.br
+\fIlength\fP longitud de los datos a ser enviados\&.
+.RE
+.PP
+\fBValores devueltos:\fP
+.RS 4
+\fITRUE\fP si se ha establecido la comunicación (debe devolverlo)\&. 
+.br
+\fIFALSE\fP en caso contrario (debe devolverlo)\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_StartAudioChat"
+Llamada por el botón 'Iniciar' del diálogo de chat de voz\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_StartAudioChat (char *nick)
+.fi
+.PP
+.PP
+Llamada por el botón 'Iniciar' del diálogo de chat de voz\&. Previamente debe seleccionarse un nick del canal para darle voz a dicho usuario\&. Esta función como todos los demás callbacks bloquea el interface y por tanto para mantener la funcionalidad del chat de voz es imprescindible crear un hilo a efectos de comunicación de voz\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. La string recibida no debe ser manipulada por el programador, sólo leída\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fInick\fP nick del usuario con el que se desea conectar\&.
+.RE
+.PP
+\fBValores devueltos:\fP
+.RS 4
+\fITRUE\fP si se ha establecido la comunicación (debe devolverlo)\&. 
+.br
+\fIFALSE\fP en caso contrario (debe devolverlo)\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_StopAudioChat"
+Llamada por el botón 'Parar' del diálogo de chat de voz\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_StopAudioChat (char *nick)
+.fi
+.PP
+.PP
+Llamada por el botón 'Parar' del diálogo de chat de voz\&. Previamente debe seleccionarse un nick del canal para darle voz a dicho usuario\&. Esta función sólo para la comunicación que puede ser reiniciada\&. Evidentemente tiene que actuar sobre el hilo de chat de voz\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. La string recibida no debe ser manipulada por el programador, sólo leída\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fInick\fP nick del usuario con el que se quiere parar el chat de voz\&.
+.RE
+.PP
+\fBValores devueltos:\fP
+.RS 4
+\fITRUE\fP si se ha parado la comunicación (debe devolverlo)\&. 
+.br
+\fIFALSE\fP en caso contrario (debe devolverlo)\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_TakeOp"
+Llamada por el botón 'Quitar Op'\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_TakeOp (char *channel, char *nick)
+.fi
+.PP
+.PP
+Llamada por el botón 'Quitar Op'\&. Previamente debe seleccionarse un nick del canal para quitarle 'op' a dicho usuario\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. Las strings recibidas no deben ser manipuladas por el programador, sólo leídas\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIchannel\fP canal sobre el que se va a quitar op al usuario\&. 
+.br
+\fInick\fP nick del usuario al que se le va a quitar op\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SS "IRCInterface_TakeVoice"
+Llamada por el botón 'Quitar voz'\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <redes2/ircxchat\&.h>
+
+void IRCInterface_TakeVoice (char *channel, char *nick)
+.fi
+.PP
+.PP
+Llamada por el botón 'Quitar voz'\&. Previamente debe seleccionarse un nick del canal para darle voz a dicho usuario\&.
+.PP
+En cualquier caso sólo se puede realizar si el servidor acepta la orden\&. Las strings recibidas no deben ser manipuladas por el programador, sólo leídas\&.
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIchannel\fP canal sobre el que se le va a quitar voz al usuario\&. 
+.br
+\fInick\fP nick del usuario al que se va a quitar la voz\&.
+.RE
+.PP
+\fBAtención:\fP
+.RS 4
+Esta función debe ser implementada por el alumno\&.
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Eloy Anguiano (eloy.anguiano@uam.es)
+.PP
+.PP
+ 
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

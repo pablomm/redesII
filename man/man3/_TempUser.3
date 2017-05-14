@@ -1,0 +1,50 @@
+.TH "_TempUser" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+_TempUser \- 
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <conexion_temp\&.h>\fP
+.SS "Campos de datos"
+
+.in +1c
+.ti -1c
+.RI "int \fBsocket\fP"
+.br
+.ti -1c
+.RI "char * \fBnick\fP"
+.br
+.ti -1c
+.RI "char * \fBhost\fP"
+.br
+.ti -1c
+.RI "char \fBIP\fP [INET6_ADDRSTRLEN]"
+.br
+.ti -1c
+.RI "struct \fB_TempUser\fP * \fBprevious\fP"
+.br
+.ti -1c
+.RI "struct \fB_TempUser\fP * \fBnext\fP"
+.br
+.in -1c
+.SH "Documentación de los campos"
+.PP 
+.SS "char* host"
+
+.SS "char IP[INET6_ADDRSTRLEN]"
+
+.SS "struct \fB_TempUser\fP* next"
+Puntero al usuario siguiente 
+.SS "char* nick"
+
+.SS "struct \fB_TempUser\fP* previous"
+Puntero al usuario anterior 
+.SS "int socket"
+Socket en el que almacenamos el usuario 
+
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

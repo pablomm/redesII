@@ -1,0 +1,80 @@
+.TH "Interface" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Interface \- 
+.SS "Módulos"
+
+.in +1c
+.ti -1c
+.RI "\fBCallbaks\fP"
+.br
+.in -1c
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "void \fBusage\fP (void)"
+.br
+.RI "\fIImprime por stderr la ayuda de usuario\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBinicializar_cliente\fP (char *\fBnick\fP, char *realname, char *\fBuser\fP, char *server, int port)"
+.br
+.RI "\fIFuncion para crear un socket TCP para el cliente echo\&. \fP"
+.in -1c
+.SH "Descripción detallada"
+.PP 
+
+.SH "Documentación de las funciones"
+.PP 
+.SS "\fBstatus\fP inicializar_cliente (char *nick, char *realname, char *user, char *server, intport)"
+
+.PP
+Funcion para crear un socket TCP para el cliente echo\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status inicializar_cliente(char *nick, char*realname, char *user, char *server, int port)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fInick\fP nick del usuario 
+.br
+\fIrealname\fP realname del usuario 
+.br
+\fIuser\fP campo user del usuario 
+.br
+\fIserver\fP servidor desde el que se conecta 
+.br
+\fIport\fP puerto desde el que se conecta
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void usage (void)"
+
+.PP
+Imprime por stderr la ayuda de usuario\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void usage(void)
+.fi
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

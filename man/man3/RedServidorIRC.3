@@ -1,0 +1,112 @@
+.TH "RedServidorIRC" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+RedServidorIRC \- 
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "\fBstatus\fP \fBcrearSocketTCP\fP (int *sckfd, unsigned short port)"
+.br
+.RI "\fIcrea un socket TCP \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBaceptarConexion\fP (int sockval, int *sckfd, struct sockaddr_in *address)"
+.br
+.RI "\fIAcepta conexion entrante\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBenviar\fP (int sockfd, char *mensaje)"
+.br
+.RI "\fIEnvia mensaje desde el socket especificado\&. \fP"
+.in -1c
+.SH "Descripción detallada"
+.PP 
+
+.PP
+.PP
+Comprende funciones para creacion de sockets, aceptar y enviar conexiones
+.PP
+.PP
+ 
+.SH "Documentación de las funciones"
+.PP 
+.SS "\fBstatus\fP aceptarConexion (intsockval, int *sckfd, struct sockaddr_in *address)"
+
+.PP
+Acepta conexion entrante\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status aceptarConexion(int sockval,int *sckfd, struct sockaddr_in * address)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsockval\fP socket del que extraer la conexion 
+.br
+\fIsockfd\fP nuevo socket para manejar la conexion 
+.br
+\fIaddress\fP estructura que almacena informacion de la direccion de internet
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "\fBstatus\fP crearSocketTCP (int *sckfd, unsigned shortport)"
+
+.PP
+crea un socket TCP 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status crearSocketTCP(int * sckfd, unsigned short port)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsckfd\fP el socket 
+.br
+\fIport\fP el puerto
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "\fBstatus\fP enviar (intsockfd, char *mensaje)"
+
+.PP
+Envia mensaje desde el socket especificado\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status enviar(int sockfd, char *mensaje)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsockfd\fP el socket 
+.br
+\fImensaje\fP el mensaje
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

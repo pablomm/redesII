@@ -1,0 +1,97 @@
+.TH "includes/ssl.h" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+includes/ssl.h \- 
+.PP
+Soporte SSL\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.SS "'defines'"
+
+.in +1c
+.ti -1c
+.RI "#define \fBMAX_SSL\fP   1024"
+.br
+.ti -1c
+.RI "#define \fBSSL_ERR\fP   -1"
+.br
+.ti -1c
+.RI "#define \fBSSL_OK\fP   0"
+.br
+.in -1c
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "int \fBinicializar_nivel_SSL\fP ()"
+.br
+.RI "\fIInicializa nivel SSL\&. \fP"
+.ti -1c
+.RI "int \fBfijar_contexto_SSL\fP (const char *pcert, const char *pkey)"
+.br
+.RI "\fICrea contexto SSL y comprueba certificados\&. \fP"
+.ti -1c
+.RI "int \fBconectar_canal_seguro_SSL\fP (int sckfd)"
+.br
+.RI "\fISe conecta a un socket con seguridad SSL\&. \fP"
+.ti -1c
+.RI "int \fBaceptar_canal_seguro_SSL\fP (int sckfd)"
+.br
+.RI "\fIPermite conexion SSL segura\&. \fP"
+.ti -1c
+.RI "int \fBevaluar_post_conectar_SSL\fP (int sckfd)"
+.br
+.RI "\fIevalua seguridad de la conexion \fP"
+.ti -1c
+.RI "int \fBenviar_datos_SSL\fP (int sckfd, void *mensaje, int tam)"
+.br
+.RI "\fIenvia mensaje de forma segura por medio de SSL \fP"
+.ti -1c
+.RI "int \fBrecibir_datos_SSL\fP (int sckfd, void *mensaje, int max)"
+.br
+.RI "\fIRecibe mensaje de forma segura por medio de SSL\&. \fP"
+.ti -1c
+.RI "void \fBcerrar_canal_SSL\fP (int sckfd)"
+.br
+.RI "\fICierra conexion segura SSL\&. \fP"
+.ti -1c
+.RI "void \fBliberar_nivel_SSL\fP ()"
+.br
+.RI "\fIElimina contexto SSL creado\&. \fP"
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "int \fBssl_active\fP"
+.br
+.in -1c
+.SH "Descripción detallada"
+.PP 
+Soporte SSL\&. 
+
+
+.SH "AUTHOR"
+.PP
+Pablo Marcos pablo.marcos@estudiante.uam.es 
+.SH "AUTHOR"
+.PP
+Dionisio Perez dionisio.perez@estudiante.uam.es 
+.SH "Documentación de los 'defines'"
+.PP 
+.SS "#define MAX_SSL   1024"
+
+.SS "#define SSL_ERR   -1"
+
+.SS "#define SSL_OK   0"
+
+.SH "Documentación de las variables"
+.PP 
+.SS "int ssl_active"
+
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

@@ -1,0 +1,168 @@
+.TH "RedClienteIRC" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+RedClienteIRC \- 
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "\fBstatus\fP \fBcrearSocketTCP_cliente\fP (int *sckfd, char *server, unsigned short port)"
+.br
+.RI "\fIcrea un socket TCP \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBenviar_cliente\fP (char *mensaje)"
+.br
+.RI "\fIenvia mensaje desde el socket especificado \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBenviar_clienteThread\fP (char *mensaje)"
+.br
+.RI "\fIenvia mensaje desde el socket especificado (funcion de hilos) \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBsocketUDP\fP (int *sckfd, short puerto)"
+.br
+.RI "\fICrea un socket UDP\&. \fP"
+.ti -1c
+.RI "int \fBcrearSocketTCP_cliente_aux\fP (int *sckfd, char *server, unsigned short port)"
+.br
+.RI "\fICrea un socket TCP\&. \fP"
+.in -1c
+.SH "Descripción detallada"
+.PP 
+
+.PP
+.PP
+Comprende funciones para creacion de sockets y envio referido al cliente
+.PP
+.PP
+ 
+.SH "Documentación de las funciones"
+.PP 
+.SS "\fBstatus\fP crearSocketTCP_cliente (int *sckfd, char *server, unsigned shortport)"
+
+.PP
+crea un socket TCP Funcion para crear un socket TCP para el cliente echo\&.
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status crearSocketTCP_cliente(int *sckfd, char *server, unsigned short port)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsckfd\fP el socket 
+.br
+\fIserver\fP nombre del servidor o direccion IPV4 
+.br
+\fIport\fP el puerto
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "int crearSocketTCP_cliente_aux (int *sckfd, char *server, unsigned shortport)"
+
+.PP
+Crea un socket TCP\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+int crearSocketTCP_cliente_aux(int *sckfd, char *server, unsigned short port)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsckfd\fP el socket 
+.br
+\fIserver\fP servidor del que obtener direccin IP 
+.br
+\fIport\fP el puerto
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "\fBstatus\fP enviar_cliente (char *mensaje)"
+
+.PP
+envia mensaje desde el socket especificado 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status enviar_cliente(char *mensaje)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fImensaje\fP el mensaje
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "\fBstatus\fP enviar_clienteThread (char *mensaje)"
+
+.PP
+envia mensaje desde el socket especificado (funcion de hilos) 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status enviar_clienteThread(char *mensaje)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fImensaje\fP el mensaje
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "\fBstatus\fP socketUDP (int *sckfd, shortpuerto)"
+
+.PP
+Crea un socket UDP\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status socketUDP(int *sckfd, short puerto)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsckfd\fP el socket 
+.br
+\fIpuerto\fP el puerto
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

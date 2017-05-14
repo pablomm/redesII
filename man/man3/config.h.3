@@ -1,0 +1,218 @@
+.TH "includes/config.h" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+includes/config.h \- 
+.PP
+daemonizar y funciones relacionadas con el servidor y descriptores  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <errno\&.h>\fP
+.br
+\fC#include <pthread\&.h>\fP
+.br
+\fC#include <stdio\&.h>\fP
+.br
+\fC#include <stdlib\&.h>\fP
+.br
+\fC#include <string\&.h>\fP
+.br
+\fC#include <syslog\&.h>\fP
+.br
+\fC#include <sys/stat\&.h>\fP
+.br
+\fC#include <sys/types\&.h>\fP
+.br
+\fC#include <unistd\&.h>\fP
+.br
+\fC#include <sys/select\&.h>\fP
+.br
+\fC#include <sys/time\&.h>\fP
+.br
+\fC#include <signal\&.h>\fP
+.br
+
+.SS "'defines'"
+
+.in +1c
+.ti -1c
+.RI "#define \fBSERVICIO\fP   'ServidorIRC'"
+.br
+.ti -1c
+.RI "#define \fBDEFAULT_LOG\fP   LOG_INFO"
+.br
+.ti -1c
+.RI "#define \fBDEFAULT_PORT\fP   6667"
+.br
+.ti -1c
+.RI "#define \fBDEFAULT_PORT_SSL\fP   6669"
+.br
+.ti -1c
+.RI "#define \fBMAX_BUFFER\fP   1024"
+.br
+.ti -1c
+.RI "#define \fBALARMPINGPONG\fP   20"
+.br
+.ti -1c
+.RI "#define \fBSERV_OK\fP   0"
+.br
+.ti -1c
+.RI "#define \fBSERV_ERROR\fP   -1"
+.br
+.ti -1c
+.RI "#define \fBPATH_SERV_CERT\fP   'certs/servidor\&.pem'"
+.br
+.ti -1c
+.RI "#define \fBPATH_SERV_PKEY\fP   'certs/serverkeypri\&.pem'"
+.br
+.ti -1c
+.RI "#define \fBSTATUS\fP"
+.br
+.in -1c
+.SS "'typedefs'"
+
+.in +1c
+.ti -1c
+.RI "typedef int \fBstatus\fP"
+.br
+.in -1c
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "void \fBdaemonizar\fP (char *servicio, int logLevel)"
+.br
+.RI "\fIDemoniza el proceso\&. \fP"
+.ti -1c
+.RI "void \fBcerrarDescriptores\fP (void)"
+.br
+.RI "\fICiera el conjunto de descriptores\&. \fP"
+.ti -1c
+.RI "void \fBabrirLog\fP (char *identificacion, int logLevel)"
+.br
+.RI "\fIAbre el log para el envio de mensajes\&. \fP"
+.ti -1c
+.RI "void \fBmanejadorSIGUSR1\fP (int signal)"
+.br
+.RI "\fIManejador de la sennal SIGUSR1\&. \fP"
+.ti -1c
+.RI "void \fBmanejadorSIGALRM\fP (int sennal)"
+.br
+.RI "\fIManejador de la sennal SIGALARM\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBinicializarServidor\fP (void)"
+.br
+.RI "\fIInicializa el servidor\&. \fP"
+.ti -1c
+.RI "void \fBcerrarServidor\fP (void)"
+.br
+.RI "\fICierra el servidor\&. \fP"
+.ti -1c
+.RI "void \fBmanejadorSigint\fP (int signal)"
+.br
+.RI "\fIManejador de la sennal SIGINT\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBinicializarFD\fP (int sckt)"
+.br
+.RI "\fIInicializa descriptor del socket dado\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBaddFd\fP (int sckt)"
+.br
+.RI "\fIAnnade descriptor al conjunto de descriptores activos\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBdeleteFd\fP (int sckt)"
+.br
+.RI "\fIElimina descriptor del socket dado\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBsetReadFD\fP (fd_set *readFD)"
+.br
+.RI "\fIPone como leido el socket dado\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBlanzarServidor\fP (unsigned int puerto, short pingpong)"
+.br
+.RI "\fILanza el servidor\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBlanzarServidorSSL\fP (unsigned int puerto, short pingpong)"
+.br
+.RI "\fILanza el servidor con SSL\&. \fP"
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "char \fBabspath\fP [1024]"
+.br
+.ti -1c
+.RI "pthread_mutex_t \fBmutexDescr\fP"
+.br
+.ti -1c
+.RI "int \fBrunning\fP"
+.br
+.ti -1c
+.RI "short \fBoffensive\fP"
+.br
+.ti -1c
+.RI "fd_set \fBactiveFD\fP"
+.br
+.ti -1c
+.RI "pid_t \fBpid\fP"
+.br
+.in -1c
+.SH "Descripción detallada"
+.PP 
+daemonizar y funciones relacionadas con el servidor y descriptores 
+
+
+.SH "AUTHOR"
+.PP
+Pablo Marcos pablo.marcos@estudiante.uam.es 
+.SH "AUTHOR"
+.PP
+Dionisio Perez dionisio.perez@estudiante.uam.es 
+.SH "Documentación de los 'defines'"
+.PP 
+.SS "#define ALARMPINGPONG   20"
+
+.SS "#define DEFAULT_LOG   LOG_INFO"
+
+.SS "#define DEFAULT_PORT   6667"
+
+.SS "#define DEFAULT_PORT_SSL   6669"
+
+.SS "#define MAX_BUFFER   1024"
+
+.SS "#define PATH_SERV_CERT   'certs/servidor\&.pem'"
+
+.SS "#define PATH_SERV_PKEY   'certs/serverkeypri\&.pem'"
+
+.SS "#define SERV_ERROR   -1"
+
+.SS "#define SERV_OK   0"
+
+.SS "#define SERVICIO   'ServidorIRC'"
+
+.SS "#define STATUS"
+
+.SH "Documentación de los 'typedefs'"
+.PP 
+.SS "typedef int \fBstatus\fP"
+
+.SH "Documentación de las variables"
+.PP 
+.SS "char abspath[1024]"
+
+.SS "fd_set activeFD"
+
+.SS "pthread_mutex_t mutexDescr"
+Semaforo para trabajar con los descriptores 
+.SS "short offensive"
+
+.SS "pid_t pid"
+
+.SS "int running"
+Para poder parar el while(running) de lanzar servidor desde fuera 
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

@@ -1,0 +1,173 @@
+.TH "AudioIRC" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+AudioIRC \- 
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "void \fBmanejadorexitaudio\fP (int sig)"
+.br
+.RI "\fIManejador para terminar audio\&. \fP"
+.ti -1c
+.RI "void \fBmanejadorexitsend\fP (int sig)"
+.br
+.RI "\fIManejador para terminar envio\&. \fP"
+.ti -1c
+.RI "void \fBcerrarAudioSend\fP (void)"
+.br
+.RI "\fITermina el envio de audio\&. \fP"
+.ti -1c
+.RI "void * \fBaudiochatSend\fP (void *audio)"
+.br
+.RI "\fISe encarga del envio de audio\&. \fP"
+.ti -1c
+.RI "void \fBcerrarAudioRecv\fP (void)"
+.br
+.RI "\fITermina recepcion del audio\&. \fP"
+.ti -1c
+.RI "void * \fBaudiochatRecv\fP (void *audio)"
+.br
+.RI "\fISe encarga de la recepcion de audio\&. \fP"
+.in -1c
+.SH "Descripción detallada"
+.PP 
+
+.PP
+.PP
+Comprende las funciones relacionadas con el envio de audio
+.PP
+.PP
+ 
+.SH "Documentación de las funciones"
+.PP 
+.SS "void* audiochatRecv (void *audio)"
+
+.PP
+Se encarga de la recepcion de audio\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void *audiochatRecv(void *audio)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fI*audio\fP estructura con informacion del audio
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void* audiochatSend (void *audio)"
+
+.PP
+Se encarga del envio de audio\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void *audiochatSend(void *audio)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fI*audio\fP estructura con informacion del audio
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void cerrarAudioRecv (void)"
+
+.PP
+Termina recepcion del audio\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void cerrarAudioRecv(void)
+.fi
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void cerrarAudioSend (void)"
+
+.PP
+Termina el envio de audio\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void cerrarAudioSend(void)
+.fi
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void manejadorexitaudio (intsig)"
+
+.PP
+Manejador para terminar audio\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void manejadorexitaudio(int sig)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsig\fP sennal recibida
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void manejadorexitsend (intsig)"
+
+.PP
+Manejador para terminar envio\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void manejadorexitsend(int sig)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsig\fP sennal recibida
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

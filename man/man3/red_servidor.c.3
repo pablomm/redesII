@@ -1,0 +1,46 @@
+.TH "srclib/red_servidor.c" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+srclib/red_servidor.c \- 
+.PP
+crear sockets, aceptar conexion y enviar  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include '\&.\&./includes/red_servidor\&.h'\fP
+.br
+\fC#include '\&.\&./includes/ssl\&.h'\fP
+.br
+
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "\fBstatus\fP \fBcrearSocketTCP\fP (int *sckfd, unsigned short port)"
+.br
+.RI "\fIcrea un socket TCP \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBaceptarConexion\fP (int sockval, int *sckfd, struct sockaddr_in *address)"
+.br
+.RI "\fIAcepta conexion entrante\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBenviar\fP (int sockfd, char *mensaje)"
+.br
+.RI "\fIEnvia mensaje desde el socket especificado\&. \fP"
+.in -1c
+.SH "Descripción detallada"
+.PP 
+crear sockets, aceptar conexion y enviar 
+
+
+.SH "AUTHOR"
+.PP
+Pablo Marcos pablo.marcos@estudiante.uam.es 
+.SH "AUTHOR"
+.PP
+Dionisio Perez dionisio.perez@estudiante.uam.es 
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

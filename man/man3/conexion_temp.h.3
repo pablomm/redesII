@@ -1,0 +1,122 @@
+.TH "includes/conexion_temp.h" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+includes/conexion_temp.h \- 
+.PP
+estructura y funciones del usuario temporal  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <arpa/inet\&.h>\fP
+.br
+\fC#include 'config\&.h'\fP
+.br
+
+.SS "Estructuras de datos"
+
+.in +1c
+.ti -1c
+.RI "struct \fB_TempUser\fP"
+.br
+.in -1c
+.SS "'defines'"
+
+.in +1c
+.ti -1c
+.RI "#define \fBCON_OK\fP   0"
+.br
+.ti -1c
+.RI "#define \fBCON_ERROR\fP   -1"
+.br
+.in -1c
+.SS "'typedefs'"
+
+.in +1c
+.ti -1c
+.RI "typedef struct \fB_TempUser\fP \fBTempUser\fP"
+.br
+.ti -1c
+.RI "typedef struct \fB_TempUser\fP * \fBpTempUser\fP"
+.br
+.in -1c
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "\fBstatus\fP \fBnewTempUser\fP (int socket, char *ip, char *host)"
+.br
+.RI "\fICrea un nuevo usuario temporal\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBsetNickTemporal\fP (\fBpTempUser\fP usuario, char *\fBnick\fP)"
+.br
+.RI "\fIModifica el nick del usuario temporal\&. \fP"
+.ti -1c
+.RI "\fBpTempUser\fP \fBpullTempUser\fP (int socket)"
+.br
+.RI "\fIBusca por socket un usuario temporal en la lista\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBdeleteTempUser\fP (int socket)"
+.br
+.RI "\fIElimina un usario temporal\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBliberaTempUser\fP (\fBpTempUser\fP usuario)"
+.br
+.RI "\fIElimina de memoria un usuario temporal\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBliberaTodosTempUser\fP (void)"
+.br
+.RI "\fIElimina de memoria a todos los usuarios temporales\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBprintDebugUsers\fP (void)"
+.br
+.RI "\fIFuncion para debbugear usuarios temporales\&. \fP"
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBpTempUser\fP \fBusuarioPrimero\fP"
+.br
+.ti -1c
+.RI "\fBpTempUser\fP \fBusuarioUltimo\fP"
+.br
+.ti -1c
+.RI "pthread_mutex_t \fBmutexTempUser\fP"
+.br
+.in -1c
+.SH "Descripción detallada"
+.PP 
+estructura y funciones del usuario temporal 
+
+
+.SH "AUTHOR"
+.PP
+Pablo Marcos pablo.marcos@estudiante.uam.es 
+.SH "AUTHOR"
+.PP
+Dionisio Perez dionisio.perez@estudiante.uam.es 
+.SH "Documentación de los 'defines'"
+.PP 
+.SS "#define CON_ERROR   -1"
+
+.SS "#define CON_OK   0"
+
+.SH "Documentación de los 'typedefs'"
+.PP 
+.SS "typedef struct \fB_TempUser\fP * \fBpTempUser\fP"
+
+.SS "typedef struct \fB_TempUser\fP  \fBTempUser\fP"
+
+.SH "Documentación de las variables"
+.PP 
+.SS "pthread_mutex_t mutexTempUser"
+Semaforo para trabajar con usuarios temporales 
+.SS "\fBpTempUser\fP usuarioPrimero"
+Almacenamos el primer y ultimo usuario de manera global 
+.SS "\fBpTempUser\fP usuarioUltimo"
+
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

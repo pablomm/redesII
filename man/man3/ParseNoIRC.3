@@ -1,0 +1,168 @@
+.TH "ParseNoIRC" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ParseNoIRC \- 
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "void \fBparse_noIRC\fP (char *comando, char *\fBnick\fP)"
+.br
+.RI "\fIFuncion de parseo\&. \fP"
+.ti -1c
+.RI "void \fBparse_fsend\fP (char *comando, char *\fBnick\fP)"
+.br
+.RI "\fIFuncion de parseo del fsend\&. \fP"
+.ti -1c
+.RI "void \fBparse_fcancel\fP (char *comando, char *\fBnick\fP)"
+.br
+.RI "\fIFuncion de parseo del fcancel\&. \fP"
+.ti -1c
+.RI "void \fBparse_audioexit\fP (char *comando, char *\fBnick\fP)"
+.br
+.RI "\fIFuncion de parseo del audioexit\&. \fP"
+.ti -1c
+.RI "void \fBparse_audiochat\fP (char *comando, char *\fBnick\fP)"
+.br
+.RI "\fIFuncion de parseo del audiochat\&. \fP"
+.in -1c
+.SH "Descripción detallada"
+.PP 
+
+.PP
+.PP
+Comprende funciones para el parseo de mensajes de envio de ficheros y audio
+.PP
+.PP
+ 
+.SH "Documentación de las funciones"
+.PP 
+.SS "void parse_audiochat (char *comando, char *nick)"
+
+.PP
+Funcion de parseo del audiochat\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void parse_audiochat(char * comando, char *nick)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar 
+.br
+\fInick\fP nick del usuario
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void parse_audioexit (char *comando, char *nick)"
+
+.PP
+Funcion de parseo del audioexit\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void parse_audioexit(char * comando, char *nick)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar 
+.br
+\fInick\fP nick del usuario
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void parse_fcancel (char *comando, char *nick)"
+
+.PP
+Funcion de parseo del fcancel\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void parse_fcancel(char * comando, char *nick)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar 
+.br
+\fInick\fP nick del usuario
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void parse_fsend (char *comando, char *nick)"
+
+.PP
+Funcion de parseo del fsend\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void parse_fsend(char * comando, char *nick)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar 
+.br
+\fInick\fP nick del usuario
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void parse_noIRC (char *comando, char *nick)"
+
+.PP
+Funcion de parseo\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void parse_noIRC(char * comando, char *nick)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a procesar 
+.br
+\fInick\fP nick del usuario
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

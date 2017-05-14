@@ -1,0 +1,71 @@
+.TH "srclib/comandos_cliente.c" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+srclib/comandos_cliente.c \- 
+.PP
+Funciones para el tratamiento de los comandos de cliente\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <redes2/ircxchat\&.h>\fP
+.br
+\fC#include <redes2/irc\&.h>\fP
+.br
+\fC#include <stdio\&.h>\fP
+.br
+\fC#include <string\&.h>\fP
+.br
+\fC#include '\&.\&./includes/cliente\&.h'\fP
+.br
+\fC#include '\&.\&./includes/red_cliente\&.h'\fP
+.br
+\fC#include '\&.\&./includes/comandos_cliente\&.h'\fP
+.br
+
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "long \fBIRCMsg_GeneralCommand\fP (char **command, char *prefix, char *type, char *msg,\&.\&.\&.)"
+.br
+.ti -1c
+.RI "void \fBcomando_general\fP (char *comando)"
+.br
+.RI "\fIFuncion de procesamiento por defecto del comando del cliente\&. \fP"
+.ti -1c
+.RI "void \fBclientePart\fP (char *comando)"
+.br
+.RI "\fIFuncion de procesamiento del comando del cliente Part\&. \fP"
+.ti -1c
+.RI "void \fBclientePartAll\fP (char *comando)"
+.br
+.RI "\fIFuncion de procesamiento del comando del cliente PartAll\&. \fP"
+.ti -1c
+.RI "void \fBclienteCycle\fP (char *comando)"
+.br
+.RI "\fIFuncion de procesamiento del comando del cliente Cycle\&. \fP"
+.ti -1c
+.RI "void \fBinicializar_comandos_cliente\fP (void)"
+.br
+.RI "\fIFuncion de inicializacion del array de comandos de cliente\&. \fP"
+.in -1c
+.SH "Descripción detallada"
+.PP 
+Funciones para el tratamiento de los comandos de cliente\&. 
+
+
+.SH "AUTHOR"
+.PP
+Pablo Marcos pablo.marcos@estudiante.uam.es 
+.SH "AUTHOR"
+.PP
+Dionisio Perez dionisio.perez@estudiante.uam.es 
+.SH "Documentación de las funciones"
+.PP 
+.SS "long IRCMsg_GeneralCommand (char **command, char *prefix, char *type, char *msg, \&.\&.\&.)"
+
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

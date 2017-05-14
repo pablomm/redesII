@@ -1,0 +1,118 @@
+.TH "src/cliente_echo.c" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/cliente_echo.c \- 
+.PP
+main sencillo que prueba el cliente echo con SSL  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <stdio\&.h>\fP
+.br
+\fC#include <sys/types\&.h>\fP
+.br
+\fC#include <sys/socket\&.h>\fP
+.br
+\fC#include <string\&.h>\fP
+.br
+\fC#include <netinet/in\&.h>\fP
+.br
+\fC#include <netdb\&.h>\fP
+.br
+\fC#include <unistd\&.h>\fP
+.br
+\fC#include '\&.\&./includes/ssl\&.h'\fP
+.br
+
+.SS "'defines'"
+
+.in +1c
+.ti -1c
+.RI "#define \fBMAX_BUFFER_ECHO\fP   2048"
+.br
+.ti -1c
+.RI "#define \fBPUERTO_ECHO\fP   6668"
+.br
+.ti -1c
+.RI "#define \fBSERVER_ECHO\fP   'localhost'"
+.br
+.ti -1c
+.RI "#define \fBEXIT_WORD\fP   'exit'"
+.br
+.ti -1c
+.RI "#define \fBEXIT_WORD_LEN\fP   4"
+.br
+.ti -1c
+.RI "#define \fBERROR\fP   -1;"
+.br
+.ti -1c
+.RI "#define \fBSTOP\fP   0"
+.br
+.ti -1c
+.RI "#define \fBFLAGS\fP   0"
+.br
+.ti -1c
+.RI "#define \fBOK\fP   0"
+.br
+.ti -1c
+.RI "#define \fBPATH_CLIENT_CERT\fP   'certs/cliente\&.pem'"
+.br
+.ti -1c
+.RI "#define \fBPATH_CLIENT_PKEY\fP   'certs/clientkeypri\&.pem'"
+.br
+.in -1c
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "int \fBcrearSocketTCP_cliente\fP (int *sckfd, char *server, unsigned short port)"
+.br
+.RI "\fIFuncion para crear un socket TCP para el cliente echo\&. \fP"
+.ti -1c
+.RI "int \fBmain\fP (void)"
+.br
+.in -1c
+.SH "Descripción detallada"
+.PP 
+main sencillo que prueba el cliente echo con SSL 
+
+main sencillo que prueba el servidor
+.SH "AUTHOR"
+.PP
+Pablo Marcos pablo.marcos@estudiante.uam.es 
+.SH "AUTHOR"
+.PP
+Dionisio Perez dionisio.perez@estudiante.uam.es 
+.SH "Documentación de los 'defines'"
+.PP 
+.SS "#define ERROR   -1;"
+
+.SS "#define EXIT_WORD   'exit'"
+
+.SS "#define EXIT_WORD_LEN   4"
+
+.SS "#define FLAGS   0"
+
+.SS "#define MAX_BUFFER_ECHO   2048"
+
+.SS "#define OK   0"
+
+.SS "#define PATH_CLIENT_CERT   'certs/cliente\&.pem'"
+
+.SS "#define PATH_CLIENT_PKEY   'certs/clientkeypri\&.pem'"
+
+.SS "#define PUERTO_ECHO   6668"
+
+.SS "#define SERVER_ECHO   'localhost'"
+
+.SS "#define STOP   0"
+
+.SH "Documentación de las funciones"
+.PP 
+.SS "int main (void)"
+
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

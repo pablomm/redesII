@@ -1,0 +1,250 @@
+.TH "srclib/irc_cliente.c" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+srclib/irc_cliente.c \- 
+.PP
+Toda la parte de comandos de usuario\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include '\&.\&./includes/cliente\&.h'\fP
+.br
+\fC#include '\&.\&./includes/irc_cliente\&.h'\fP
+.br
+\fC#include '\&.\&./includes/red_cliente\&.h'\fP
+.br
+\fC#include '\&.\&./includes/comandos_noirc\&.h'\fP
+.br
+\fC#include '\&.\&./includes/ssl\&.h'\fP
+.br
+\fC#include <errno\&.h>\fP
+.br
+\fC#include <stdlib\&.h>\fP
+.br
+\fC#include <string\&.h>\fP
+.br
+\fC#include <sys/types\&.h>\fP
+.br
+\fC#include <sys/socket\&.h>\fP
+.br
+\fC#include <redes2/irc\&.h>\fP
+.br
+\fC#include <redes2/ircxchat\&.h>\fP
+.br
+\fC#include <stdio\&.h>\fP
+.br
+
+.SS "'typedefs'"
+
+.in +1c
+.ti -1c
+.RI "typedef void(* \fBcomando_recepcion_t\fP )(char *)"
+.br
+.in -1c
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "void * \fBrecv_pthread\fP (void *sckfd)"
+.br
+.RI "\fIFuncion del hilo de recepcion de mensajes\&. \fP"
+.ti -1c
+.RI "void \fBrplWelcome\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplWelcome y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBstartMotd\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando startMotd y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplMotd\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplMotd y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBendMotd\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando endMotd y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplNotice\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplNotice y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplPing\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplPing y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplJoin\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplJoin y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplPrivMsg\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplPrivMsg y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplNamReply\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplNamReply y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplNick\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplNick y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplQuit\fP (char *command)"
+.br
+.RI "\fIProcesa el comando rplQuit y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplWhoisUser\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplWhoisUser y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplWhoisChannels\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplWhoisChannels y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplWhoisOperator\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplWhoisOperator y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplWhoisServer\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplWhoisServer y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplWhoisIdle\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplWhoisIdle y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplList\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplList y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBerrBannedFromChannel\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando errBannedFromChannel y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplNewTopic\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplNewTopic y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplTopic\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplTopic y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplNoTopic\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplNoTopic y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBerrChanOpPrivIsNeeded\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando errChanOpPrivIsNeeded y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBerrNoSuchNick\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando errNoSuchNick y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBerrNoSuchChannel\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando errNoSuchChannel y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplPart\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplPart y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplKick\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplKick y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplNowAway\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplNowAway y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplUnAway\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplUnAway y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplAway\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplAway y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplChannelModeIs\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplChannelModeIs y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplWhoReply\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplWhoReply y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplMode\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplMode y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBerrNickNameInUse\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando errNickNameInUse y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBerrPassMismatch\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando errPassMismatch y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBerrAlreadyRegistred\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando errAlreadyRegistred y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBerrNoNickNameGiven\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando errNoNickNameGiven y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBerrErroneusNickName\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando errErroneusNickName y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplYourHost\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplYourHost y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBrplMyInfo\fP (char *comando)"
+.br
+.RI "\fIProcesa el comando rplMyInfo y ejecuta las acciones correspondientes\&. \fP"
+.ti -1c
+.RI "void \fBignorar\fP (char *comando)"
+.br
+.RI "\fIIgnora el comando\&. \fP"
+.ti -1c
+.RI "void \fBdesconocido\fP (char *comando)"
+.br
+.RI "\fIProcesa un comando desconocido, imprime el comando en system\&. \fP"
+.ti -1c
+.RI "void \fBinicializar_comandos_recv\fP (void)"
+.br
+.RI "\fIInicializa el array de comandos\&. \fP"
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBcomando_recepcion_t\fP \fBcomandos_recv\fP [IRC_MAX_COMMANDS]"
+.br
+.in -1c
+.SH "Descripción detallada"
+.PP 
+Toda la parte de comandos de usuario\&. 
+
+
+.SH "AUTHOR"
+.PP
+Pablo Marcos pablo.marcos@estudiante.uam.es 
+.SH "AUTHOR"
+.PP
+Dionisio Perez dionisio.perez@estudiante.uam.es 
+.SH "Documentación de los 'typedefs'"
+.PP 
+.SS "typedef void(* comando_recepcion_t)(char *)"
+
+.SH "Documentación de las variables"
+.PP 
+.SS "\fBcomando_recepcion_t\fP comandos_recv[IRC_MAX_COMMANDS]"
+
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

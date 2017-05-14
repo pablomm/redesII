@@ -1,0 +1,406 @@
+.TH "Config" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Config \- 
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "void \fBdaemonizar\fP (char *servicio, int logLevel)"
+.br
+.RI "\fIDemoniza el proceso\&. \fP"
+.ti -1c
+.RI "void \fBcerrarDescriptores\fP (void)"
+.br
+.RI "\fICiera el conjunto de descriptores\&. \fP"
+.ti -1c
+.RI "void \fBabrirLog\fP (char *identificacion, int logLevel)"
+.br
+.RI "\fIAbre el log para el envio de mensajes\&. \fP"
+.ti -1c
+.RI "void \fBmanejadorSIGUSR1\fP (int sennal)"
+.br
+.RI "\fIManejador de la sennal SIGUSR1\&. \fP"
+.ti -1c
+.RI "void \fBmanejadorSIGALRM\fP (int sennal)"
+.br
+.RI "\fIManejador de la sennal SIGALARM\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBinicializarServidor\fP (void)"
+.br
+.RI "\fIInicializa el servidor\&. \fP"
+.ti -1c
+.RI "void \fBcerrarServidor\fP (void)"
+.br
+.RI "\fICierra el servidor\&. \fP"
+.ti -1c
+.RI "void \fBmanejadorSigint\fP (int signal)"
+.br
+.RI "\fIManejador de la sennal SIGINT\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBinicializarFD\fP (int sckt)"
+.br
+.RI "\fIInicializa descriptor del socket dado\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBaddFd\fP (int sckt)"
+.br
+.RI "\fIAnnade descriptor al conjunto de descriptores activos\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBdeleteFd\fP (int sckt)"
+.br
+.RI "\fIElimina descriptor del socket dado\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBsetReadFD\fP (fd_set *readFD)"
+.br
+.RI "\fIPone como leido el socket dado\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBlanzarServidor\fP (unsigned int puerto, short pingpong)"
+.br
+.RI "\fILanza el servidor\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBlanzarServidorSSL\fP (unsigned int puerto, short pingpong)"
+.br
+.RI "\fILanza el servidor con SSL\&. \fP"
+.in -1c
+.SH "Descripción detallada"
+.PP 
+Funciones relacionadas con lanzar un servidor
+.PP
+.PP
+ 
+.SH "Documentación de las funciones"
+.PP 
+.SS "void abrirLog (char *identificacion, intlogLevel)"
+
+.PP
+Abre el log para el envio de mensajes\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void abrirLog(char * identificacion, int logLevel)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIidentificacion\fP identificacion para el log 
+.br
+\fIlogLevel\fP nivel de mascara del log
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "\fBstatus\fP addFd (intsckt)"
+
+.PP
+Annade descriptor al conjunto de descriptores activos\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status addFd(int sckt)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsckt\fP el socket
+.RE
+.PP
+.SH "RETURN"
+.PP
+SERV_OK
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void cerrarDescriptores (void)"
+
+.PP
+Ciera el conjunto de descriptores\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void cerrarDescriptores(void)
+.fi
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void cerrarServidor (void)"
+
+.PP
+Cierra el servidor\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void manejadorSIGALRM(int sennal)
+.fi
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void daemonizar (char *servicio, intlogLevel)"
+
+.PP
+Demoniza el proceso\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void daemonizar(char *servicio, int logLevel)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIservicio\fP identificacion para el log 
+.br
+\fIlogLevel\fP nivel de mascara del log
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "\fBstatus\fP deleteFd (intsckt)"
+
+.PP
+Elimina descriptor del socket dado\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status deleteFd(int sckt)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsckt\fP el socket
+.RE
+.PP
+.SH "RETURN"
+.PP
+SERV_OK
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "\fBstatus\fP inicializarFD (intsckt)"
+
+.PP
+Inicializa descriptor del socket dado\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status inicializarFD(int sckt)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsckt\fP el socket
+.RE
+.PP
+.SH "RETURN"
+.PP
+SERV_OK
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "\fBstatus\fP inicializarServidor (void)"
+
+.PP
+Inicializa el servidor\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void manejadorSIGALRM(int sennal)
+.fi
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "\fBstatus\fP lanzarServidor (unsigned intpuerto, shortpingpong)"
+
+.PP
+Lanza el servidor\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status lanzarServidor(unsigned int puerto, short pingpong)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIpuerto\fP puerto para el que crear socket 
+.br
+\fIpingpong\fP para activar rutina pingpong
+.RE
+.PP
+.SH "RETURN"
+.PP
+SERV_OK
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "\fBstatus\fP lanzarServidorSSL (unsigned intpuerto, shortpingpong)"
+
+.PP
+Lanza el servidor con SSL\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status lanzarServidorSSL(unsigned int puerto, short pingpong)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIpuerto\fP puerto para el que crear socket 
+.br
+\fIpingpong\fP para activar rutina pingpong
+.RE
+.PP
+.SH "RETURN"
+.PP
+SERV_OK
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void manejadorSIGALRM (intsennal)"
+
+.PP
+Manejador de la sennal SIGALARM\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void manejadorSIGALRM(int sennal)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsennal\fP sennal
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void manejadorSigint (intsignal)"
+
+.PP
+Manejador de la sennal SIGINT\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void manejadorSigint(int sennal)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsennal\fP sennal
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void manejadorSIGUSR1 (intsennal)"
+
+.PP
+Manejador de la sennal SIGUSR1\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void manejadorSIGUSR1(int sennal)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsennal\fP sennal
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "\fBstatus\fP setReadFD (fd_set *readFD)"
+
+.PP
+Pone como leido el socket dado\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status setReadFD(fd_set * readFD)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIreadFD\fP el descriptor
+.RE
+.PP
+.SH "RETURN"
+.PP
+SERV_OK
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

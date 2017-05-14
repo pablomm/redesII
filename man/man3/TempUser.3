@@ -1,0 +1,227 @@
+.TH "TempUser" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+TempUser \- 
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "\fBstatus\fP \fBnewTempUser\fP (int socket, char *ip, char *host)"
+.br
+.RI "\fICrea un nuevo usuario temporal\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBsetNickTemporal\fP (\fBpTempUser\fP usuario, char *\fBnick\fP)"
+.br
+.RI "\fIModifica el nick del usuario temporal\&. \fP"
+.ti -1c
+.RI "\fBpTempUser\fP \fBpullTempUser\fP (int socket)"
+.br
+.RI "\fIBusca por socket un usuario temporal en la lista\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBdeleteTempUser\fP (int socket)"
+.br
+.RI "\fIElimina un usario temporal\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBliberaTempUser\fP (\fBpTempUser\fP usuario)"
+.br
+.RI "\fIElimina de memoria un usuario temporal\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBliberaTodosTempUser\fP (void)"
+.br
+.RI "\fIElimina de memoria a todos los usuarios temporales\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBprintDebugUsers\fP (void)"
+.br
+.RI "\fIFuncion para debbugear usuarios temporales\&. \fP"
+.in -1c
+.SH "Descripción detallada"
+.PP 
+
+.PP
+.PP
+Comprende funciones para el tratamiento de usuarios que no han sido añadidos a la base de datos de metis
+.PP
+.PP
+ 
+.SH "Documentación de las funciones"
+.PP 
+.SS "\fBstatus\fP deleteTempUser (intsocket)"
+
+.PP
+Elimina un usario temporal\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status deleteTempUser(int socket)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsocket\fP el socket
+.RE
+.PP
+.SH "RETURN"
+.PP
+CON_OK si todo va bien\&. CON_ERROR en caso contrario
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "\fBstatus\fP liberaTempUser (\fBpTempUser\fPusuario)"
+
+.PP
+Elimina de memoria un usuario temporal\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status liberaTempUser(pTempUser usuario)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIusuario\fP el usuario
+.RE
+.PP
+.SH "RETURN"
+.PP
+CON_OK
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "\fBstatus\fP liberaTodosTempUser (void)"
+
+.PP
+Elimina de memoria a todos los usuarios temporales\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status liberaTodosTempUser(void)
+.fi
+.PP
+.SH "RETURN"
+.PP
+CON_OK
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "\fBstatus\fP newTempUser (intsocket, char *ip, char *host)"
+
+.PP
+Crea un nuevo usuario temporal\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status newTempUser(int socket,  char *ip, char *host)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsocket\fP el socket 
+.br
+\fIip\fP la direccion ip 
+.br
+\fIhost\fP el host
+.RE
+.PP
+.SH "RETURN"
+.PP
+CON_OK si todo va bien\&. CON_ERROR en caso contrario
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "\fBstatus\fP printDebugUsers (void)"
+
+.PP
+Funcion para debbugear usuarios temporales\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status printDebugUsers(void)
+.fi
+.PP
+.SH "RETURN"
+.PP
+CON_OK
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "\fBpTempUser\fP pullTempUser (intsocket)"
+
+.PP
+Busca por socket un usuario temporal en la lista\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+pTempUser pullTempUser(int socket)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsocket\fP el socket
+.RE
+.PP
+.SH "RETURN"
+.PP
+el usuario econtrado, o NULL
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "\fBstatus\fP setNickTemporal (\fBpTempUser\fPusuario, char *nick)"
+
+.PP
+Modifica el nick del usuario temporal\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status setNickTemporal(pTempUser usuario, char* nick)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIusuario\fP el usuario 
+.br
+\fInick\fP el nuevo nick
+.RE
+.PP
+.SH "RETURN"
+.PP
+CON_OK si todo va bien\&. CON_ERROR en caso contrario
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

@@ -1,0 +1,213 @@
+.TH "ComandosRegistro" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+ComandosRegistro \- 
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "\fBstatus\fP \fBnick\fP (char *comando, \fBpDatosMensaje\fP datos)"
+.br
+.RI "\fIEjecuta el comando NICK\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBuser\fP (char *comando, \fBpDatosMensaje\fP datos)"
+.br
+.RI "\fIEjecuta el comando USER\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBjoin\fP (char *comando, \fBpDatosMensaje\fP datos)"
+.br
+.RI "\fIEjecuta el comando JOIN\&. \fP"
+.ti -1c
+.RI "void \fBlistarCanalesUsuario\fP (char *canal, int sckfd, char *prefijo, char *nicku)"
+.br
+.RI "\fIFuncion auxiliar relacionada con el comando LIST\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBlist\fP (char *comando, \fBpDatosMensaje\fP datos)"
+.br
+.RI "\fIEjecuta el comando LIST\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBwho\fP (char *comando, \fBpDatosMensaje\fP datos)"
+.br
+.RI "\fIEjecuta el comando WHO\&. \fP"
+.in -1c
+.SH "Descripción detallada"
+.PP 
+Comprende los comandos para iniciarse en un servidor IRC
+.PP
+.PP
+ 
+.SH "Documentación de las funciones"
+.PP 
+.SS "\fBstatus\fP join (char *comando, \fBpDatosMensaje\fPdatos)"
+
+.PP
+Ejecuta el comando JOIN\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status join(char *comando, pDatosMensaje datos)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a ejecutar 
+.br
+\fIdatos\fP estructura con la informacion del mensaje
+.RE
+.PP
+.SH "RETURN"
+.PP
+COM_OK si todo va bien\&. Error en otro caso
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "\fBstatus\fP list (char *comando, \fBpDatosMensaje\fPdatos)"
+
+.PP
+Ejecuta el comando LIST\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status list(char *comando, pDatosMensaje datos)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a ejecutar 
+.br
+\fIdatos\fP estructura con la informacion del mensaje
+.RE
+.PP
+.SH "RETURN"
+.PP
+COM_OK si todo va bien\&. Error en otro caso
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void listarCanalesUsuario (char *canal, intsckfd, char *prefijo, char *nicku)"
+
+.PP
+Funcion auxiliar relacionada con el comando LIST\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void listarCanalesUsuario(char *canal, int sckfd, char *prefijo, char *nicku) 
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcanal\fP canal sobre el que trabajar 
+.br
+\fIsckfd\fP socket desde el que enviar respuesta 
+.br
+\fIprefijo\fP prefijo del usuario 
+.br
+\fInicku\fP nick del usuario
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "\fBstatus\fP nick (char *comando, \fBpDatosMensaje\fPdatos)"
+
+.PP
+Ejecuta el comando NICK\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status nick(char* comando, pDatosMensaje datos)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a ejecutar 
+.br
+\fIdatos\fP estructura con la informacion del mensaje
+.RE
+.PP
+.SH "RETURN"
+.PP
+COM_OK si todo va bien\&. Error en otro caso
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "\fBstatus\fP user (char *comando, \fBpDatosMensaje\fPdatos)"
+
+.PP
+Ejecuta el comando USER\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status user(char* comando, pDatosMensaje datos)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a ejecutar 
+.br
+\fIdatos\fP estructura con la informacion del mensaje
+.RE
+.PP
+.SH "RETURN"
+.PP
+COM_OK si todo va bien\&. Error en otro caso
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "\fBstatus\fP who (char *comando, \fBpDatosMensaje\fPdatos)"
+
+.PP
+Ejecuta el comando WHO\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status who(char *comando, pDatosMensaje datos)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIcomando\fP comando a ejecutar 
+.br
+\fIdatos\fP estructura con la informacion del mensaje
+.RE
+.PP
+.SH "RETURN"
+.PP
+COM_OK si todo va bien\&. Error en otro caso
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

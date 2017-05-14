@@ -1,0 +1,84 @@
+.TH "srclib/comandos_noirc.c" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+srclib/comandos_noirc.c \- 
+.PP
+Funciones para el parseo de mensajes de envio de ficheros y audio\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include '\&.\&./includes/cliente\&.h'\fP
+.br
+\fC#include '\&.\&./includes/comandos_noirc\&.h'\fP
+.br
+\fC#include '\&.\&./includes/file_send\&.h'\fP
+.br
+\fC#include '\&.\&./includes/red_cliente\&.h'\fP
+.br
+\fC#include '\&.\&./includes/audiochat\&.h'\fP
+.br
+\fC#include <redes2/ircxchat\&.h>\fP
+.br
+\fC#include <redes2/irc\&.h>\fP
+.br
+\fC#include <stdio\&.h>\fP
+.br
+\fC#include <string\&.h>\fP
+.br
+\fC#include <stdlib\&.h>\fP
+.br
+\fC#include <sys/socket\&.h>\fP
+.br
+\fC#include <netinet/in\&.h>\fP
+.br
+\fC#include <arpa/inet\&.h>\fP
+.br
+\fC#include <sys/types\&.h>\fP
+.br
+\fC#include <sys/ioctl\&.h>\fP
+.br
+\fC#include <net/if\&.h>\fP
+.br
+\fC#include <inttypes\&.h>\fP
+.br
+
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "void \fBparse_noIRC\fP (char *comando, char *\fBnick\fP)"
+.br
+.RI "\fIFuncion de parseo\&. \fP"
+.ti -1c
+.RI "void \fBparse_fsend\fP (char *comando, char *\fBnick\fP)"
+.br
+.RI "\fIFuncion de parseo del fsend\&. \fP"
+.ti -1c
+.RI "void \fBparse_fcancel\fP (char *comando, char *\fBnick\fP)"
+.br
+.RI "\fIFuncion de parseo del fcancel\&. \fP"
+.ti -1c
+.RI "void \fBparse_audioexit\fP (char *comando, char *\fBnick\fP)"
+.br
+.RI "\fIFuncion de parseo del audioexit\&. \fP"
+.ti -1c
+.RI "void \fBparse_audiochat\fP (char *comando, char *\fBnick\fP)"
+.br
+.RI "\fIFuncion de parseo del audiochat\&. \fP"
+.in -1c
+.SH "Descripción detallada"
+.PP 
+Funciones para el parseo de mensajes de envio de ficheros y audio\&. 
+
+
+.SH "AUTHOR"
+.PP
+Pablo Marcos pablo.marcos@estudiante.uam.es 
+.SH "AUTHOR"
+.PP
+Dionisio Perez dionisio.perez@estudiante.uam.es 
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

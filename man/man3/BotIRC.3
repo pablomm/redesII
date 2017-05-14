@@ -1,0 +1,236 @@
+.TH "Bot" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Bot \- 
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "void \fBusage_bot\fP (void)"
+.br
+.RI "\fIImprime por stderr la ayuda de usuario\&. \fP"
+.ti -1c
+.RI "int \fBcrearSocketTCP_cliente_bot\fP (int *sckfd, char *server, unsigned short port)"
+.br
+.RI "\fIFuncion para crear un socket TCP para el bot\&. \fP"
+.ti -1c
+.RI "int \fBenviar_bot\fP (char *mensaje, int socket)"
+.br
+.RI "\fIFuncion para enviar mensajes desde el bot\&. \fP"
+.ti -1c
+.RI "ssize_t \fBrecibir_bot\fP (int sckfd, char *buffer, int max)"
+.br
+.RI "\fIFuncion para recibir mensajes desde el bot\&. \fP"
+.ti -1c
+.RI "void \fBprocesar_privmsg_bot\fP (int sckfd, int(*procesar)(char *, char *))"
+.br
+.RI "\fIFuncion para tratar los mensajes privados desde el bot\&. \fP"
+.ti -1c
+.RI "int \fBconectar_bot\fP (char *server, int port, char *channel, char *\fBnick\fP, char *\fBuser\fP, char *realname, int ssl)"
+.br
+.RI "\fIFuncion para conectar el botIRC\&. \fP"
+.ti -1c
+.RI "int \fBprivmsg_bot\fP (int argc, char **argv, int(*procesar)(char *, char *), char *name)"
+.br
+.RI "\fIFuncion para enviar un mensaje privado desde el bot\&. \fP"
+.in -1c
+.SH "Descripción detallada"
+.PP 
+
+.PP
+.PP
+Funciones que permiten el lanzamiento del bot
+.PP
+.PP
+ 
+.SH "Documentación de las funciones"
+.PP 
+.SS "int conectar_bot (char *server, intport, char *channel, char *nick, char *user, char *realname, intssl)"
+
+.PP
+Funcion para conectar el botIRC\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+int conectar_bot(char *server, int port, char *channel, char *nick, char *user, char *realname, int ssl)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIserver\fP servidor al que conectar 
+.br
+\fIport\fP puerto al que conectar 
+.br
+\fIchannel\fP canal al que unirse 
+.br
+\fInick\fP nick a utilizar 
+.br
+\fIuser\fP user a utiliazar 
+.br
+\fIrealname\fP realname a utilizar 
+.br
+\fIssl\fP para activar comunicacion segura SSL
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "int crearSocketTCP_cliente_bot (int *sckfd, char *server, unsigned shortport)"
+
+.PP
+Funcion para crear un socket TCP para el bot\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+int crearSocketTCP_cliente_bot(int *sckfd, char *server, unsigned short port)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsckfd\fP socket en el que conectar 
+.br
+\fIserver\fP servidor del que obtener direccion IP 
+.br
+\fIport\fP puerto al que conectar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "int enviar_bot (char *mensaje, intsocket)"
+
+.PP
+Funcion para enviar mensajes desde el bot\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+int enviar_bot(char *mensaje, int socket)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fImensaje\fP mensaje a enviar 
+.br
+\fIsocket\fP socket al que enviar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "int privmsg_bot (intargc, char **argv, int(*)(char *, char *)procesar, char *name)"
+
+.PP
+Funcion para enviar un mensaje privado desde el bot\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+int privmsg_bot(int argc, char **argv,int (*procesar)(char*,char*), char *name)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIargc\fP argument count 
+.br
+\fIargv\fP argument vector 
+.br
+\fIprocesar\fP funcion para procesar mensajes recibidos 
+.br
+\fIname\fP nombre del bot
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void procesar_privmsg_bot (intsckfd, int(*)(char *, char *)procesar)"
+
+.PP
+Funcion para tratar los mensajes privados desde el bot\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void procesar_privmsg_bot(int sckfd, int (*procesar)(char*,char*))
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsckfd\fP socket en el que recibir 
+.br
+\fIprocesar\fP funcion para procesar mensajes recibidos
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "ssize_t recibir_bot (intsckfd, char *buffer, intmax)"
+
+.PP
+Funcion para recibir mensajes desde el bot\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+ssize_t recibir_bot(int sckfd, char *buffer, int max)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsckfd\fP socket en el que recibir 
+.br
+\fIbuffer\fP mensaje a recibir 
+.br
+\fImax\fP tamanno maximo a leer
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void usage_bot (void)"
+
+.PP
+Imprime por stderr la ayuda de usuario\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void usage_bot(void)
+.fi
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

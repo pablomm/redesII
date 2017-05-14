@@ -1,0 +1,78 @@
+.TH "includes/red_servidor.h" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+includes/red_servidor.h \- 
+.PP
+crear sockets, aceptar conexion y enviar  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <netinet/in\&.h>\fP
+.br
+\fC#include <netdb\&.h>\fP
+.br
+\fC#include <pthread\&.h>\fP
+.br
+\fC#include <sys/socket\&.h>\fP
+.br
+\fC#include 'config\&.h'\fP
+.br
+
+.SS "'defines'"
+
+.in +1c
+.ti -1c
+.RI "#define \fBMAX_QUEUE\fP   15"
+.br
+.ti -1c
+.RI "#define \fBPING_TIME\fP   30"
+.br
+.ti -1c
+.RI "#define \fBRED_ERROR\fP   -1"
+.br
+.ti -1c
+.RI "#define \fBRED_OK\fP   0"
+.br
+.in -1c
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "\fBstatus\fP \fBcrearSocketTCP\fP (int *sckfd, unsigned short port)"
+.br
+.RI "\fIcrea un socket TCP \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBaceptarConexion\fP (int sockval, int *sckfd, struct sockaddr_in *address)"
+.br
+.RI "\fIAcepta conexion entrante\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBenviar\fP (int sockfd, char *mensaje)"
+.br
+.RI "\fIEnvia mensaje desde el socket especificado\&. \fP"
+.in -1c
+.SH "Descripción detallada"
+.PP 
+crear sockets, aceptar conexion y enviar 
+
+
+.SH "AUTHOR"
+.PP
+Pablo Marcos pablo.marcos@estudiante.uam.es 
+.SH "AUTHOR"
+.PP
+Dionisio Perez dionisio.perez@estudiante.uam.es 
+.SH "Documentación de los 'defines'"
+.PP 
+.SS "#define MAX_QUEUE   15"
+
+.SS "#define PING_TIME   30"
+Tiempo maximo entre pings 
+.SS "#define RED_ERROR   -1"
+
+.SS "#define RED_OK   0"
+
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

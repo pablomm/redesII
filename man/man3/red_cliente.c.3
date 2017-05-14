@@ -1,0 +1,68 @@
+.TH "srclib/red_cliente.c" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+srclib/red_cliente.c \- 
+.PP
+crear sockets y enviar referido al cliente  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <netinet/in\&.h>\fP
+.br
+\fC#include <netdb\&.h>\fP
+.br
+\fC#include <sys/socket\&.h>\fP
+.br
+\fC#include <syslog\&.h>\fP
+.br
+\fC#include <stdlib\&.h>\fP
+.br
+\fC#include <string\&.h>\fP
+.br
+\fC#include <redes2/ircxchat\&.h>\fP
+.br
+\fC#include '\&.\&./includes/ssl\&.h'\fP
+.br
+\fC#include '\&.\&./includes/red_cliente\&.h'\fP
+.br
+
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "\fBstatus\fP \fBcrearSocketTCP_cliente\fP (int *sckfd, char *server, unsigned short port)"
+.br
+.RI "\fIcrea un socket TCP \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBenviar_cliente\fP (char *mensaje)"
+.br
+.RI "\fIenvia mensaje desde el socket especificado \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBenviar_clienteThread\fP (char *mensaje)"
+.br
+.RI "\fIenvia mensaje desde el socket especificado (funcion de hilos) \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBsocketUDP\fP (int *sckfd, short puerto)"
+.br
+.RI "\fICrea un socket UDP\&. \fP"
+.ti -1c
+.RI "int \fBcrearSocketTCP_cliente_aux\fP (int *sckfd, char *server, unsigned short port)"
+.br
+.RI "\fICrea un socket TCP\&. \fP"
+.in -1c
+.SH "Descripción detallada"
+.PP 
+crear sockets y enviar referido al cliente 
+
+
+.SH "AUTHOR"
+.PP
+Pablo Marcos pablo.marcos@estudiante.uam.es 
+.SH "AUTHOR"
+.PP
+Dionisio Perez dionisio.perez@estudiante.uam.es 
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

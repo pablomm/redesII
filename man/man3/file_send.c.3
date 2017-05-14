@@ -1,0 +1,121 @@
+.TH "srclib/file_send.c" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+srclib/file_send.c \- 
+.PP
+Funciones para el envio de archivos\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <redes2/irc\&.h>\fP
+.br
+\fC#include <redes2/ircxchat\&.h>\fP
+.br
+\fC#include '\&.\&./includes/cliente\&.h'\fP
+.br
+\fC#include '\&.\&./includes/red_servidor\&.h'\fP
+.br
+\fC#include '\&.\&./includes/red_cliente\&.h'\fP
+.br
+\fC#include <sys/socket\&.h>\fP
+.br
+\fC#include <netinet/in\&.h>\fP
+.br
+\fC#include <arpa/inet\&.h>\fP
+.br
+\fC#include <sys/types\&.h>\fP
+.br
+\fC#include <sys/ioctl\&.h>\fP
+.br
+\fC#include <net/if\&.h>\fP
+.br
+\fC#include <inttypes\&.h>\fP
+.br
+
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "void \fBcerrar_envio\fP (void)"
+.br
+.RI "\fIFuncion para cerrar conexion de envio\&. \fP"
+.ti -1c
+.RI "void \fBmanejador_aceptar\fP (int sig)"
+.br
+.RI "\fIManejador de señal SIGALRM\&. \fP"
+.ti -1c
+.RI "void \fBmanejador_timeout\fP (int sig)"
+.br
+.RI "\fIManejador de señal SIGUSR1\&. \fP"
+.ti -1c
+.RI "void \fBmanejador_fcancel\fP (int sig)"
+.br
+.RI "\fIManejador de señal SIGUSR2\&. \fP"
+.ti -1c
+.RI "void * \fBtimeout_aceptar\fP (void *id_thread)"
+.br
+.RI "\fIFuncion que controla el timeout hasta la acepcion del envio de ficheros\&. \fP"
+.ti -1c
+.RI "void * \fBfile_send_func\fP (void *envioVoid)"
+.br
+.RI "\fIFuncion que controla el envio de ficheros\&. \fP"
+.ti -1c
+.RI "void \fBcerrar_recepcion\fP (void)"
+.br
+.RI "\fIFuncion para cerrar conexion de recepcion de ficheros\&. \fP"
+.ti -1c
+.RI "void * \fBfile_recv_func\fP (void *recvVoid)"
+.br
+.RI "\fIFuncion que controla la recepcion de ficheros\&. \fP"
+.ti -1c
+.RI "void \fBnormalize_file\fP (char *f)"
+.br
+.RI "\fIFuncion para sustituir en el nombre de archivo espacios en blanco por barras bajas\&. \fP"
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "int \fBsocket_envio_archivo\fP"
+.br
+.ti -1c
+.RI "int \fBdesc_envio_archivo\fP"
+.br
+.ti -1c
+.RI "int \fBsocket_recv_archivo\fP"
+.br
+.ti -1c
+.RI "FILE * \fBfp_recv\fP"
+.br
+.ti -1c
+.RI "pthread_t \fBt_aux\fP"
+.br
+.in -1c
+.SH "Descripción detallada"
+.PP 
+Funciones para el envio de archivos\&. 
+
+
+.SH "AUTHOR"
+.PP
+Pablo Marcos pablo.marcos@estudiante.uam.es 
+.SH "AUTHOR"
+.PP
+Dionisio Perez dionisio.perez@estudiante.uam.es 
+.SH "Documentación de las variables"
+.PP 
+.SS "int desc_envio_archivo"
+
+.SS "FILE* fp_recv"
+
+.SS "int socket_envio_archivo"
+
+.SS "int socket_recv_archivo"
+
+.SS "pthread_t t_aux"
+
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

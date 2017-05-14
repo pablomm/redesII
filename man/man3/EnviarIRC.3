@@ -1,0 +1,272 @@
+.TH "EnviarIRC" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+EnviarIRC \- 
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "void \fBcerrar_envio\fP (void)"
+.br
+.RI "\fIFuncion para cerrar conexion de envio\&. \fP"
+.ti -1c
+.RI "void \fBmanejador_aceptar\fP (int sig)"
+.br
+.RI "\fIManejador de señal SIGALRM\&. \fP"
+.ti -1c
+.RI "void \fBmanejador_timeout\fP (int sig)"
+.br
+.RI "\fIManejador de señal SIGUSR1\&. \fP"
+.ti -1c
+.RI "void \fBmanejador_fcancel\fP (int sig)"
+.br
+.RI "\fIManejador de señal SIGUSR2\&. \fP"
+.ti -1c
+.RI "void * \fBtimeout_aceptar\fP (void *id_thread)"
+.br
+.RI "\fIFuncion que controla el timeout hasta la acepcion del envio de ficheros\&. \fP"
+.ti -1c
+.RI "void * \fBfile_send_func\fP (void *envioVoid)"
+.br
+.RI "\fIFuncion que controla el envio de ficheros\&. \fP"
+.ti -1c
+.RI "void \fBcerrar_recepcion\fP (void)"
+.br
+.RI "\fIFuncion para cerrar conexion de recepcion de ficheros\&. \fP"
+.ti -1c
+.RI "void * \fBfile_recv_func\fP (void *recvVoid)"
+.br
+.RI "\fIFuncion que controla la recepcion de ficheros\&. \fP"
+.ti -1c
+.RI "void \fBnormalize_file\fP (char *f)"
+.br
+.RI "\fIFuncion para sustituir en el nombre de archivo espacios en blanco por barras bajas\&. \fP"
+.in -1c
+.SH "Descripción detallada"
+.PP 
+
+.PP
+.PP
+Comprende funciones para el envio de archivos
+.PP
+.PP
+ 
+.SH "Documentación de las funciones"
+.PP 
+.SS "void cerrar_envio (void)"
+
+.PP
+Funcion para cerrar conexion de envio\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <file_send\&.h>
+
+void cerrar_envio(void)
+.fi
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void cerrar_recepcion (void)"
+
+.PP
+Funcion para cerrar conexion de recepcion de ficheros\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <file_send\&.h>
+
+void cerrar_recepcion(void)
+.fi
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void* file_recv_func (void *recvVoid)"
+
+.PP
+Funcion que controla la recepcion de ficheros\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <file_send\&.h>
+
+void file_recv_func(void * recvVoid)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIrecvVoid\fP estructura con la informacion para recibir envio
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void* file_send_func (void *envioVoid)"
+
+.PP
+Funcion que controla el envio de ficheros\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <file_send\&.h>
+
+void file_send_func(void * envioVoid)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIenvioVoid\fP estructura con la informacion del envio
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void manejador_aceptar (intsig)"
+
+.PP
+Manejador de señal SIGALRM\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <file_send\&.h>
+
+void manejador_aceptar(int sig)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsig\fP señal a manejar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void manejador_fcancel (intsig)"
+
+.PP
+Manejador de señal SIGUSR2\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <file_send\&.h>
+
+void manejador_fcancel(int sig)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsig\fP señal a manejar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void manejador_timeout (intsig)"
+
+.PP
+Manejador de señal SIGUSR1\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <file_send\&.h>
+
+void manejador_timeout(int sig)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsig\fP señal a manejar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void normalize_file (char *f)"
+
+.PP
+Funcion para sustituir en el nombre de archivo espacios en blanco por barras bajas\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <file_send\&.h>
+
+void normalize_file(char* f)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIf\fP archivo a modificar su nombre
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void* timeout_aceptar (void *id_thread)"
+
+.PP
+Funcion que controla el timeout hasta la acepcion del envio de ficheros\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+#include <file_send\&.h>
+
+void timeout_aceptar(void *id_thread)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIid_thread\fP identificador del hilo de control
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

@@ -1,0 +1,263 @@
+.TH "src/xchat2.c" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+src/xchat2.c \- 
+.PP
+funciones referidas al uso de la interfaz xchat2  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <redes2/ircxchat\&.h>\fP
+.br
+\fC#include <redes2/irc\&.h>\fP
+.br
+\fC#include '\&.\&./includes/red_cliente\&.h'\fP
+.br
+\fC#include '\&.\&./includes/cliente\&.h'\fP
+.br
+\fC#include '\&.\&./includes/irc_cliente\&.h'\fP
+.br
+\fC#include '\&.\&./includes/file_send\&.h'\fP
+.br
+\fC#include '\&.\&./includes/comandos_cliente\&.h'\fP
+.br
+\fC#include '\&.\&./includes/audiochat\&.h'\fP
+.br
+\fC#include '\&.\&./includes/ssl\&.h'\fP
+.br
+\fC#include <stdlib\&.h>\fP
+.br
+\fC#include <sys/socket\&.h>\fP
+.br
+\fC#include <netinet/in\&.h>\fP
+.br
+\fC#include <arpa/inet\&.h>\fP
+.br
+\fC#include <sys/types\&.h>\fP
+.br
+\fC#include <sys/ioctl\&.h>\fP
+.br
+\fC#include <net/if\&.h>\fP
+.br
+\fC#include <inttypes\&.h>\fP
+.br
+\fC#include <getopt\&.h>\fP
+.br
+
+.SS "'defines'"
+
+.in +1c
+.ti -1c
+.RI "#define \fBPATH_CLIENT_CERT\fP   'certs/cliente\&.pem'"
+.br
+.ti -1c
+.RI "#define \fBPATH_CLIENT_PKEY\fP   'certs/clientkeypri\&.pem'"
+.br
+.in -1c
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "void \fBusage\fP (void)"
+.br
+.RI "\fIImprime por stderr la ayuda de usuario\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBinicializar_cliente\fP (char *\fBnick\fP, char *realname, char *\fBuser\fP, char *server, int port)"
+.br
+.RI "\fIFuncion para crear un socket TCP para el cliente echo\&. \fP"
+.ti -1c
+.RI "void \fBIRCInterface_ActivateChannelKey\fP (char *channel, char *key)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_ActivateExternalMessages\fP (char *channel)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_ActivateInvite\fP (char *channel)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_ActivateModerated\fP (char *channel)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_ActivateNicksLimit\fP (char *channel, int limit)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_ActivatePrivate\fP (char *channel)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_ActivateProtectTopic\fP (char *channel)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_ActivateSecret\fP (char *channel)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_BanNick\fP (char *channel, char *\fBnick\fP)"
+.br
+.ti -1c
+.RI "long \fBIRCInterface_Connect\fP (char *\fBnick\fP, char *\fBuser\fP, char *realname, char *password, char *server, int port, boolean ssl)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_DeactivateChannelKey\fP (char *channel)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_DeactivateExternalMessages\fP (char *channel)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_DeactivateInvite\fP (char *channel)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_DeactivateModerated\fP (char *channel)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_DeactivateNicksLimit\fP (char *channel)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_DeactivatePrivate\fP (char *channel)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_DeactivateProtectTopic\fP (char *channel)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_DeactivateSecret\fP (char *channel)"
+.br
+.ti -1c
+.RI "boolean \fBIRCInterface_DisconnectServer\fP (char *server, int port)"
+.br
+.ti -1c
+.RI "boolean \fBIRCInterface_ExitAudioChat\fP (char *\fBnick\fP)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_GiveOp\fP (char *channel, char *\fBnick\fP)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_GiveVoice\fP (char *channel, char *\fBnick\fP)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_KickNick\fP (char *channel, char *\fBnick\fP)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_NewCommandText\fP (char *command)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_NewTopicEnter\fP (char *topicdata)"
+.br
+.ti -1c
+.RI "boolean \fBIRCInterface_SendFile\fP (char *filename, char *\fBnick\fP, char *data, long unsigned int length)"
+.br
+.ti -1c
+.RI "boolean \fBIRCInterface_StartAudioChat\fP (char *\fBnick\fP)"
+.br
+.ti -1c
+.RI "boolean \fBIRCInterface_StopAudioChat\fP (char *\fBnick\fP)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_TakeOp\fP (char *channel, char *\fBnick\fP)"
+.br
+.ti -1c
+.RI "void \fBIRCInterface_TakeVoice\fP (char *channel, char *\fBnick\fP)"
+.br
+.ti -1c
+.RI "char * \fBget_interfaz\fP ()"
+.br
+.RI "\fIDevuelve la IP de la interfaz que esta siendo utilizada para la conexion de internet\&. \fP"
+.ti -1c
+.RI "void \fBIRCPrueba_NOInterface\fP (char *cadena, int port)"
+.br
+.ti -1c
+.RI "int \fBmain\fP (int argc, char *argv[])"
+.br
+.in -1c
+.SH "Descripción detallada"
+.PP 
+funciones referidas al uso de la interfaz xchat2 
+
+
+.SH "AUTHOR"
+.PP
+Pablo Marcos pablo.marcos@estudiante.uam.es 
+.SH "AUTHOR"
+.PP
+Dionisio Perez dionisio.perez@estudiante.uam.es 
+.SH "Documentación de los 'defines'"
+.PP 
+.SS "#define PATH_CLIENT_CERT   'certs/cliente\&.pem'"
+
+.SS "#define PATH_CLIENT_PKEY   'certs/clientkeypri\&.pem'"
+
+.SH "Documentación de las funciones"
+.PP 
+.SS "char* get_interfaz ()"
+
+.PP
+Devuelve la IP de la interfaz que esta siendo utilizada para la conexion de internet\&. 
+.SH "RETURN"
+.PP
+nombre del host o NULL si no ha conseguido obtenerla\&. Es necesario liberar la variable de retorno\&. 
+.SS "void IRCInterface_ActivateChannelKey (char *channel, char *key)"
+
+.SS "void IRCInterface_ActivateExternalMessages (char *channel)"
+
+.SS "void IRCInterface_ActivateInvite (char *channel)"
+
+.SS "void IRCInterface_ActivateModerated (char *channel)"
+
+.SS "void IRCInterface_ActivateNicksLimit (char *channel, intlimit)"
+
+.SS "void IRCInterface_ActivatePrivate (char *channel)"
+
+.SS "void IRCInterface_ActivateProtectTopic (char *channel)"
+
+.SS "void IRCInterface_ActivateSecret (char *channel)"
+
+.SS "void IRCInterface_BanNick (char *channel, char *nick)"
+
+.SS "long IRCInterface_Connect (char *nick, char *user, char *realname, char *password, char *server, intport, booleanssl)"
+
+.SS "void IRCInterface_DeactivateChannelKey (char *channel)"
+
+.SS "void IRCInterface_DeactivateExternalMessages (char *channel)"
+
+.SS "void IRCInterface_DeactivateInvite (char *channel)"
+
+.SS "void IRCInterface_DeactivateModerated (char *channel)"
+
+.SS "void IRCInterface_DeactivateNicksLimit (char *channel)"
+
+.SS "void IRCInterface_DeactivatePrivate (char *channel)"
+
+.SS "void IRCInterface_DeactivateProtectTopic (char *channel)"
+
+.SS "void IRCInterface_DeactivateSecret (char *channel)"
+
+.SS "boolean IRCInterface_DisconnectServer (char *server, intport)"
+
+.SS "boolean IRCInterface_ExitAudioChat (char *nick)"
+
+.SS "void IRCInterface_GiveOp (char *channel, char *nick)"
+
+.SS "void IRCInterface_GiveVoice (char *channel, char *nick)"
+
+.SS "void IRCInterface_KickNick (char *channel, char *nick)"
+
+.SS "void IRCInterface_NewCommandText (char *command)"
+
+.SS "void IRCInterface_NewTopicEnter (char *topicdata)"
+
+.SS "boolean IRCInterface_SendFile (char *filename, char *nick, char *data, long unsigned intlength)"
+
+.SS "boolean IRCInterface_StartAudioChat (char *nick)"
+
+.SS "boolean IRCInterface_StopAudioChat (char *nick)"
+
+.SS "void IRCInterface_TakeOp (char *channel, char *nick)"
+
+.SS "void IRCInterface_TakeVoice (char *channel, char *nick)"
+
+.SS "void IRCPrueba_NOInterface (char *cadena, intport)"
+
+.SS "int main (intargc, char *argv[])"
+MMMMMMMMMM MMMMM AAAAAAA IIIIIII NNNNNNNNNN NNNNNN MMMMMMMMMM MMMMM AAAAAAAA IIIII NNNNNNNNNN NNNN MMPMM MMMM MM MM AAAAA AA III NNNNN NNNN NN MMAMM MMMM MM MM AAAAA AA III NNNNN NNNN NN MMBMM MMMM MM MM AAAAA AA III NNNNN NNNN NN MMLMM MMMM MM MM AAAAA AA III NNNNN NNNN NN MMOMM MMMM MM MM AAAAA AA III NNNNN NNNN NN MMMMM MMMM MM MM AAAAAAAAAAAAAA III NNNNN NNNN NN MMAMM MMMMM MM AAAAA AA III NNNNN NNNN NN MMRMM MMM MM AAAAA AA III NNNNN NNNN NN MMCMM MM AAAAA AA III NNNNN NNNN NN MMOMM MM AAAAA AA III NNNNN NNNN NN MMMSMMM MMMM AAAAAA AAAA IIIII NNNNNN NNNNNNN MMMMMMMMM MMMMMM AAAAAAAA AAAAAA IIIIIII NNNNNNN NNNNNNN 
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

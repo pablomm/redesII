@@ -1,0 +1,150 @@
+.TH "srclib/funciones_servidor.c" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+srclib/funciones_servidor.c \- 
+.PP
+funciones referidas a los comandos  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include '\&.\&./includes/funciones_servidor\&.h'\fP
+.br
+\fC#include '\&.\&./includes/conexion_temp\&.h'\fP
+.br
+\fC#include '\&.\&./includes/ssl\&.h'\fP
+.br
+\fC#include <redes2/irc\&.h>\fP
+.br
+
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "void \fBliberarEstructuras\fP (void)"
+.br
+.RI "\fILibera estructuras antes de cerrar servidor\&. \fP"
+.ti -1c
+.RI "void * \fBmanejaMensaje\fP (void *pdesc)"
+.br
+.RI "\fIParsea el mensaje recibido\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBprocesaComando\fP (char *comando, \fBpDatosMensaje\fP datos)"
+.br
+.RI "\fISelecciona comando del array a ejecutar\&. \fP"
+.ti -1c
+.RI "void \fBenviarMensajePrivado\fP (int sckfd, char *mensaje, char *\fBnick\fP, char *nickorigin, int sndaway)"
+.br
+.RI "\fIFuncion auxilar del comando PRIVMSG\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBnuevaConexion\fP (int desc, struct sockaddr_in *address)"
+.br
+.RI "\fICrea una nueva conexion\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBcerrarConexion\fP (int socket)"
+.br
+.RI "\fICierra una conexion\&. \fP"
+.ti -1c
+.RI "void \fBliberaDatosMensaje\fP (\fBpDatosMensaje\fP datos)"
+.br
+.RI "\fILibera informacion del mensaje\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBcrea_comandos\fP (void)"
+.br
+.RI "\fIInicializa el array de comandos\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBliberarUserData\fP (char *\fBuser\fP, char *\fBnick\fP, char *real, char *host, char *IP, char *\fBaway\fP)"
+.br
+.RI "\fIInicializa rutina ping-pong\&. \fP"
+.ti -1c
+.RI "void \fBwhoischannels\fP (int sckfd, char *nick1, char *nick2, char *\fBuser\fP, char *target)"
+.br
+.RI "\fIFuncion auxiliar para el comando WHOIS\&. \fP"
+.ti -1c
+.RI "void \fBsendAway\fP (int sckfd, char *\fBaway\fP, char *\fBnick\fP, char *nickorig)"
+.br
+.RI "\fIFuncion auxiliar para el comando WHOIS\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBwhois\fP (char *comando, \fBpDatosMensaje\fP datos)"
+.br
+.RI "\fIEjecuta el comando WHOIS\&. \fP"
+.ti -1c
+.RI "void \fBlistarNamesCanal\fP (char *canal, int sckfd, char *prefijo, char *nicku)"
+.br
+.RI "\fIFuncion auxiliar para el comando NAMES\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBnames\fP (char *comando, \fBpDatosMensaje\fP datos)"
+.br
+.RI "\fIEjecuta el comando NAMES\&. \fP"
+.ti -1c
+.RI "void \fBenviarMensajeACanal\fP (int sckfd, char *mensaje, char *canal, char *nickorigin)"
+.br
+.RI "\fIFuncion auxilar del comando PRIVMSG\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBprivmsg\fP (char *comando, \fBpDatosMensaje\fP datos)"
+.br
+.RI "\fIEjecuta el comando PRIVMSG\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBping\fP (char *comando, \fBpDatosMensaje\fP datos)"
+.br
+.RI "\fIEjecuta el comando PING\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBpong\fP (char *comando, \fBpDatosMensaje\fP datos)"
+.br
+.RI "\fIEjecuta el comando PONG\&. \fP"
+.ti -1c
+.RI "void \fBpartirCanal\fP (int sckfd, char *canal, char *\fBnick\fP, char *real, char *msg)"
+.br
+.RI "\fIFuncion auxilar del comando PART\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBpart\fP (char *comando, \fBpDatosMensaje\fP datos)"
+.br
+.RI "\fIEjecuta el comando PART\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBtopic\fP (char *comando, \fBpDatosMensaje\fP datos)"
+.br
+.RI "\fIEjecuta el comando TOPIC\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBkick\fP (char *comando, \fBpDatosMensaje\fP datos)"
+.br
+.RI "\fIEjecuta el comando KICK\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBaway\fP (char *comando, \fBpDatosMensaje\fP datos)"
+.br
+.RI "\fIEjecuta el comando AWAY\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBmode\fP (char *comando, \fBpDatosMensaje\fP datos)"
+.br
+.RI "\fIEjecuta el comando MODE\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBquit\fP (char *comando, \fBpDatosMensaje\fP datos)"
+.br
+.RI "\fIEjecuta el comando QUIT\&. \fP"
+.ti -1c
+.RI "char * \fBgetMOTD\fP (void)"
+.br
+.RI "\fIObtiene ruta del motd a mostrar\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBmotd\fP (char *comando, \fBpDatosMensaje\fP datos)"
+.br
+.RI "\fIEjecuta el comando MOTD\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBcomandoVacio\fP (char *comando, \fBpDatosMensaje\fP datos)"
+.br
+.RI "\fIEjecuta el comando NO_COMMAND\&. \fP"
+.in -1c
+.SH "Descripción detallada"
+.PP 
+funciones referidas a los comandos 
+
+
+.SH "AUTHOR"
+.PP
+Pablo Marcos pablo.marcos@estudiante.uam.es 
+.SH "AUTHOR"
+.PP
+Dionisio Perez dionisio.perez@estudiante.uam.es 
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

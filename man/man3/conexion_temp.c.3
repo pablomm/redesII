@@ -1,0 +1,60 @@
+.TH "srclib/conexion_temp.c" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+srclib/conexion_temp.c \- 
+.PP
+estructura y funciones del usuario temporal  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include '\&.\&./includes/conexion_temp\&.h'\fP
+.br
+
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "\fBstatus\fP \fBnewTempUser\fP (int socket, char *ip, char *host)"
+.br
+.RI "\fICrea un nuevo usuario temporal\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBsetNickTemporal\fP (\fBpTempUser\fP usuario, char *\fBnick\fP)"
+.br
+.RI "\fIModifica el nick del usuario temporal\&. \fP"
+.ti -1c
+.RI "\fBpTempUser\fP \fBpullTempUser\fP (int socket)"
+.br
+.RI "\fIBusca por socket un usuario temporal en la lista\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBdeleteTempUser\fP (int socket)"
+.br
+.RI "\fIElimina un usario temporal\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBliberaTempUser\fP (\fBpTempUser\fP usuario)"
+.br
+.RI "\fIElimina de memoria un usuario temporal\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBliberaTodosTempUser\fP (void)"
+.br
+.RI "\fIElimina de memoria a todos los usuarios temporales\&. \fP"
+.ti -1c
+.RI "\fBstatus\fP \fBprintDebugUsers\fP (void)"
+.br
+.RI "\fIFuncion para debbugear usuarios temporales\&. \fP"
+.in -1c
+.SH "Descripción detallada"
+.PP 
+estructura y funciones del usuario temporal 
+
+
+.SH "AUTHOR"
+.PP
+Pablo Marcos pablo.marcos@estudiante.uam.es 
+.SH "AUTHOR"
+.PP
+Dionisio Perez dionisio.perez@estudiante.uam.es 
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

@@ -1,0 +1,116 @@
+.TH "srclib/bot.c" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+srclib/bot.c \- 
+.PP
+Lanza el bot\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <unistd\&.h>\fP
+.br
+\fC#include <redes2/irc\&.h>\fP
+.br
+\fC#include <netinet/in\&.h>\fP
+.br
+\fC#include <netdb\&.h>\fP
+.br
+\fC#include <sys/socket\&.h>\fP
+.br
+\fC#include <getopt\&.h>\fP
+.br
+\fC#include <stdio\&.h>\fP
+.br
+\fC#include <string\&.h>\fP
+.br
+\fC#include <stdlib\&.h>\fP
+.br
+\fC#include '\&.\&./includes/ssl\&.h'\fP
+.br
+\fC#include '\&.\&./includes/bot\&.h'\fP
+.br
+
+.SS "'defines'"
+
+.in +1c
+.ti -1c
+.RI "#define \fBTAM_BUFFER_COMMAND\fP   120"
+.br
+.ti -1c
+.RI "#define \fBDEFAULT_SERVER\fP   'localhost'"
+.br
+.ti -1c
+.RI "#define \fBDEFAULT_BOT_PORT\fP   6667"
+.br
+.ti -1c
+.RI "#define \fBDEFAULT_SSL_BOT_PORT\fP   6669"
+.br
+.ti -1c
+.RI "#define \fBPATH_CLIENT_CERT\fP   'certs/cliente\&.pem'"
+.br
+.ti -1c
+.RI "#define \fBPATH_CLIENT_PKEY\fP   'certs/clientkeypri\&.pem'"
+.br
+.in -1c
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "void \fBusage_bot\fP (void)"
+.br
+.RI "\fIImprime por stderr la ayuda de usuario\&. \fP"
+.ti -1c
+.RI "int \fBcrearSocketTCP_cliente_bot\fP (int *sckfd, char *server, unsigned short port)"
+.br
+.RI "\fIFuncion para crear un socket TCP para el bot\&. \fP"
+.ti -1c
+.RI "int \fBenviar_bot\fP (char *mensaje, int socket)"
+.br
+.RI "\fIFuncion para enviar mensajes desde el bot\&. \fP"
+.ti -1c
+.RI "ssize_t \fBrecibir_bot\fP (int sckfd, char *buffer, int max)"
+.br
+.RI "\fIFuncion para recibir mensajes desde el bot\&. \fP"
+.ti -1c
+.RI "void \fBprocesar_privmsg_bot\fP (int sckfd, int(*procesar)(char *, char *))"
+.br
+.RI "\fIFuncion para tratar los mensajes privados desde el bot\&. \fP"
+.ti -1c
+.RI "int \fBconectar_bot\fP (char *server, int port, char *channel, char *\fBnick\fP, char *\fBuser\fP, char *realname, int ssl)"
+.br
+.RI "\fIFuncion para conectar el botIRC\&. \fP"
+.ti -1c
+.RI "int \fBprivmsg_bot\fP (int argc, char **argv, int(*procesar)(char *, char *), char *name)"
+.br
+.RI "\fIFuncion para enviar un mensaje privado desde el bot\&. \fP"
+.in -1c
+.SH "Descripción detallada"
+.PP 
+Lanza el bot\&. 
+
+
+.SH "AUTHOR"
+.PP
+Pablo Marcos pablo.marcos@estudiante.uam.es 
+.SH "AUTHOR"
+.PP
+Dionisio Perez dionisio.perez@estudiante.uam.es 
+.SH "Documentación de los 'defines'"
+.PP 
+.SS "#define DEFAULT_BOT_PORT   6667"
+
+.SS "#define DEFAULT_SERVER   'localhost'"
+
+.SS "#define DEFAULT_SSL_BOT_PORT   6669"
+
+.SS "#define PATH_CLIENT_CERT   'certs/cliente\&.pem'"
+
+.SS "#define PATH_CLIENT_PKEY   'certs/clientkeypri\&.pem'"
+
+.SS "#define TAM_BUFFER_COMMAND   120"
+
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

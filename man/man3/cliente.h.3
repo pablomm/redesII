@@ -1,0 +1,500 @@
+.TH "includes/cliente.h" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+includes/cliente.h \- 
+.PP
+Macros y estructuras necesarias para el tratamiento del cliente\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include <pthread\&.h>\fP
+.br
+
+.SS "Estructuras de datos"
+
+.in +1c
+.ti -1c
+.RI "struct \fB_cliente\fP"
+.br
+.ti -1c
+.RI "struct \fB_envio\fP"
+.br
+.ti -1c
+.RI "struct \fB_recepcion\fP"
+.br
+.ti -1c
+.RI "struct \fB_audioenvio\fP"
+.br
+.ti -1c
+.RI "struct \fB_audiorecepcion\fP"
+.br
+.in -1c
+.SS "'defines'"
+
+.in +1c
+.ti -1c
+.RI "#define \fBCONECTADO\fP   0"
+.br
+.ti -1c
+.RI "#define \fBNO_CONECTADO\fP   -1"
+.br
+.ti -1c
+.RI "#define \fBPENDIENTE\fP   -2"
+.br
+.ti -1c
+.RI "#define \fBOCUPADO\fP   -3"
+.br
+.ti -1c
+.RI "#define \fBDISPONIBLE\fP   0"
+.br
+.ti -1c
+.RI "#define \fBESPERANDO_ACCEPT\fP   4"
+.br
+.ti -1c
+.RI "#define \fBENVIANDO_ARCHIVO\fP   5"
+.br
+.ti -1c
+.RI "#define \fBENVIO_COMPLETADO\fP   6"
+.br
+.ti -1c
+.RI "#define \fBENVIO_CANCELADO\fP   -4"
+.br
+.ti -1c
+.RI "#define \fBTIMEOUT_ACCEPT\fP   15"
+.br
+.ti -1c
+.RI "#define \fBBUFFERAUDIO\fP   2560"
+.br
+.ti -1c
+.RI "#define \fBTAMPACKETAUDIO\fP   800"
+.br
+.ti -1c
+.RI "#define \fBRECV_FILE\fP   'files'"
+.br
+.ti -1c
+.RI "#define \fBTAM_LIMIT_NICK\fP   10"
+.br
+.ti -1c
+.RI "#define \fBTAM_ERROR_MSG\fP   40"
+.br
+.ti -1c
+.RI "#define \fBTAM_RECV\fP   16384"
+.br
+.ti -1c
+.RI "#define \fBTAM_COM_USER\fP   256"
+.br
+.ti -1c
+.RI "#define \fBTAM_DEST\fP   128"
+.br
+.ti -1c
+.RI "#define \fBTAM_LINE\fP   80"
+.br
+.ti -1c
+.RI "#define \fBTAM_LINE_MED\fP   240"
+.br
+.ti -1c
+.RI "#define \fBDELIMITERS\fP   ', '"
+.br
+.ti -1c
+.RI "#define \fBCOMANDO_LEN\fP   200"
+.br
+.ti -1c
+.RI "#define \fBTAM_INTERFACE\fP   15"
+.br
+.ti -1c
+.RI "#define \fBTAM_PACKAGE\fP   8192"
+.br
+.ti -1c
+.RI "#define \fBDEFAULT_INTERFACE\fP   'wlan0'"
+.br
+.ti -1c
+.RI "#define \fBFCANCEL\fP   '\\001FCANCEL'"
+.br
+.ti -1c
+.RI "#define \fBNOTICE_TYPE\fP   'NOTICE'"
+.br
+.ti -1c
+.RI "#define \fBWHOIS_TYPE\fP   '  WHOIS  '"
+.br
+.ti -1c
+.RI "#define \fBTOPIC_TYPE\fP   'TOPIC'"
+.br
+.ti -1c
+.RI "#define \fBKICK_MSG\fP   'Fuera de aqui, rata!'"
+.br
+.ti -1c
+.RI "#define \fBQUIT_MSG\fP   'Asas'"
+.br
+.ti -1c
+.RI "#define \fBERROR_COMMAND_MSG\fP   'Comando no reconocido: '"
+.br
+.ti -1c
+.RI "#define \fBUSER_IN_CHANNEL_MSG\fP   ' se ha unido al canal'"
+.br
+.ti -1c
+.RI "#define \fBJOIN_CHANNEL_MSG\fP   'Te has unido al canal'"
+.br
+.ti -1c
+.RI "#define \fBEND_OF_MOTD_MSG\fP   'End of MOTD'"
+.br
+.ti -1c
+.RI "#define \fBMOTD_START_MSG\fP   'Message of the day of '"
+.br
+.ti -1c
+.RI "#define \fBNAMREPLY_MSG\fP   'Usuarios en '"
+.br
+.ti -1c
+.RI "#define \fBNICK_CHANGE_SELF_MSG\fP   'Cambio de nombre efectuado: '"
+.br
+.ti -1c
+.RI "#define \fBRPL_QUIT_MSG\fP   '%s ha abandonado el servidor: %s'"
+.br
+.ti -1c
+.RI "#define \fBRPL_WHOISUSER_MSG\fP   'Usuario %s, nombre %s, host %s, realname %s'"
+.br
+.ti -1c
+.RI "#define \fBRPL_WHOISCHANNEL_MSG\fP   '(%s) Canales: %s'"
+.br
+.ti -1c
+.RI "#define \fBRPL_WHOISOPERATOR_MSG\fP   '(%s) Es operador del servidor'"
+.br
+.ti -1c
+.RI "#define \fBRPL_WHOISSERVER_MSG\fP   '(%s) conectado al servidor %s: %s'"
+.br
+.ti -1c
+.RI "#define \fBRPL_WHOISIDLE_MSG\fP   '(%s) inactivo durante %d(s)'"
+.br
+.ti -1c
+.RI "#define \fBRPL_LIST_MSG\fP   'Canal: %s (%s): %s'"
+.br
+.ti -1c
+.RI "#define \fBBAN_RPL_MSG\fP   '%s ha sido baneado del canal %s: %s'"
+.br
+.ti -1c
+.RI "#define \fBRPL_TOPIC_MSG\fP   'Nuevo \fBtopic\fP (cambiado por %s): %s'"
+.br
+.ti -1c
+.RI "#define \fBNO_TOPIC_MSG\fP   'Topic del canal sin definir'"
+.br
+.ti -1c
+.RI "#define \fBTOPIC_MSG\fP   '<%s>'"
+.br
+.ti -1c
+.RI "#define \fBERR_OP_PRIV_MSG\fP   'No tienes permisos para realizar la accion'"
+.br
+.ti -1c
+.RI "#define \fBERR_NO_SUCH_NICK_MSG\fP   'El usuario %s no existe'"
+.br
+.ti -1c
+.RI "#define \fBERR_NO_SUCH_CHANNEL_MSG\fP   'El canal %s no existe'"
+.br
+.ti -1c
+.RI "#define \fBRPL_PART_MSG\fP   'El usuario %s ha abandonado el canal (%s)'"
+.br
+.ti -1c
+.RI "#define \fBRPL_KICK_SELF_MSG\fP   '%s te ha expulsado del canal (%s)'"
+.br
+.ti -1c
+.RI "#define \fBRPL_KICK_MSG\fP   '%s ha expulsado a %s (%s)'"
+.br
+.ti -1c
+.RI "#define \fBAWAY_MSG\fP   'Ahora estás ausente'"
+.br
+.ti -1c
+.RI "#define \fBUNAWAY_MSG\fP   'Ya no estás ausente'"
+.br
+.ti -1c
+.RI "#define \fBRPL_AWAY_MSG\fP   'El usuario está ausente: %s'"
+.br
+.ti -1c
+.RI "#define \fBCHANNEL_MODE_IS_MSG\fP   'Modo del canal %s'"
+.br
+.ti -1c
+.RI "#define \fBRPL_WHO_MSG\fP   '%s %s %s %s %s %s'"
+.br
+.ti -1c
+.RI "#define \fBERR_NICK_NAME_IN_USE_MSG\fP   'El \fBnick\fP ya está siendo utilizado\&. Intente conectarse con otro \fBnick\fP'"
+.br
+.ti -1c
+.RI "#define \fBERR_PASS_MISMATCH_MSG\fP   'La contraseña es incorrecta\&. Intente conectarse con otra contraseña o cambie de usuario'"
+.br
+.ti -1c
+.RI "#define \fBERR_ALREADY_REGISTRED_MSG\fP   'Ya está registrado\&. Debe desconectarse para volver a registrarse'"
+.br
+.ti -1c
+.RI "#define \fBERR_NO_NICKNAME_GIVEN_MSG\fP   'Debe introducir un \fBnick\fP'"
+.br
+.ti -1c
+.RI "#define \fBERR_ERRONEUS_NICKNAME_MSG\fP   'Nick invalido\&. Pruebe con otro \fBnick\fP'"
+.br
+.ti -1c
+.RI "#define \fBSEND_ERROR_BUSY\fP   'Solo puede \fBenviar\fP un archivo a la vez\&. Espere a que el \fBenvio\fP se complete'"
+.br
+.ti -1c
+.RI "#define \fBN_ACCEPT_FILE_MSG\fP   'El receptor no ha aceptado el \fBenvio\fP del archivo'"
+.br
+.ti -1c
+.RI "#define \fBCANCEL_SEND_MSG\fP   'Envio de archivo cancelado'"
+.br
+.ti -1c
+.RI "#define \fBSEND_COMPLETED_MSG\fP   'Envio completado de %s'"
+.br
+.ti -1c
+.RI "#define \fBERR_CON_RECV_MSG\fP   'Error antes de aceptar conexion en la \fBrecepcion\fP'"
+.br
+.ti -1c
+.RI "#define \fBERR_RECV_MSG\fP   'Error durante la \fBrecepcion\fP de fichero'"
+.br
+.ti -1c
+.RI "#define \fBSTATUS\fP"
+.br
+.in -1c
+.SS "'typedefs'"
+
+.in +1c
+.ti -1c
+.RI "typedef int \fBstatus\fP"
+.br
+.ti -1c
+.RI "typedef struct \fB_cliente\fP \fBCliente\fP"
+.br
+.ti -1c
+.RI "typedef struct \fB_cliente\fP * \fBpCliente\fP"
+.br
+.ti -1c
+.RI "typedef struct \fB_envio\fP \fBEnvio\fP"
+.br
+.ti -1c
+.RI "typedef struct \fB_envio\fP * \fBpEnvio\fP"
+.br
+.ti -1c
+.RI "typedef struct \fB_recepcion\fP \fBRecepcion\fP"
+.br
+.ti -1c
+.RI "typedef struct \fB_recepcion\fP * \fBpRecepcion\fP"
+.br
+.ti -1c
+.RI "typedef struct \fB_audioenvio\fP \fBAudioenvio\fP"
+.br
+.ti -1c
+.RI "typedef struct \fB_audioenvio\fP * \fBpAudioenvio\fP"
+.br
+.ti -1c
+.RI "typedef struct \fB_audiorecepcion\fP \fBAudiorecepcion\fP"
+.br
+.ti -1c
+.RI "typedef struct \fB_audiorecepcion\fP * \fBpAudiorecepcion\fP"
+.br
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "char \fBinterfaz\fP [\fBTAM_INTERFACE\fP]"
+.br
+.ti -1c
+.RI "\fBCliente\fP \fBcliente\fP"
+.br
+.ti -1c
+.RI "\fBpEnvio\fP \fBenvio\fP"
+.br
+.ti -1c
+.RI "\fBpRecepcion\fP \fBrecepcion\fP"
+.br
+.in -1c
+.SH "Descripción detallada"
+.PP 
+Macros y estructuras necesarias para el tratamiento del cliente\&. 
+
+
+.SH "AUTHOR"
+.PP
+Pablo Marcos pablo.marcos@estudiante.uam.es 
+.SH "AUTHOR"
+.PP
+Dionisio Perez dionisio.perez@estudiante.uam.es 
+.SH "Documentación de los 'defines'"
+.PP 
+.SS "#define AWAY_MSG   'Ahora estás ausente'"
+
+.SS "#define BAN_RPL_MSG   '%s ha sido baneado del canal %s: %s'"
+
+.SS "#define BUFFERAUDIO   2560"
+
+.SS "#define CANCEL_SEND_MSG   'Envio de archivo cancelado'"
+
+.SS "#define CHANNEL_MODE_IS_MSG   'Modo del canal %s'"
+
+.SS "#define COMANDO_LEN   200"
+
+.SS "#define CONECTADO   0"
+
+.SS "#define DEFAULT_INTERFACE   'wlan0'"
+
+.SS "#define DELIMITERS   ', '"
+
+.SS "#define DISPONIBLE   0"
+
+.SS "#define END_OF_MOTD_MSG   'End of MOTD'"
+
+.SS "#define ENVIANDO_ARCHIVO   5"
+
+.SS "#define ENVIO_CANCELADO   -4"
+
+.SS "#define ENVIO_COMPLETADO   6"
+
+.SS "#define ERR_ALREADY_REGISTRED_MSG   'Ya está registrado\&. Debe desconectarse para volver a registrarse'"
+
+.SS "#define ERR_CON_RECV_MSG   'Error antes de aceptar conexion en la \fBrecepcion\fP'"
+
+.SS "#define ERR_ERRONEUS_NICKNAME_MSG   'Nick invalido\&. Pruebe con otro \fBnick\fP'"
+
+.SS "#define ERR_NICK_NAME_IN_USE_MSG   'El \fBnick\fP ya está siendo utilizado\&. Intente conectarse con otro \fBnick\fP'"
+
+.SS "#define ERR_NO_NICKNAME_GIVEN_MSG   'Debe introducir un \fBnick\fP'"
+
+.SS "#define ERR_NO_SUCH_CHANNEL_MSG   'El canal %s no existe'"
+
+.SS "#define ERR_NO_SUCH_NICK_MSG   'El usuario %s no existe'"
+
+.SS "#define ERR_OP_PRIV_MSG   'No tienes permisos para realizar la accion'"
+
+.SS "#define ERR_PASS_MISMATCH_MSG   'La contraseña es incorrecta\&. Intente conectarse con otra contraseña o cambie de usuario'"
+
+.SS "#define ERR_RECV_MSG   'Error durante la \fBrecepcion\fP de fichero'"
+
+.SS "#define ERROR_COMMAND_MSG   'Comando no reconocido: '"
+
+.SS "#define ESPERANDO_ACCEPT   4"
+
+.SS "#define FCANCEL   '\\001FCANCEL'"
+
+.SS "#define JOIN_CHANNEL_MSG   'Te has unido al canal'"
+
+.SS "#define KICK_MSG   'Fuera de aqui, rata!'"
+
+.SS "#define MOTD_START_MSG   'Message of the day of '"
+
+.SS "#define N_ACCEPT_FILE_MSG   'El receptor no ha aceptado el \fBenvio\fP del archivo'"
+
+.SS "#define NAMREPLY_MSG   'Usuarios en '"
+
+.SS "#define NICK_CHANGE_SELF_MSG   'Cambio de nombre efectuado: '"
+
+.SS "#define NO_CONECTADO   -1"
+
+.SS "#define NO_TOPIC_MSG   'Topic del canal sin definir'"
+
+.SS "#define NOTICE_TYPE   'NOTICE'"
+
+.SS "#define OCUPADO   -3"
+
+.SS "#define PENDIENTE   -2"
+
+.SS "#define QUIT_MSG   'Asas'"
+
+.SS "#define RECV_FILE   'files'"
+
+.SS "#define RPL_AWAY_MSG   'El usuario está ausente: %s'"
+
+.SS "#define RPL_KICK_MSG   '%s ha expulsado a %s (%s)'"
+
+.SS "#define RPL_KICK_SELF_MSG   '%s te ha expulsado del canal (%s)'"
+
+.SS "#define RPL_LIST_MSG   'Canal: %s (%s): %s'"
+
+.SS "#define RPL_PART_MSG   'El usuario %s ha abandonado el canal (%s)'"
+
+.SS "#define RPL_QUIT_MSG   '%s ha abandonado el servidor: %s'"
+
+.SS "#define RPL_TOPIC_MSG   'Nuevo \fBtopic\fP (cambiado por %s): %s'"
+
+.SS "#define RPL_WHO_MSG   '%s %s %s %s %s %s'"
+
+.SS "#define RPL_WHOISCHANNEL_MSG   '(%s) Canales: %s'"
+
+.SS "#define RPL_WHOISIDLE_MSG   '(%s) inactivo durante %d(s)'"
+
+.SS "#define RPL_WHOISOPERATOR_MSG   '(%s) Es operador del servidor'"
+
+.SS "#define RPL_WHOISSERVER_MSG   '(%s) conectado al servidor %s: %s'"
+
+.SS "#define RPL_WHOISUSER_MSG   'Usuario %s, nombre %s, host %s, realname %s'"
+
+.SS "#define SEND_COMPLETED_MSG   'Envio completado de %s'"
+
+.SS "#define SEND_ERROR_BUSY   'Solo puede \fBenviar\fP un archivo a la vez\&. Espere a que el \fBenvio\fP se complete'"
+
+.SS "#define STATUS"
+
+.SS "#define TAM_COM_USER   256"
+
+.SS "#define TAM_DEST   128"
+
+.SS "#define TAM_ERROR_MSG   40"
+
+.SS "#define TAM_INTERFACE   15"
+
+.SS "#define TAM_LIMIT_NICK   10"
+
+.SS "#define TAM_LINE   80"
+
+.SS "#define TAM_LINE_MED   240"
+
+.SS "#define TAM_PACKAGE   8192"
+
+.SS "#define TAM_RECV   16384"
+
+.SS "#define TAMPACKETAUDIO   800"
+
+.SS "#define TIMEOUT_ACCEPT   15"
+
+.SS "#define TOPIC_MSG   '<%s>'"
+
+.SS "#define TOPIC_TYPE   'TOPIC'"
+
+.SS "#define UNAWAY_MSG   'Ya no estás ausente'"
+
+.SS "#define USER_IN_CHANNEL_MSG   ' se ha unido al canal'"
+
+.SS "#define WHOIS_TYPE   '  WHOIS  '"
+
+.SH "Documentación de los 'typedefs'"
+.PP 
+.SS "typedef struct \fB_audioenvio\fP  \fBAudioenvio\fP"
+
+.SS "typedef struct \fB_audiorecepcion\fP  \fBAudiorecepcion\fP"
+
+.SS "typedef struct \fB_cliente\fP  \fBCliente\fP"
+
+.SS "typedef struct \fB_envio\fP  \fBEnvio\fP"
+
+.SS "typedef struct \fB_audioenvio\fP * \fBpAudioenvio\fP"
+
+.SS "typedef struct \fB_audiorecepcion\fP * \fBpAudiorecepcion\fP"
+
+.SS "typedef struct \fB_cliente\fP * \fBpCliente\fP"
+
+.SS "typedef struct \fB_envio\fP * \fBpEnvio\fP"
+
+.SS "typedef struct \fB_recepcion\fP * \fBpRecepcion\fP"
+
+.SS "typedef struct \fB_recepcion\fP  \fBRecepcion\fP"
+
+.SS "typedef int \fBstatus\fP"
+
+.SH "Documentación de las variables"
+.PP 
+.SS "\fBCliente\fP cliente"
+
+.SS "\fBpEnvio\fP envio"
+
+.SS "char interfaz[\fBTAM_INTERFACE\fP]"
+
+.SS "\fBpRecepcion\fP recepcion"
+
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

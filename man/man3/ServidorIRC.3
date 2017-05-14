@@ -1,0 +1,79 @@
+.TH "Servidor" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+Servidor \- 
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "void \fBusage\fP (void)"
+.br
+.RI "\fIImprime por stderr la ayuda de usuario\&. \fP"
+.ti -1c
+.RI "void \fBwelcome\fP (short daemon, short pingpong, short ssl, short \fBoffensive\fP, int puerto_definido)"
+.br
+.RI "\fIImprime mensaje de bienvenida\&. \fP"
+.in -1c
+.SH "Descripción detallada"
+.PP 
+
+.PP
+.PP
+Funciones auxiliares para lanzar un servidor
+.PP
+.PP
+ 
+.SH "Documentación de las funciones"
+.PP 
+.SS "void usage (void)"
+
+.PP
+Imprime por stderr la ayuda de usuario\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void usage(void)
+.fi
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void welcome (shortdaemon, shortpingpong, shortssl, shortoffensive, intpuerto_definido)"
+
+.PP
+Imprime mensaje de bienvenida\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void welcome(short daemon, short pingpong, short ssl, short offensive, int puerto_definido)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIdaemon\fP Para lanzar el servidor en modo daemon 
+.br
+\fIpingpong\fP Para activar la rutina pingpong 
+.br
+\fIssl\fP Para activar transimion segura SSL 
+.br
+\fIoffensive\fP Para activar motd ofensivo 
+.br
+\fIpuerto_definido\fP Para especificar puerto de recepcion
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

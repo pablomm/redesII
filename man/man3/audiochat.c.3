@@ -1,0 +1,122 @@
+.TH "srclib/audiochat.c" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+srclib/audiochat.c \- 
+.PP
+funciones relacionadas con el envio de audio  
+
+.SH SYNOPSIS
+.br
+.PP
+\fC#include '\&.\&./includes/cliente\&.h'\fP
+.br
+\fC#include '\&.\&./includes/irc_cliente\&.h'\fP
+.br
+\fC#include '\&.\&./includes/red_cliente\&.h'\fP
+.br
+\fC#include '\&.\&./includes/comandos_noirc\&.h'\fP
+.br
+\fC#include '\&.\&./includes/audiochat\&.h'\fP
+.br
+\fC#include <unistd\&.h>\fP
+.br
+\fC#include <errno\&.h>\fP
+.br
+\fC#include <fcntl\&.h>\fP
+.br
+\fC#include <redes2/ircsound\&.h>\fP
+.br
+\fC#include <arpa/inet\&.h>\fP
+.br
+\fC#include <stdlib\&.h>\fP
+.br
+\fC#include <string\&.h>\fP
+.br
+\fC#include <sys/types\&.h>\fP
+.br
+\fC#include <sys/socket\&.h>\fP
+.br
+\fC#include <redes2/irc\&.h>\fP
+.br
+\fC#include <redes2/ircxchat\&.h>\fP
+.br
+
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "void \fBmanejadorexitaudio\fP (int sig)"
+.br
+.RI "\fIManejador para terminar audio\&. \fP"
+.ti -1c
+.RI "void \fBmanejadorexitsend\fP (int sig)"
+.br
+.RI "\fIManejador para terminar envio\&. \fP"
+.ti -1c
+.RI "void \fBcerrarAudioSend\fP (void)"
+.br
+.RI "\fITermina el envio de audio\&. \fP"
+.ti -1c
+.RI "void * \fBaudiochatSend\fP (void *audio)"
+.br
+.RI "\fISe encarga del envio de audio\&. \fP"
+.ti -1c
+.RI "void \fBcerrarAudioRecv\fP (void)"
+.br
+.RI "\fITermina recepcion del audio\&. \fP"
+.ti -1c
+.RI "void * \fBaudiochatRecv\fP (void *audio)"
+.br
+.RI "\fISe encarga de la recepcion de audio\&. \fP"
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "\fBpAudioenvio\fP \fBaudiodata\fP"
+.br
+.ti -1c
+.RI "\fBpAudiorecepcion\fP \fBaudiodatarecv\fP"
+.br
+.ti -1c
+.RI "int \fBsocketsendaudio\fP"
+.br
+.ti -1c
+.RI "int \fBflagsendaudio\fP"
+.br
+.ti -1c
+.RI "int \fBsocketrecvaudio\fP"
+.br
+.ti -1c
+.RI "int \fBflagrecvaudio\fP"
+.br
+.in -1c
+.SH "Descripción detallada"
+.PP 
+funciones relacionadas con el envio de audio 
+
+
+.SH "AUTHOR"
+.PP
+Pablo Marcos pablo.marcos@estudiante.uam.es 
+.SH "AUTHOR"
+.PP
+Dionisio Perez dionisio.perez@estudiante.uam.es 
+.SH "Documentación de las variables"
+.PP 
+.SS "\fBpAudioenvio\fP audiodata"
+
+.SS "\fBpAudiorecepcion\fP audiodatarecv"
+
+.SS "int flagrecvaudio"
+
+.SS "int flagsendaudio"
+
+.SS "int socketrecvaudio"
+
+.SS "int socketsendaudio"
+
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.

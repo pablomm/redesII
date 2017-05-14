@@ -1,0 +1,291 @@
+.TH "SoporteSSL" 3 "Domingo, 7 de Mayo de 2017" "Version 3.0" "Practica RedesII" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+SoporteSSL \- 
+.SS "Funciones"
+
+.in +1c
+.ti -1c
+.RI "void \fBssl_error\fP (char *msg)"
+.br
+.RI "\fIImprime mensaje de error si una funcion SSL falla\&. \fP"
+.ti -1c
+.RI "int \fBinicializar_nivel_SSL\fP ()"
+.br
+.RI "\fIInicializa nivel SSL\&. \fP"
+.ti -1c
+.RI "int \fBfijar_contexto_SSL\fP (const char *pcert, const char *pkey)"
+.br
+.RI "\fICrea contexto SSL y comprueba certificados\&. \fP"
+.ti -1c
+.RI "int \fBconectar_canal_seguro_SSL\fP (int sckfd)"
+.br
+.RI "\fISe conecta a un socket con seguridad SSL\&. \fP"
+.ti -1c
+.RI "int \fBaceptar_canal_seguro_SSL\fP (int sckfd)"
+.br
+.RI "\fIPermite conexion SSL segura\&. \fP"
+.ti -1c
+.RI "int \fBevaluar_post_conectar_SSL\fP (int sckfd)"
+.br
+.RI "\fIevalua seguridad de la conexion \fP"
+.ti -1c
+.RI "int \fBenviar_datos_SSL\fP (int sckfd, void *mensaje, int tam)"
+.br
+.RI "\fIenvia mensaje de forma segura por medio de SSL \fP"
+.ti -1c
+.RI "int \fBrecibir_datos_SSL\fP (int sckfd, void *mensaje, int max)"
+.br
+.RI "\fIRecibe mensaje de forma segura por medio de SSL\&. \fP"
+.ti -1c
+.RI "void \fBcerrar_canal_SSL\fP (int sckfd)"
+.br
+.RI "\fICierra conexion segura SSL\&. \fP"
+.ti -1c
+.RI "void \fBliberar_nivel_SSL\fP ()"
+.br
+.RI "\fIElimina contexto SSL creado\&. \fP"
+.in -1c
+.SH "Descripción detallada"
+.PP 
+
+.PP
+.PP
+Comprende todas las funciones para dar soporte SSL
+.PP
+.PP
+ 
+.SH "Documentación de las funciones"
+.PP 
+.SS "int aceptar_canal_seguro_SSL (intsckfd)"
+
+.PP
+Permite conexion SSL segura\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+int aceptar_canal_seguro_SSL(int sckfd)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsckfd\fP socket que aceptar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void cerrar_canal_SSL (intsckfd)"
+
+.PP
+Cierra conexion segura SSL\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void cerrar_canal_SSL(int sckfd)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsckfd\fP socket del que terminar conexion
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "int conectar_canal_seguro_SSL (intsckfd)"
+
+.PP
+Se conecta a un socket con seguridad SSL\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+int conectar_canal_seguro_SSL(int sckfd)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsckfd\fP socket desde el que conectarse
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "int enviar_datos_SSL (intsckfd, void *mensaje, inttam)"
+
+.PP
+envia mensaje de forma segura por medio de SSL 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+int enviar_datos_SSL(int sckfd, void* mensaje, int tam)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsckfd\fP socket desde el que enviar 
+.br
+\fImensaje\fP mensaje a enviar 
+.br
+\fItam\fP tamaño del mensaje
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "int evaluar_post_conectar_SSL (intsckfd)"
+
+.PP
+evalua seguridad de la conexion 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+int evaluar_post_conectar_SSL(int sckfd)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsckfd\fP socket a evaluar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "int fijar_contexto_SSL (const char *pcert, const char *pkey)"
+
+.PP
+Crea contexto SSL y comprueba certificados\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+int fijar_contexto_SSL(const char *pcert, const char *pkey)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIpcert\fP ruta del certificado del cliente/servidor a comprobar 
+.br
+\fIpkey\fP ruta de la clave privada del cliente/servidor a comprobar
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "int inicializar_nivel_SSL ()"
+
+.PP
+Inicializa nivel SSL\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+int inicializar_nivel_SSL()
+.fi
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void liberar_nivel_SSL ()"
+
+.PP
+Elimina contexto SSL creado\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+void liberar_nivel_SSL()
+.fi
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "int recibir_datos_SSL (intsckfd, void *mensaje, intmax)"
+
+.PP
+Recibe mensaje de forma segura por medio de SSL\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+int recibir_datos_SSL(int sckfd, void* mensaje, int max)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fIsckfd\fP socket del que recibir 
+.br
+\fImensaje\fP mensaje a enviar 
+.br
+\fImax\fP tamaño maximo a leer
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SS "void ssl_error (char *msg)"
+
+.PP
+Imprime mensaje de error si una funcion SSL falla\&. 
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+status ssl_error(char *msg)
+.fi
+.PP
+.PP
+\fBParámetros:\fP
+.RS 4
+\fImsg\fP mensaje de error a imprimir
+.RE
+.PP
+.SH "AUTHOR"
+.PP
+Pablo Marcos Manchon Dionisio Perez Alvear
+.PP
+.PP
+ 
+.SH "Autor"
+.PP 
+Generado automáticamente por Doxygen para Practica RedesII del código fuente\&.
