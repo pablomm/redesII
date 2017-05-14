@@ -1,37 +1,78 @@
 /**
-  @file funciones_servidor.c
-  @brief funciones referidas a los comandos
-  @author Pablo Marcos  <pablo.marcos@estudiante.uam.es>
-  @author Dionisio Perez  <dionisio.perez@estudiante.uam.es>
+ * @file funciones_servidor.c
+ * @brief funciones referidas a los comandos
+ * @author Pablo Marcos  <pablo.marcos@estudiante.uam.es>
+ * @author Dionisio Perez  <dionisio.perez@estudiante.uam.es>
 */
+
+/** 
+ * @defgroup ComandosResto ComandosResto
+ *
+ */
 
 #include "../includes/funciones_servidor.h"
 #include "../includes/conexion_temp.h"
+#include "../includes/ssl.h"
 
 #include <redes2/irc.h>
 
 /**
-  @brief libera estructuras antes de cerrar servidor
+ * @addtogroup ComandosResto
+ * Comprende los comandos restantes pedidos en la asignatura
+ *
+ * <hr>
+ */
+
+/**
+ * @ingroup ComandosResto
+ *
+ * @brief Libera estructuras antes de cerrar servidor
+ *
+ * @synopsis
+ * @code
+ * 	void liberarEstructuras(void)
+ * @endcode
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 void liberarEstructuras(void){
 
 	liberaTodosTempUser();
 	pthread_mutex_destroy(&mutexDescr);
 	pthread_mutex_destroy(&mutexTempUser);
-	/* Liberar tads de eloy?? */
 
 }
 
 /**
-  @brief parsea el mensaje recibido
-  @param pdesc: estructura con la informacion del mensaje
-  @return NULL
+ * @ingroup ComandosResto
+ *
+ * @brief Parsea el mensaje recibido
+ *
+ * @synopsis
+ * @code
+ * 	void manejaMensaje(void* pdesc)
+ * @endcode
+ *
+ * @param[in] pdesc estructura con la informacion del mensaje
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 void *manejaMensaje(void* pdesc){
 
 	pDatosMensaje datos;
 	char *next;
 	char *comando;
+
+	pthread_detach(pthread_self());
+
 	datos = (pDatosMensaje) pdesc;
 
 	next = datos->msg;
@@ -58,14 +99,29 @@ void *manejaMensaje(void* pdesc){
 	/* Liberamos estructura de datos */
     liberaDatosMensaje(datos);
 
-	return NULL;
+	pthread_exit(NULL);
 }
 
 /**
-  @brief selecciona comandon del array a ejecutar
-  @param comando: comando a ejecutar
-  @param datos: estructura con la informacion del mensaje
-  @return la funcion que ejecuta el comando
+ * @ingroup ComandosResto
+ *
+ * @brief Selecciona comando del array a ejecutar
+ *
+ * @synopsis
+ * @code
+ * 	status procesaComando(char *comando, pDatosMensaje datos)
+ * @endcode
+ *
+ * @param[in] comando comando a ejecutar
+ * @param[in] datos estructura con la informacion del mensaje
+ *
+ * @return la funcion que ejecuta el comando
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status procesaComando(char *comando, pDatosMensaje datos){
 	
@@ -90,11 +146,28 @@ status procesaComando(char *comando, pDatosMensaje datos){
 	return comandos[dev](comando, datos);
 }
 
+void enviarMensajePrivado(int sckfd, char *mensaje, char *nick, char * nickorigin, int sndaway);
+
 /**
-  @brief crea una nueva conexion
-  @param desc: socket del usuario
-  @param address: estructura que almacena informacion de la direccion de internet
-  @return el usuario temporal
+ * @ingroup ComandosResto
+ *
+ * @brief Crea una nueva conexion
+ *
+ * @synopsis
+ * @code
+ * 	status nuevaConexion(int desc, struct sockaddr_in * address)
+ * @endcode
+ *
+ * @param[in] desc socket del usuario
+ * @param[in] address estructura que almacena informacion de la direccion de internet
+ *
+ * @return el usuario temporal
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status nuevaConexion(int desc, struct sockaddr_in * address){
 	status ret;
@@ -117,9 +190,22 @@ status nuevaConexion(int desc, struct sockaddr_in * address){
 }
 
 /**
-  @brief libera informacion del mensaje
-  @param datos: estructura con la informacion del mensaje
-  @return nada
+ * @ingroup ComandosResto
+ *
+ * @brief Cierra una conexion
+ *
+ * @synopsis
+ * @code
+ * 	status cerrarConexion(int socket)
+ * @endcode
+ *
+ * @param[in] socket socket del usuario
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status cerrarConexion(int socket){
 	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
@@ -127,29 +213,75 @@ status cerrarConexion(int socket){
 	long unknown_id = 0;
 	long creationTS=0, actionTS=0;
 	int sock =socket;
-	char **lista = NULL;
-	long num=0,i;
+
+	#ifdef PRUEBAS_IRC
+	char **lista=NULL, *mensajequit=NULL, *prefijo=NULL;
+	long num;
+	int i;
+	#endif
 
 	IRCTADUser_GetData(&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
 
-	/* Abandona todos los canales */
 	/*
-	IRCTAD_ListChannelsOfUserArray(unknown_user, unknown_nick, &lista, &num);
-	for(i=0; i<num; i++){
-		IRCTAD_Part(lista[i], unknown_nick);
-	}
+		Documentado en la memoria
+		Problema en algunos ordenadores, creemos que por saturacion
+		kernel: [ 2901.143828] ieee80211 phy0: rt2x00queue_flush_queue: Warning - Queue 2 failed to flush
+		Para compilar añadir a flags de gcc -D PRUEBAS_IRC
 	*/
+	#ifdef PRUEBAS_IRC
+	if(unknown_user) { /* Version por usuarios */
+		IRC_ComplexUser(&prefijo, unknown_nick, unknown_real, host, SERVICIO);
+		IRCMsg_Quit(&mensajequit, prefijo,"Abandono el servidor");
+
+		IRCTADUser_GetUserList (&lista, &num);
+	
+		for(i=0; i<num; i++){
+
+			if(strcmp(unknown_user,lista[i])){
+				/* printf("%s -- (%s)\n",lista[i], unknown_user); */
+				enviarMensajePrivado(socket, mensajequit, lista[i], NULL, 0);
+			}
+		}
+
+		free(prefijo);
+		free(mensajequit);
+		IRCTADUser_FreeList(lista,num);
+	}
+
+	/* // Version canales compartidos, problema que si comparte varios canales llega varias veces
+	if(unknown_id) {
+		IRC_ComplexUser(&prefijo, unknown_nick, unknown_real, host, SERVICIO);
+		IRCMsg_Quit(&mensajequit, prefijo,"Abandono el servidor");
+
+		IRCTAD_ListChannelsOfUserArray (unknown_user, unknown_nick, &lista, &num);
+	
+		for(i=0; i<num; i++){
+			printf("Canal: %s\n", lista[i]);
+			printf("Mensaje %s\n", mensajequit);
+
+			enviarMensajeACanal(socket, mensajequit, lista[i], NULL);
+		}
+
+		free(prefijo);
+		free(mensajequit);
+		IRCTADUser_FreeList(lista,num);
+
+	} */
+	#endif
+
 	/* Eliminamos de la base de datos */
-	IRCTADUser_Delete(unknown_id, unknown_user, unknown_nick, unknown_real);
+	if(unknown_nick)
+		IRCTAD_Quit(unknown_nick);
+
 	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
 
-	if(lista){
-		for(i=0; i<num; i++){
-			if(lista[i]) free(lista[i]);
-		}
-		free(lista);
-	}
 	deleteTempUser(socket);
+	
+	if(ssl_active){
+		cerrar_canal_SSL(socket);
+
+	}
+
 	close(socket);
 	deleteFd(socket);
 
@@ -157,9 +289,22 @@ status cerrarConexion(int socket){
 }
 
 /**
-  @brief inicializa el array de comandos
-  @param void
-  @return COM_OK
+ * @ingroup ComandosResto
+ *
+ * @brief Libera informacion del mensaje
+ *
+ * @synopsis
+ * @code
+ * 	void liberaDatosMensaje(pDatosMensaje datos)
+ * @endcode
+ *
+ * @param[in] datos estructura con la informacion del mensaje
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 void liberaDatosMensaje(pDatosMensaje datos){
 	
@@ -169,9 +314,20 @@ void liberaDatosMensaje(pDatosMensaje datos){
 }
 
 /**
-  @brief inicializa el array de comandos
-  @param void
-  @return COM_OK
+ * @ingroup ComandosResto
+ *
+ * @brief Inicializa el array de comandos
+ *
+ * @synopsis
+ * @code
+ * 	void liberaDatosMensaje(pDatosMensaje datos)
+ * @endcode
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status crea_comandos(void) {
     int i;    
@@ -194,19 +350,82 @@ status crea_comandos(void) {
 	comandos[MODE] = mode;
 	comandos[QUIT] = quit;
 	comandos[MOTD] = motd;
+	comandos[PONG] = pong;
+	comandos[WHO] = who;
 
 	return COM_OK;   
 }
 
 /**
-  @brief libera informacion del usuario
-  @param user: campo user de la estructura
-  @param nick: campo nick de la estructura
-  @param real: campo realname de la estructura
-  @param host: campo host de la estructura
-  @param IP: campo dir_IP de la estructura
-  @param away: campo away de la estructura
-  @return COM_OK
+ * @ingroup ComandosResto
+ *
+ * @brief Inicializa rutina ping-pong
+ *
+ * @synopsis
+ * @code
+ * 	status rutinaPingPong(void)
+ * @endcodeje
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
+*/
+status rutinaPingPong(void){
+
+	long nelements = 0;
+	long *ids = NULL;
+	char **users = NULL;
+	char **nicks = NULL;
+	char **realnames = NULL;
+	char **passwords = NULL;
+	char **hosts = NULL;
+	char **IPs = NULL;
+	int *sockets = NULL;
+	long *modes = NULL;
+	long *creationTSs = NULL;
+	long *actionTSs = NULL;
+	long i=0;
+
+
+	
+	/* printf("LLAMADA A RUTINA PING PONG\n"); */
+	IRCTADUser_GetAllLists (&nelements,&ids,&users,&nicks,&realnames,&passwords,&hosts,&IPs,&sockets,&modes,&creationTSs,&actionTSs);
+
+	for(i=0; i< nelements; i++){
+
+		/* printf("socket %d -> %ld\n", sockets[i], actionTSs[i]); */
+
+	}
+
+	IRCTADUser_FreeAllLists (nelements,ids,users,nicks,realnames,passwords,hosts,IPs,sockets,modes,creationTSs,actionTSs);
+
+	return COM_OK;
+}
+
+/**
+ * @ingroup ComandosResto
+ *
+ * @brief Libera informacion del usuario
+ *
+ * @synopsis
+ * @code
+ * 	void liberaDatosMensaje(pDatosMensaje datos)
+ * @endcode
+ *
+ * @param[in] user campo user de la estructura
+ * @param[in] nick campo nick de la estructura
+ * @param[in] real campo realname de la estructura
+ * @param[in] host campo host de la estructura
+ * @param[in] IP campo dir_IP de la estructura
+ * @param[in] away campo away de la estructura
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status liberarUserData(char *user, char *nick, char *real, char *host, char *IP, char *away){
 
@@ -221,514 +440,33 @@ status liberarUserData(char *user, char *nick, char *real, char *host, char *IP,
 }
 
 /**
-  @brief ejecuta el comando NICK
-  @param comando: comando a ejecutar
-  @param datos: estructura con la informacion del mensaje
-  @return COM_OK si todo va bien. Error en otro caso
+ * @ingroup ComandosResto
+ *
+ * @brief Funcion auxiliar para el comando WHOIS
+ *
+ * @synopsis
+ * @code
+ * 	void whoischannels(int sckfd, char *nick1, char *nick2, char* user, char *target)
+ * @endcode
+ *
+ * @param[in] sckfd socket desde el que enviar
+ * @param[in] nick1 nick necesario numero 1
+ * @param[in] nick2 nick necesario numero 2
+ * @param[in] user usuario del canal
+ * @param[in] target objetivo
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
-status nick(char* comando, pDatosMensaje datos){
-	
-	char *prefijo = NULL, *nickk = NULL, *msg = NULL;
-	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
-	char *host = NULL, *IP = NULL, *away = NULL;
-	char * mensajeRespuesta = NULL;
-	long unknown_id = 0;
-	unsigned long ret = 0;
-	long creationTS, actionTS;
-	int sock;	
-	pTempUser usuarioTemporal = NULL;
-
-	if(!datos || !comando){
-		return COM_ERROR;
-	}
-
-	sock =  datos->sckfd;
-
-	/* Comprobamos si el socket esta utilizado */
-	ret = IRCTADUser_GetData (&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
-	
-	/* Caso no hay suficiente memoria */
-	if(ret == IRCERR_NOENOUGHMEMORY) {
-		syslog(LOG_ERR, "Error Nick NOENOUGHMEMORY");
-		if(prefijo) free(prefijo);
-		if(nickk) free(nickk);
-		if(msg) free(msg);
-		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
-
-		return COM_ERROR;
-	}
-
-	/* Parseamos respuesta */
-	switch(IRCParse_Nick(comando,&prefijo,&nickk, &msg)){
-		case IRCERR_NOSTRING: /* Comando Invalido */
-		case IRCERR_ERRONEUSCOMMAND:
-			syslog(LOG_ERR, "Error en IRCParse_NICK");
-
-			if(unknown_nick)
-				IRCMsg_ErrNeedMoreParams(&mensajeRespuesta, SERVICIO, unknown_nick, comando);
-			else
-				IRCMsg_ErrNeedMoreParams(&mensajeRespuesta, SERVICIO, "*", comando);
-
-			enviar(datos->sckfd, mensajeRespuesta);
-
-			if(prefijo) {free(prefijo); prefijo=NULL;}
-			if(msg) {free(msg); msg=NULL;}
-			if(mensajeRespuesta) free(mensajeRespuesta);
-			liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
-
-			return COM_OK;
-	}
-
-	/* Caso Nuevo usuario */
-	if(unknown_id == 0) {
-
-		sock = 0;
-		/* Comprobar si el NICK esta utilizado */
-		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
-		ret = IRCTADUser_GetData (&unknown_id, &unknown_user, &nickk, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
-		
-		if(unknown_id != 0){
-			syslog(LOG_DEBUG, "NICK NAME IN USE");
-			IRCMsg_ErrNickNameInUse(&mensajeRespuesta, SERVICIO, "*", nickk);
-			enviar(datos->sckfd, mensajeRespuesta);
-			liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
-			if(mensajeRespuesta) free(mensajeRespuesta);
-			return COM_OK;
-		}
-
-
-		 usuarioTemporal = pullTempUser(datos->sckfd);
-
-		 /* Caso no se encuentra usuario temporal */
-		 if(usuarioTemporal == NULL) {
-			syslog(LOG_ERR, "Usuario %d temporal no encontrado", datos->sckfd);
-			liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
-			return COM_ERROR;
-		}
-
-		setNickTemporal(usuarioTemporal, nickk);
-
-	} else { /* Cambio de NICK */
-
-		/* Actualizamos tiempo action ts */
-		IRCTADUser_SetActionTS(unknown_id, unknown_user, unknown_nick, unknown_real);
-
-		ret = IRCTADUser_Set(unknown_id, unknown_user, unknown_nick, unknown_real, NULL, nickk, NULL);
-		switch(ret){
-			/* no hay memoria suficiente */
-			case IRCERR_NOENOUGHMEMORY:
-				syslog(LOG_ERR, "No hay suficiente memoria llamada a nick");
-				break;
-	
-			/* Usuario no encontrado */
-			case IRCERR_INVALIDNICK:
-			case IRCERR_INVALIDREALNAME:
-			case IRCERR_INVALIDUSER:
-				syslog(LOG_ERR,"Oops el usuario se ha perdido por el camino");
-				break;
-	
-			/* Caso nuevo NICK en uso */
-			case IRCERR_NICKUSED:
-				IRCMsg_ErrNickNameInUse (&mensajeRespuesta, SERVICIO ,unknown_nick, nickk);
-				enviar(datos->sckfd, mensajeRespuesta);
-				break;
-
-			case IRC_OK:
-
-				IRCMsg_Nick(&mensajeRespuesta, SERVICIO, NULL, nickk);
-				enviar(datos->sckfd, mensajeRespuesta);
-				break;
-		}
-	}
-
-	/* Liberamos estructuras */
-	if(mensajeRespuesta) free(mensajeRespuesta);
-	if(prefijo) free(prefijo);
-	if(nickk) free(nickk);
-	if(msg) free(msg);
-	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
-
-	syslog(LOG_DEBUG, "Comando nick completado");
-
-	return COM_OK;
-}
-
-/**
-  @brief ejecuta el comando USER
-  @param comando: comando a ejecutar
-  @param datos: estructura con la informacion del mensaje
-  @return COM_OK si todo va bien. Error en otro caso
-*/
-status user(char* comando, pDatosMensaje datos){
-	char *prefijo = NULL, *user = NULL;
-	char *modehost = NULL, *server = NULL, *realname = NULL;
-	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
-	char *host = NULL, *IP = NULL, *away = NULL;
-	char * mensajeRespuesta = NULL;
-	long unknown_id = 0;
-	unsigned long ret = 0;
-	long creationTS, actionTS;
-	int sock;	
-	pTempUser usuarioTemporal = NULL;
-
-	if(!datos || !comando){
-		return COM_ERROR;
-	}
-	sock = datos->sckfd;
-	ret = IRCTADUser_GetData (&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
-
-	/* Caso no hay suficiente memoria */
-	if(ret == IRCERR_NOENOUGHMEMORY) {
-		syslog(LOG_ERR, "Error Nick NOENOUGHMEMORY");
-		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
-		return COM_ERROR;
-	}
-
-	/* ErrAlreadyRegistred */
-	if(unknown_id!= 0){
-		IRCMsg_ErrAlreadyRegistred(&mensajeRespuesta, SERVICIO, unknown_nick);
-		enviar(datos->sckfd, mensajeRespuesta);
-
-		/* Actualizamos tiempo action ts */
-		IRCTADUser_SetActionTS(unknown_id, unknown_user, unknown_nick, unknown_real);
-
-		if(mensajeRespuesta) free(mensajeRespuesta);
-		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
-		return COM_OK;
-	}
-
-	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
-
-	/* Parseamos comando */
-	switch(IRCParse_User(comando,&prefijo,&user,&modehost,&server,&realname)){
-		case IRCERR_NOSTRING:
-		case IRCERR_ERRONEUSCOMMAND:
-			syslog(LOG_ERR, "Error en IRCParse_User");
-			IRCMsg_ErrNeedMoreParams (&mensajeRespuesta, SERVICIO ,"*", comando);
-			enviar(datos->sckfd, mensajeRespuesta);
-
-			if(mensajeRespuesta) free(mensajeRespuesta);
-			if(prefijo) free(prefijo);
-			if(user) free(user);
-			if(modehost) free(modehost);
-			if(server) free(server);
-			if(realname) free(realname);
-
-			return COM_OK;
-	}
-
-	/* Extraemos datos extructura temporal */
-	usuarioTemporal = pullTempUser(datos->sckfd);
-	if(usuarioTemporal == NULL){
-		syslog(LOG_ERR, "Fallo en extraccion usuario temporal en USER");
-		return COM_ERROR;
-	}
-
-	/* Caso NoNickNameGiven */
-	if(usuarioTemporal->nick == NULL){
-		IRCMsg_ErrNoNickNameGiven(&mensajeRespuesta, SERVICIO, "*");
-		enviar(datos->sckfd, mensajeRespuesta);
-		if(mensajeRespuesta) free(mensajeRespuesta);
-		if(prefijo) free(prefijo);
-		if(user) free(user);
-		if(modehost) free(modehost);
-		if(server) free(server);
-		if(realname) free(realname);
-
-		return COM_OK;
-	}
-
-	ret = IRCTADUser_New(user,usuarioTemporal->nick,realname,NULL,usuarioTemporal->host, usuarioTemporal->IP, datos->sckfd);
-	switch(ret){
-		case IRCERR_NOENOUGHMEMORY:
-		case IRCERR_INVALIDHOST:
-		case IRCERR_INVALIDIP:
-		case IRCERR_INVALIDID:
-		case IRCERR_INVALIDSOCKET:
-		case IRCERR_NOMUTEX:
-
-			syslog(LOG_ERR,"Error interno al incluir usuario en comando USER");
-			return COM_OK;
-
-		case IRCERR_NICKUSED:
-			IRCMsg_ErrNickNameInUse(&mensajeRespuesta, SERVICIO ,"*", usuarioTemporal->nick);
-			enviar(datos->sckfd, mensajeRespuesta);
-			break;
-
-		case IRCERR_INVALIDUSER:
-			IRCMsg_ErrErroneusNickName (&mensajeRespuesta, SERVICIO, "*", user);
-			enviar(datos->sckfd, mensajeRespuesta);
-			break;
-
-		case IRCERR_INVALIDNICK:
-			IRCMsg_ErrErroneusNickName (&mensajeRespuesta, SERVICIO, "*", usuarioTemporal->nick);
-			enviar(datos->sckfd, mensajeRespuesta);
-			break;
-		case IRCERR_INVALIDREALNAME:
-			IRCMsg_ErrErroneusNickName (&mensajeRespuesta, SERVICIO, "*", realname);
-			enviar(datos->sckfd, mensajeRespuesta);
-			break;
-
-		case IRC_OK:
-
-			IRCMsg_RplWelcome(&mensajeRespuesta, SERVICIO, usuarioTemporal->nick, realname, user, SERVICIO);
-			enviar(datos->sckfd, mensajeRespuesta);
-			usuarioTemporal = NULL;
-			deleteTempUser(datos->sckfd);
-			break;
-	}
-
-	if(mensajeRespuesta) free(mensajeRespuesta);
-	if(prefijo) free(prefijo);
-	if(user) free(user);
-	if(modehost) free(modehost);
-	if(server) free(server);
-	if(realname) free(realname);
-
-	syslog(LOG_DEBUG, "Comando user completado");
-
-	return COM_OK;
-}
-
-/**
-  @brief ejecuta el comando JOIN
-  @param comando: comando a ejecutar
-  @param datos: estructura con la informacion del mensaje
-  @return COM_OK si todo va bien. Error en otro caso
-*/
-status join(char *comando, pDatosMensaje datos){
-	char *prefijo = NULL;
-	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
-	char *host = NULL, *IP = NULL, *away = NULL;
-	char * mensajeRespuesta = NULL;
-	unsigned long ret = 0;
-	char *canal, *clave, *msg;
-	long unknown_id = 0;
-	long creationTS, actionTS;
-	int sock;	
-
-
-	sock = datos->sckfd;	
-
-	ret = IRCTADUser_GetData (&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
-
-	/* Caso no hay suficiente memoria */
-	if(ret == IRCERR_NOENOUGHMEMORY) {
-		syslog(LOG_ERR, "Error JOIN NOENOUGHMEMORY");
-		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
-		return COM_ERROR;
-	}
-
-	/* ERRNOTREGISTERD */
-	if(unknown_id == 0){
-		IRCMsg_ErrNotRegisterd(&mensajeRespuesta, SERVICIO, "*");
-		enviar(datos->sckfd, mensajeRespuesta);
-		if(mensajeRespuesta) free(mensajeRespuesta);
-		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
-		return COM_OK;
-	}
-
-	/* Actualizamos tiempo action ts */
-	IRCTADUser_SetActionTS(unknown_id, unknown_user, unknown_nick, unknown_real);
-
-	switch(IRCParse_Join(comando, &prefijo, &canal, &clave, &msg)){
-		case IRCERR_NOSTRING:
-		case IRCERR_ERRONEUSCOMMAND:
-			syslog(LOG_ERR, "Error en IRCParse_Join");
-			IRCMsg_ErrNeedMoreParams (&mensajeRespuesta, SERVICIO ,unknown_nick, comando);
-			enviar(datos->sckfd, mensajeRespuesta);
-
-			if(mensajeRespuesta) free(mensajeRespuesta);
-			if(prefijo) free(prefijo);
-			if(canal) free(canal);
-			if(msg) free(msg);	
-			if(clave) free(clave);
-			liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
-			return COM_OK;
-	}
-
-	
-	switch(IRCTAD_Join(canal, unknown_nick, NULL, clave)){
-
-		case IRCERR_NOENOUGHMEMORY:
-			syslog(LOG_ERR, "Error IRCTAD_JOIN NOENOUGHMEMORY");
-			if(prefijo) free(prefijo);
-			if(canal) free(canal);
-			if(msg) free(msg);	
-			if(clave) free(clave);
-			liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
-			return COM_ERROR;
-
-		case IRCERR_NOVALIDCHANNEL:
-			IRCMsg_ErrNoSuchChannel(&mensajeRespuesta, SERVICIO, unknown_nick, canal);
-			break;
-
-		case IRCERR_USERSLIMITEXCEEDED:
-			IRCMsg_ErrChannelIsFull(&mensajeRespuesta, SERVICIO, unknown_nick, canal);
-			break;
-		
-		case IRCERR_BANEDUSERONCHANNEL:
-			IRCMsg_ErrBannedFromChan(&mensajeRespuesta, SERVICIO, unknown_nick, canal);
-			break;
-
-		case IRCERR_NOINVITEDUSER:
-			IRCMsg_ErrInviteOnlyChan(&mensajeRespuesta, SERVICIO, unknown_nick, canal);
-			break;
-
-		case IRCERR_NOVALIDUSER:
-			syslog(LOG_DEBUG, "NOT VALID USER");
-
-		case IRCERR_YETINCHANNEL:
-			IRCMsg_ErrUserOnChannel(&mensajeRespuesta, SERVICIO, unknown_nick, unknown_user, canal);
-			break;
-
-		case IRCERR_FAIL:
-			IRCMsg_ErrBadChannelKey(&mensajeRespuesta, SERVICIO, unknown_nick, canal);
-			break;
-
-		case IRC_OK:
-
-			/* Primero respondemos JOIN */
-			IRCMsg_Join(&mensajeRespuesta,SERVICIO, NULL, NULL, canal);
-			enviar(datos->sckfd, mensajeRespuesta);
-			if(mensajeRespuesta){ free(mensajeRespuesta); mensajeRespuesta=NULL; }
-
-			break;
-	}
-
-	enviar(datos->sckfd, mensajeRespuesta);
-	if(prefijo) free(prefijo);
-	if(canal) free(canal);
-	if(msg) free(msg);	
-	if(clave) free(clave);
-	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
-	return COM_OK;
-
-}
-
-
-void listarCanalesUsuario(char *canal, int sckfd, char *prefijo, char *nicku) {
-	char *mensajeRespuesta = NULL;
-	char *topico = NULL;
-	char *mode=NULL;
-	int modeInt=0;
-
-	/* Si el modo de canal es secreto no se muestra */
-	modeInt = IRCTADChan_GetModeInt(canal);
-	if(modeInt&IRCMODE_SECRET){
-		return;
-	}
-
-	mode = IRCTADChan_GetModeChar(canal);
-	IRCTAD_GetTopic(canal, &topico);
-	IRCMsg_RplList(&mensajeRespuesta, SERVICIO, nicku, canal, mode, topico?topico:"");
-	enviar(sckfd, mensajeRespuesta);
-	
-	if(mode) free(mode);
-	if(mensajeRespuesta) free(mensajeRespuesta);
-	if(topico) free(topico);
-
-}
-/**
-  @brief ejecuta el comando LIST
-  @param comando: comando a ejecutar
-  @param datos: estructura con la informacion del mensaje
-  @return COM_OK si todo va bien. Error en otro caso
-*/
-status list(char *comando, pDatosMensaje datos){
-	char *prefijo = NULL;
-	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
-	char *host = NULL, *IP = NULL, *away = NULL;
-	char * mensajeRespuesta = NULL;
-	long unknown_id = 0;
-	long creationTS=0, actionTS=0;
-	int sock=0;	
-	char *canal=NULL, *objetivo=NULL;
-	char **lista = NULL;
-	long num=0;
-    int i = 0;
-	unsigned long ret = 0;
-	char *next=NULL;
-
-	sock = datos->sckfd;	
-
-	ret = IRCTADUser_GetData (&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
-
-	/* Caso no hay suficiente memoria */
-	if(ret == IRCERR_NOENOUGHMEMORY) {
-		syslog(LOG_ERR, "Error JOIN NOENOUGHMEMORY");
-		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
-		return COM_ERROR;
-	}
-
-	/* ERRNOTREGISTERD */
-	if(unknown_id == 0){
-		IRCMsg_ErrNotRegisterd(&mensajeRespuesta, SERVICIO, "*");
-		enviar(datos->sckfd, mensajeRespuesta);
-		if(mensajeRespuesta) free(mensajeRespuesta);
-		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
-		return COM_OK;
-	}
-
-	/* Actualizamos tiempo action ts */
-	IRCTADUser_SetActionTS(unknown_id, unknown_user, unknown_nick, unknown_real);
-
-	switch(IRCParse_List(comando, &prefijo, &canal, &objetivo)){
-		case IRCERR_NOSTRING:
-		case IRCERR_ERRONEUSCOMMAND:
-			IRCMsg_ErrNeedMoreParams (&mensajeRespuesta, SERVICIO ,unknown_nick, comando);
-			enviar(datos->sckfd, mensajeRespuesta);
-			if(mensajeRespuesta) free(mensajeRespuesta);
-			if(prefijo) free(prefijo);
-			if(canal) free(canal);
-			if(objetivo) free(objetivo);	
-			liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
-
-			return COM_OK;
-	}
-
-	/* Caso listar todos los canales */
-	if(canal == NULL){
-
-    	IRCTADChan_GetList(&lista, &num, NULL);
-		for(i=0; i<num; i++){
-			listarCanalesUsuario(lista[i], datos->sckfd, SERVICIO, unknown_nick);
-		}
-    
-		/* Liberamos lista y mensaje respuesta */
-		if(lista){
-			for(i=0; i < num; i++){
-				if(lista[i]) free(lista[i]);
-			}
-			free(lista);
-		}
-
-	/* Caso una lista de canales */
-    } else {
-    
-		next = strtok(canal,",");
-		while(next != NULL){
-			listarCanalesUsuario(next, datos->sckfd, SERVICIO, unknown_nick);
-			next = strtok(NULL,",");
-		}
-		free(canal);
-	}
-
-		IRCMsg_RplListEnd(&mensajeRespuesta, SERVICIO,unknown_nick);
-		enviar(datos->sckfd, mensajeRespuesta);
-
-		if(mensajeRespuesta) free(mensajeRespuesta);
-		if(prefijo) free(prefijo);
-		if(objetivo) free(objetivo);
-		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
-	return COM_OK;
-}
-
-
 void whoischannels(int sckfd, char *nick1, char *nick2, char* user, char *target){
 	char *mensajeRespuesta=NULL;
 	char *lista = NULL;
 	long num=0;
+
+	(void) target;
 
 	IRCTAD_ListChannelsOfUser (user, nick2, &lista, &num);
 	IRCMsg_RplWhoIsChannels (&mensajeRespuesta, SERVICIO, nick1, nick2, lista);
@@ -738,6 +476,27 @@ void whoischannels(int sckfd, char *nick1, char *nick2, char* user, char *target
 	if(lista) free(lista);
 }
 
+/**
+ * @ingroup ComandosResto
+ *
+ * @brief Funcion auxiliar para el comando WHOIS
+ *
+ * @synopsis
+ * @code
+ * 	void sendAway(int sckfd, char *away, char *nick, char *nickorig)
+ * @endcode
+ *
+ * @param[in] sckfd socket desde el que enviar
+ * @param[in] away mensaje away
+ * @param[in] nick nick del usuario
+ * @param[in] nickorig nick original
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
+*/
 void sendAway(int sckfd, char *away, char *nick, char *nickorig){
 	char *msgAway;
 
@@ -749,16 +508,32 @@ void sendAway(int sckfd, char *away, char *nick, char *nickorig){
 }
 
 /**
-  @brief ejecuta el comando WHOIS
-  @param comando: comando a ejecutar
-  @param datos: estructura con la informacion del mensaje
-  @return COM_OK si todo va bien. Error en otro caso
+ * @ingroup ComandosResto
+ *
+ * @brief Ejecuta el comando WHOIS
+ *
+ * @synopsis
+ * @code
+ * 	status whois(char *comando, pDatosMensaje datos)
+ * @endcode
+ *
+ * @param[in] comando comando a ejecutar
+ * @param[in] datos estructura con la informacion del mensaje
+ *
+ * @return COM_OK si todo va bien. Error en otro caso
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status whois(char *comando, pDatosMensaje datos){
 	char *mensajeRespuesta = NULL;
 	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
 	char *host = NULL, *IP = NULL, *away = NULL;
-	long unknown_id = 0, ret=0;
+	long unknown_id = 0;
+	unsigned long ret = 0;
 	long creationTS=0, actionTS=0;
 	int sock;
 	char *prefijo=NULL,*target=NULL,*mask=NULL;
@@ -860,10 +635,30 @@ status whois(char *comando, pDatosMensaje datos){
 	return COM_OK;
 }
 
-
+/**
+ * @ingroup ComandosResto
+ *
+ * @brief Funcion auxiliar para el comando NAMES
+ *
+ * @synopsis
+ * @code
+ * 	void listarNamesCanal(char *canal, int sckfd, char *prefijo, char *nicku)
+ * @endcode
+ *
+ * @param[in] canal canal del que obtener users
+ * @param[in] sckfd socket desde el que enviar
+ * @param[in] prefijo prefijo a utilizar
+ * @param[in] nicku nick del user
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
+*/
 void listarNamesCanal(char *canal, int sckfd, char *prefijo, char *nicku) {
 	char *mensajeRespuesta = NULL;
-	char *lista;
+	char *lista = NULL;
 	long num=0;
 
 	if(IRCTAD_ListNicksOnChannel(canal, &lista, &num) == IRC_OK){
@@ -876,16 +671,32 @@ void listarNamesCanal(char *canal, int sckfd, char *prefijo, char *nicku) {
 }
 
 /**
-  @brief ejecuta el comando NAMES
-  @param comando: comando a ejecutar
-  @param datos: estructura con la informacion del mensaje
-  @return COM_OK si todo va bien. Error en otro caso
+ * @ingroup ComandosResto
+ *
+ * @brief Ejecuta el comando NAMES
+ *
+ * @synopsis
+ * @code
+ * 	status names(char *comando, pDatosMensaje datos)
+ * @endcode
+ *
+ * @param[in] comando comando a ejecutar
+ * @param[in] datos estructura con la informacion del mensaje
+ *
+ * @return COM_OK si todo va bien. Error en otro caso
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status names(char *comando, pDatosMensaje datos){
 	char *mensajeRespuesta = NULL;
 	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
 	char *host = NULL, *IP = NULL, *away = NULL;
-	long unknown_id = 0, ret=0;
+	long unknown_id = 0;
+	unsigned long ret = 0;
 	long creationTS=0, actionTS=0;
 	int sock;
 	char *canal=NULL, *prefijo=NULL, *objetivo=NULL;
@@ -978,7 +789,28 @@ status names(char *comando, pDatosMensaje datos){
 	return COM_OK;
 }
 
-
+/**
+ * @ingroup ComandosResto
+ *
+ * @brief Funcion auxilar del comando PRIVMSG
+ *
+ * @synopsis
+ * @code
+ * 	void enviarMensajePrivado(int sckfd, char *mensaje, char *nick, char * nickorigin, int sndaway)
+ * @endcode
+ *
+ * @param[in] sckfd socket desde el que enviar
+ * @param[in] mensaje mensaje a enviar
+ * @param[in] nick nick del usuario
+ * @param[in] nickorig nick original
+ * @param[in] sndaway send away del usuario
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
+*/
 void enviarMensajePrivado(int sckfd, char *mensaje, char *nick, char * nickorigin, int sndaway){
 	char *mensajeError = NULL;
 	char *unknown_user = NULL, *unknown_real = NULL;
@@ -989,7 +821,7 @@ void enviarMensajePrivado(int sckfd, char *mensaje, char *nick, char * nickorigi
 
 	/* Obtenemos datos usuario target con el nick */
 	IRCTADUser_GetData(&unknown_id, &unknown_user, &nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
-	if(unknown_id == 0){
+	if(unknown_id == 0 && nickorigin){
 		IRCMsg_ErrNoSuchNick (&mensajeError, SERVICIO, nickorigin, nick);
 		enviar(sckfd, mensajeError);	
 		if(mensajeError) free(mensajeError);
@@ -1002,7 +834,27 @@ void enviarMensajePrivado(int sckfd, char *mensaje, char *nick, char * nickorigi
 	liberarUserData(unknown_user, NULL, unknown_real, host, IP, away);
 }
 
-
+/**
+ * @ingroup ComandosResto
+ *
+ * @brief Funcion auxilar del comando PRIVMSG
+ *
+ * @synopsis
+ * @code
+ * 	void enviarMensajeACanal(int sckfd, char *mensaje, char *canal, char * nickorigin)
+ * @endcode
+ *
+ * @param[in] sckfd socket desde el que enviar
+ * @param[in] mensaje mensaje a enviar
+ * @param[in] canal canal al que enviar el mensaje
+ * @param[in] nickorig nick original
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
+*/
 void enviarMensajeACanal(int sckfd, char *mensaje, char *canal, char * nickorigin){
 	char *mensajeError = NULL;
 	char **lista = NULL;
@@ -1020,6 +872,14 @@ void enviarMensajeACanal(int sckfd, char *mensaje, char *canal, char * nickorigi
 
 	/* Enviamos mensajes a usuarios del canal */	
 	for(i=0; i<num; i++) {
+		/* No volvemos a mandarselo al que lo ha enviado */
+		if(nickorigin){
+			if(!strcmp(nickorigin,lista[i])){
+				continue;
+			}
+		}
+
+
 		enviarMensajePrivado(sckfd, mensaje, lista[i], nickorigin,0);
 	}
 
@@ -1033,16 +893,32 @@ void enviarMensajeACanal(int sckfd, char *mensaje, char *canal, char * nickorigi
 }
 
 /**
-  @brief ejecuta el comando PRIVMSG
-  @param comando: comando a ejecutar
-  @param datos: estructura con la informacion del mensaje
-  @return COM_OK si todo va bien. Error en otro caso
+ * @ingroup ComandosResto
+ *
+ * @brief Ejecuta el comando PRIVMSG
+ *
+ * @synopsis
+ * @code
+ * 	status privmsg(char *comando, pDatosMensaje datos)
+ * @endcode
+ *
+ * @param[in] comando comando a ejecutar
+ * @param[in] datos estructura con la informacion del mensaje
+ *
+ * @return COM_OK si todo va bien. Error en otro caso
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status privmsg(char *comando, pDatosMensaje datos){
 	char *mensajeRespuesta = NULL;
 	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
 	char *host = NULL, *IP = NULL, *away = NULL;
-	long unknown_id = 0, ret=0;
+	long unknown_id = 0;
+	unsigned long ret = 0;
 	long creationTS=0, actionTS=0;
 	int sock;
 	char *msgtarget=NULL, *msg=NULL,*prefijo=NULL, *target=NULL;
@@ -1119,16 +995,32 @@ status privmsg(char *comando, pDatosMensaje datos){
 }
 
 /**
-  @brief ejecuta el comando PING
-  @param comando: comando a ejecutar
-  @param datos: estructura con la informacion del mensaje
-  @return COM_OK si todo va bien. Error en otro caso
+ * @ingroup ComandosResto
+ *
+ * @brief Ejecuta el comando PING
+ *
+ * @synopsis
+ * @code
+ * 	status ping(char *comando, pDatosMensaje datos)
+ * @endcode
+ *
+ * @param[in] comando comando a ejecutar
+ * @param[in] datos estructura con la informacion del mensaje
+ *
+ * @return COM_OK si todo va bien. Error en otro caso
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status ping(char *comando, pDatosMensaje datos){
 	char *mensajeRespuesta = NULL;
 	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
 	char *host = NULL, *IP = NULL, *away = NULL;
-	long unknown_id = 0, ret=0;
+	long unknown_id = 0;
+	unsigned long ret = 0;
 	long creationTS=0, actionTS=0;
 	int sock;
 	char *prefijo=NULL, *server=NULL, *server2=NULL,*msg=NULL;
@@ -1183,10 +1075,90 @@ status ping(char *comando, pDatosMensaje datos){
 	return COM_OK;
 }
 
+/**
+ * @ingroup ComandosResto
+ *
+ * @brief Ejecuta el comando PONG
+ *
+ * @synopsis
+ * @code
+ * 	status pong(char *comando, pDatosMensaje datos)
+ * @endcode
+ *
+ * @param[in] comando comando a ejecutar
+ * @param[in] datos estructura con la informacion del mensaje
+ *
+ * @return COM_OK si todo va bien. Error en otro caso
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
+*/
+status pong(char *comando, pDatosMensaje datos){
+	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
+	char *host = NULL, *IP = NULL, *away = NULL;
+	long unknown_id = 0;
+	unsigned long ret = 0;
+	long creationTS=0, actionTS=0;
+	int sock;
 
+	if(!comando || !datos){
+		return COM_ERROR;
+	}
+
+	sock = datos->sckfd;
+
+	/* Obtenemos identificador del usuario */
+	IRCTADUser_GetData(&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
+
+	/* Caso no hay suficiente memoria */
+	if(ret == IRCERR_NOENOUGHMEMORY) {
+		syslog(LOG_ERR, "Error PONG NOENOUGHMEMORY");
+		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+		return COM_ERROR;
+	}
+
+	/* ERRNOTREGISTERD */
+	if(unknown_id == 0){
+		liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+		return COM_OK;
+	}
+
+	/* Actualizamos tiempo action ts */
+	IRCTADUser_SetActionTS(unknown_id, unknown_user, unknown_nick, unknown_real);
+
+	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
+
+	return COM_OK;
+}
+
+/**
+ * @ingroup ComandosResto
+ *
+ * @brief Funcion auxilar del comando PART
+ *
+ * @synopsis
+ * @code
+ * 	void partirCanal(int sckfd, char * canal, char *nick, char *real, char *msg)
+ * @endcode
+ *
+ * @param[in] sckfd socket desde el que enviar
+ * @param[in] canal canal a abandonar
+ * @param[in] nick nick del usuario
+ * @param[in] real realname del usuario
+ * @param[in] msg mensaje a enviar
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
+*/
 void partirCanal(int sckfd, char * canal, char *nick, char *real, char *msg){
 
-	char *mensaje=NULL;
+	char *mensaje=NULL, *prefijo2=NULL;
 
 	switch(IRCTAD_Part (canal, nick)){
 		case IRCERR_NOVALIDUSER:
@@ -1198,26 +1170,45 @@ void partirCanal(int sckfd, char * canal, char *nick, char *real, char *msg){
 		case IRCERR_UNDELETABLECHANNEL:
 			syslog(LOG_INFO, "No se ha podido borrar el canal %s", canal);
 		case IRC_OK:
-			IRCMsg_Part (&mensaje, SERVICIO, canal, msg);
+			IRC_ComplexUser(&prefijo2,nick, real, "*", SERVICIO);
+			IRCMsg_Part (&mensaje, prefijo2, canal, msg);
+			free(prefijo2);
 			break;
 	}
 
 	enviar(sckfd, mensaje);
+	enviarMensajeACanal(sckfd,mensaje,canal, NULL);
 	if(mensaje) free(mensaje);
 
 }
 
 /**
-  @brief ejecuta el comando PART
-  @param comando: comando a ejecutar
-  @param datos: estructura con la informacion del mensaje
-  @return COM_OK si todo va bien. Error en otro caso
+ * @ingroup ComandosResto
+ *
+ * @brief Ejecuta el comando PART
+ *
+ * @synopsis
+ * @code
+ * 	status part(char *comando, pDatosMensaje datos)
+ * @endcode
+ *
+ * @param[in] comando comando a ejecutar
+ * @param[in] datos estructura con la informacion del mensaje
+ *
+ * @return COM_OK si todo va bien. Error en otro caso
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status part(char *comando, pDatosMensaje datos){
 	char *mensajeRespuesta = NULL;
 	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
 	char *host = NULL, *IP = NULL, *away = NULL;
-	long unknown_id = 0, ret=0;
+	long unknown_id = 0;
+	unsigned long ret = 0;
 	long creationTS=0, actionTS=0;
 	int sock;
 	char *prefijo=NULL, *canal=NULL, *mensaje=NULL, *next=NULL;
@@ -1277,16 +1268,32 @@ status part(char *comando, pDatosMensaje datos){
 }
 
 /**
-  @brief ejecuta el comando TOPIC
-  @param comando: comando a ejecutar
-  @param datos: estructura con la informacion del mensaje
-  @return COM_OK si todo va bien. Error en otro caso
+ * @ingroup ComandosResto
+ *
+ * @brief Ejecuta el comando TOPIC
+ *
+ * @synopsis
+ * @code
+ * 	status topic(char *comando, pDatosMensaje datos)
+ * @endcode
+ *
+ * @param[in] comando comando a ejecutar
+ * @param[in] datos estructura con la informacion del mensaje
+ *
+ * @return COM_OK si todo va bien. Error en otro caso
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status topic(char *comando, pDatosMensaje datos){
 	char *mensajeRespuesta = NULL;
 	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
 	char *host = NULL, *IP = NULL, *away = NULL;
-	long unknown_id = 0, ret=0;
+	long unknown_id = 0;
+	unsigned long ret = 0;
 	long creationTS=0, actionTS=0;
 	int sock;
 	char *prefijo=NULL, *canal=NULL, *topico=NULL;
@@ -1358,16 +1365,32 @@ status topic(char *comando, pDatosMensaje datos){
 }
 
 /**
-  @brief ejecuta el comando KICK
-  @param comando: comando a ejecutar
-  @param datos: estructura con la informacion del mensaje
-  @return COM_OK si todo va bien. Error en otro caso
+ * @ingroup ComandosResto
+ *
+ * @brief Ejecuta el comando KICK
+ *
+ * @synopsis
+ * @code
+ * 	status kick(char *comando, pDatosMensaje datos)
+ * @endcode
+ *
+ * @param[in] comando comando a ejecutar
+ * @param[in] datos estructura con la informacion del mensaje
+ *
+ * @return COM_OK si todo va bien. Error en otro caso
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status kick(char *comando, pDatosMensaje datos){
 	char *mensajeRespuesta = NULL;
 	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
 	char *host = NULL, *IP = NULL, *away = NULL;
-	long unknown_id = 0, ret=0;
+	long unknown_id = 0;
+	unsigned long ret = 0;
 	long creationTS=0, actionTS=0;
 	int sock;
 	char *prefijo=NULL, *canal=NULL, *usuario=NULL,*comentario=NULL;
@@ -1467,16 +1490,32 @@ status kick(char *comando, pDatosMensaje datos){
 }
 
 /**
-  @brief ejecuta el comando AWAY
-  @param comando: comando a ejecutar
-  @param datos: estructura con la informacion del mensaje
-  @return COM_OK si todo va bien. Error en otro caso
+ * @ingroup ComandosResto
+ *
+ * @brief Ejecuta el comando AWAY
+ *
+ * @synopsis
+ * @code
+ * 	status away(char *comando, pDatosMensaje datos)
+ * @endcode
+ *
+ * @param[in] comando comando a ejecutar
+ * @param[in] datos estructura con la informacion del mensaje
+ *
+ * @return COM_OK si todo va bien. Error en otro caso
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status away(char *comando, pDatosMensaje datos){
 	char *mensajeRespuesta = NULL;
 	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
 	char *host = NULL, *IP = NULL, *away = NULL;
-	long unknown_id = 0, ret=0;
+	long unknown_id = 0;
+	unsigned long ret = 0;
 	long creationTS=0, actionTS=0;
 	int sock;
 	char *prefijo=NULL, *mensaje=NULL;
@@ -1538,22 +1577,36 @@ status away(char *comando, pDatosMensaje datos){
 	return COM_OK;
 }
 
-
-
 /**
-  @brief ejecuta el comando MODE
-  @param comando: comando a ejecutar
-  @param datos: estructura con la informacion del mensaje
-  @return COM_OK si todo va bien. Error en otro caso
+ * @ingroup ComandosResto
+ *
+ * @brief Ejecuta el comando MODE
+ *
+ * @synopsis
+ * @code
+ * 	status mode(char *comando, pDatosMensaje datos)
+ * @endcode
+ *
+ * @param[in] comando comando a ejecutar
+ * @param[in] datos estructura con la informacion del mensaje
+ *
+ * @return COM_OK si todo va bien. Error en otro caso
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status mode(char *comando, pDatosMensaje datos){
 	char *mensajeRespuesta = NULL;
 	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
 	char *host = NULL, *IP = NULL, *away = NULL;
-	long unknown_id = 0, ret=0;
+	long unknown_id = 0;
+	unsigned long ret = 0;
 	long creationTS=0, actionTS=0;
 	int sock;
-	char *canal=NULL,*mode=NULL,*user=NULL,*prefijo=NULL;
+	char *canal=NULL,*mode=NULL,*user=NULL,*prefijo=NULL, *mcanal=NULL;
 
 	if(!comando || !datos){
 		return COM_ERROR;
@@ -1607,13 +1660,17 @@ status mode(char *comando, pDatosMensaje datos){
 			} else if (!(ret&(IRCUMODE_CREATOR|IRCUMODE_OPERATOR|IRCUMODE_LOCALOPERATOR))){
 				IRCMsg_ErrChanOPrivsNeeded(&mensajeRespuesta, SERVICIO, unknown_nick, canal);
 
-			} else { /* Caso comandos necesitan permisos */
+			} else if(mode) { /* Caso comandos necesitan permisos */
 				if(!strcmp("\\+k", mode)){
 					IRCTADChan_SetPassword(canal,user);
 				}
 
 				IRCTAD_Mode(canal, unknown_nick, mode);
 				IRCMsg_Mode(&mensajeRespuesta, SERVICIO, canal, mode, unknown_nick);
+			} else {
+				mcanal = IRCTADChan_GetModeChar(canal);
+				IRCMsg_RplChannelModeIs(&mensajeRespuesta, SERVICIO, unknown_nick, canal, mcanal?mcanal:"+");
+				free(mcanal);
 			}
 	} else {
 		IRCMsg_ErrChanOPrivsNeeded(&mensajeRespuesta, SERVICIO, unknown_nick, "*");
@@ -1631,10 +1688,25 @@ status mode(char *comando, pDatosMensaje datos){
 }
 
 /**
-  @brief ejecuta el comando QUIT
-  @param comando: comando a ejecutar
-  @param datos: estructura con la informacion del mensaje
-  @return COM_OK si todo va bien. Error en otro caso
+ * @ingroup ComandosResto
+ *
+ * @brief Ejecuta el comando QUIT
+ *
+ * @synopsis
+ * @code
+ * 	status quit(char *comando, pDatosMensaje datos)
+ * @endcode
+ *
+ * @param[in] comando comando a ejecutar
+ * @param[in] datos estructura con la informacion del mensaje
+ *
+ * @return COM_OK si todo va bien. Error en otro caso
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status quit(char *comando, pDatosMensaje datos){
 	char *mensajeRespuesta = NULL;
@@ -1650,41 +1722,80 @@ status quit(char *comando, pDatosMensaje datos){
 
 	sock = datos->sckfd;
 	IRCTADUser_GetData(&unknown_id, &unknown_user, &unknown_nick, &unknown_real, &host, &IP, &sock, &creationTS, &actionTS, &away);
-	IRCMsg_Notice(&mensajeRespuesta, SERVICIO, unknown_nick, "Ta lue");
+	IRCMsg_Notice(&mensajeRespuesta, SERVICIO, unknown_nick, "Me piro vampiro");
 	enviar(datos->sckfd, mensajeRespuesta);
 	if(mensajeRespuesta) free(mensajeRespuesta);
 
 	/* Se cierra la conexion */
-	IRCTADUser_Delete(unknown_id, unknown_user, unknown_nick, unknown_real);
+	/*IRCTAD_Quit(unknown_nick);*/
 	liberarUserData(unknown_user, unknown_nick, unknown_real, host, IP, away);
 
 	return COM_QUIT;
 }
 
+/**
+ * @ingroup ComandosResto
+ *
+ * @brief Obtiene ruta del motd a mostrar 
+ *
+ * @synopsis
+ * @code
+ * 	char * getMOTD(void)
+ * @endcode
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
+*/
 char * getMOTD(void){
-	system("./motd.bash");
+	char comando[1040];
+	/* Para que funcione daemonizado */
+	snprintf(comando,1040,".%s/%s",abspath,MOTD_SCRIPT);
+
+	if(offensive) {
+		system(comando);
+		return FMOTDOFFENSIVE;
+	}
+	
 	return FMOTD;
 }
 
-
-
 /**
-  @brief ejecuta el comando MOTD
-  @param comando: comando a ejecutar
-  @param datos: estructura con la informacion del mensaje
-  @return COM_OK si todo va bien. Error en otro caso
+ * @ingroup ComandosResto
+ *
+ * @brief Ejecuta el comando MOTD
+ *
+ * @synopsis
+ * @code
+ * 	status motd(char *comando, pDatosMensaje datos)
+ * @endcode
+ *
+ * @param[in] comando comando a ejecutar
+ * @param[in] datos estructura con la informacion del mensaje
+ *
+ * @return COM_OK si todo va bien. Error en otro caso
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status motd(char *comando, pDatosMensaje datos){
 	char *mensajeRespuesta = NULL;
 	char *unknown_user = NULL, *unknown_nick = NULL, *unknown_real = NULL;
 	char *host = NULL, *IP = NULL, *away = NULL;
-	long unknown_id = 0, ret=0;
+	long unknown_id = 0;
+	unsigned long ret = 0;
 	long creationTS=0, actionTS=0;
 	int sock;
 	char *prefijo=NULL, *target=NULL;
 	char *mtd=NULL;
 	FILE *fp=NULL;
 	char line[256];
+	char motd_file[1040];
 
 	if(!comando || !datos){
 		return COM_ERROR;
@@ -1720,8 +1831,9 @@ status motd(char *comando, pDatosMensaje datos){
 	enviar(datos->sckfd, mensajeRespuesta);
 	if(mensajeRespuesta) { free(mensajeRespuesta); mensajeRespuesta=NULL; }
 
-
-	fp = fopen(getMOTD(),"r");
+	/* Para que funcione aunque sea daemon */
+	snprintf(motd_file,1040,"%s/%s",abspath, getMOTD());
+	fp = fopen(motd_file,"r");
 	if(!fp) {
 		IRCMsg_RplMotd(&mensajeRespuesta, SERVICIO,  unknown_nick,  "Oops algo ha ocurrido");
 		enviar(datos->sckfd, mensajeRespuesta);
@@ -1748,13 +1860,26 @@ status motd(char *comando, pDatosMensaje datos){
 	return COM_OK;
 }
 
-
-
 /**
-  @brief ejecuta el comando NO_COMMAND
-  @param comando: comando a ejecutar
-  @param datos: estructura con la informacion del mensaje
-  @return COM_OK si todo va bien. Error en otro caso
+ * @ingroup ComandosResto
+ *
+ * @brief Ejecuta el comando NO_COMMAND
+ *
+ * @synopsis
+ * @code
+ * 	status comandoVacio(char *comando, pDatosMensaje datos)
+ * @endcode
+ *
+ * @param[in] comando comando a ejecutar
+ * @param[in] datos estructura con la informacion del mensaje
+ *
+ * @return COM_OK si todo va bien. Error en otro caso
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status comandoVacio(char* comando, pDatosMensaje datos){
 	char *mensajeRespuesta = NULL;

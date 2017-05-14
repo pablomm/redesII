@@ -1,0 +1,5 @@
+Nota1:
+Los archivos recibidos por xchat2 se almacenan en la carpeta files
+Nota2:
+Debido a la necesidad de acceder a los certificados, el servidor no puede ejecutarse en modo daemon cuando se quiere acceder usar la opcion SSL
+

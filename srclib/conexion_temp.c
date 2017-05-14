@@ -1,18 +1,46 @@
 /**
-  @file conexion_temp.c
-  @brief estructura y funciones del usuario temporal
-  @author Pablo Marcos  <pablo.marcos@estudiante.uam.es>
-  @author Dionisio Perez  <dionisio.perez@estudiante.uam.es>
+ * @file conexion_temp.c
+ * @brief estructura y funciones del usuario temporal
+ * @author Pablo Marcos  <pablo.marcos@estudiante.uam.es>
+ * @author Dionisio Perez  <dionisio.perez@estudiante.uam.es>
 */
+
+/**
+ * @defgroup TempUser TempUser
+ *
+ * <hr>
+ */
 
 #include "../includes/conexion_temp.h"
 
 /**
-  @brief crea un nuevo usuario temporal
-  @param socket: el socket
-  @param ip: la direccion ip
-  @param host: el host
-  @return CON_OK si todo va bien. CON_ERROR en caso contrario
+ * @addtogroup TempUser
+ * Comprende funciones para el tratamiento de usuarios que no han sido añadidos a la base de datos de metis
+ *
+ * <hr>
+ */
+
+/**
+ * @ingroup TempUser
+ *
+ * @brief Crea un nuevo usuario temporal
+ *
+ * @synopsis
+ * @code
+ * 	status newTempUser(int socket,  char *ip, char *host)
+ * @endcode
+ *
+ * @param[in] socket el socket
+ * @param[in] ip la direccion ip
+ * @param[in] host el host
+ *
+ * @return CON_OK si todo va bien. CON_ERROR en caso contrario
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status newTempUser(int socket,  char *ip, char *host){
 	pTempUser usuario;
@@ -59,10 +87,25 @@ status newTempUser(int socket,  char *ip, char *host){
 }
 
 /**
-  @brief modifica el nick del usuario temporal
-  @param usuario: el usuario
-  @param nick: el nuevo nick
-  @return CON_OK si todo va bien. CON_ERROR en caso contrario
+ * @ingroup TempUser
+ *
+ * @brief Modifica el nick del usuario temporal
+ *
+ * @synopsis
+ * @code
+ * 	status setNickTemporal(pTempUser usuario, char* nick)
+ * @endcode
+ *
+ * @param[in] usuario el usuario
+ * @param[in] nick el nuevo nick
+ *
+ * @return CON_OK si todo va bien. CON_ERROR en caso contrario
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status setNickTemporal(pTempUser usuario, char* nick){
 
@@ -85,9 +128,24 @@ status setNickTemporal(pTempUser usuario, char* nick){
 }
 
 /**
-  @brief busca por socket un usuario temporal en la lista
-  @param socket: el socket
-  @return el usuario econtrado, o NULL
+ * @ingroup TempUser
+ *
+ * @brief Busca por socket un usuario temporal en la lista
+ *
+ * @synopsis
+ * @code
+ * 	pTempUser pullTempUser(int socket)
+ * @endcode
+ *
+ * @param[in] socket el socket
+ *
+ * @return el usuario econtrado, o NULL
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 pTempUser pullTempUser(int socket){
 
@@ -110,9 +168,24 @@ pTempUser pullTempUser(int socket){
 }
 
 /**
-  @brief elimina un usario temporal
-  @param socket: el socket
-  @return CON_OK si todo va bien. CON_ERROR en caso contrario
+ * @ingroup TempUser
+ *
+ * @brief Elimina un usario temporal
+ *
+ * @synopsis
+ * @code
+ * 	status deleteTempUser(int socket)
+ * @endcode
+ *
+ * @param[in] socket el socket
+ *
+ * @return CON_OK si todo va bien. CON_ERROR en caso contrario
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status deleteTempUser(int socket){
 
@@ -160,9 +233,24 @@ status deleteTempUser(int socket){
 }
 
 /**
-  @brief elimina de memoria un usuario temporal
-  @param usuario: el usuario
-  @return CON_OK
+ * @ingroup TempUser
+ *
+ * @brief Elimina de memoria un usuario temporal
+ *
+ * @synopsis
+ * @code
+ * 	status liberaTempUser(pTempUser usuario)
+ * @endcode
+ *
+ * @param[in] usuario el usuario
+ *
+ * @return CON_OK 
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status liberaTempUser(pTempUser usuario) {
 
@@ -174,10 +262,24 @@ status liberaTempUser(pTempUser usuario) {
 	return CON_OK;
 }
 
+
 /**
-  @brief elimina de memoria a todos los usuarios temporales
-  @param void
-  @return CON_OK
+ * @ingroup TempUser
+ *
+ * @brief Elimina de memoria a todos los usuarios temporales
+ *
+ * @synopsis
+ * @code
+ * 	status liberaTodosTempUser(void)
+ * @endcode
+ *
+ * @return CON_OK 
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status liberaTodosTempUser(void){
 
@@ -202,10 +304,24 @@ status liberaTodosTempUser(void){
 
 }
 
+
 /**
-  @brief funcion pa debbugear que ni se pa que la comento
-  @param void
-  @return CON_OK
+ * @ingroup TempUser
+ *
+ * @brief Funcion para debbugear usuarios temporales
+ *
+ * @synopsis
+ * @code
+ * 	status printDebugUsers(void)
+ * @endcode
+ *
+ * @return CON_OK 
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
 */
 status printDebugUsers(void){
 	pTempUser aux = NULL;

@@ -1,18 +1,45 @@
 /**
-  @file red_servidor.c
-  @brief crear sockets, aceptar conexion y enviar
-  @author Pablo Marcos  <pablo.marcos@estudiante.uam.es>
-  @author Dionisio Perez  <dionisio.perez@estudiante.uam.es>
-*/
-	
-#include "../includes/red_servidor.h"
+ * @file red_servidor.c
+ * @brief crear sockets, aceptar conexion y enviar
+ * @author Pablo Marcos  <pablo.marcos@estudiante.uam.es>
+ * @author Dionisio Perez  <dionisio.perez@estudiante.uam.es>
+ */
 
 /**
-  @brief crea un socket TCP
-  @param sckfd: el socket
-  @param port: el puerto
-  @return RED_OK si todo va bien. RED_ERROR en caso contrario
-*/
+ * @defgroup RedServidorIRC RedServidorIRC
+ *
+ * <hr>
+ */
+	
+#include "../includes/red_servidor.h"
+#include "../includes/ssl.h"
+
+/**
+ * @addtogroup RedServidorIRC
+ * Comprende funciones para creacion de sockets, aceptar y enviar conexiones
+ *
+ * <hr>
+ */
+
+/**
+ * @ingroup RedServidorIRC
+ *
+ * @brief crea un socket TCP
+ *
+ * @synopsis
+ * @code
+ * 	status crearSocketTCP(int * sckfd, unsigned short port)
+ * @endcode
+ *
+ * @param[in] sckfd el socket
+ * @param[in] port el puerto
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
+ */
 status crearSocketTCP(int * sckfd, unsigned short port){
 
 	struct sockaddr_in direccion;
@@ -56,12 +83,25 @@ status crearSocketTCP(int * sckfd, unsigned short port){
 }
 
 /**
-  @brief acepta conexion entrante
-  @param sockval: socket del que extraer la conexion
-  @param sockfd: nuevo socket para manejar la conexion
-  @param address: estructura que almacena informacion de la direccion de internet
-  @return RED_OK si todo va bien. RED_ERROR en caso contrario
-*/
+ * @ingroup RedServidorIRC
+ *
+ * @brief Acepta conexion entrante
+ *
+ * @synopsis
+ * @code
+ * 	status aceptarConexion(int sockval,int *sckfd, struct sockaddr_in * address)
+ * @endcode
+ *
+ * @param[in] sockval socket del que extraer la conexion
+ * @param[in] sockfd nuevo socket para manejar la conexion
+ * @param[in] address estructura que almacena informacion de la direccion de internet
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
+ */
 status aceptarConexion(int sockval,int *sckfd, struct sockaddr_in * address){
 
 	size_t c = sizeof(struct sockaddr_in);
@@ -80,19 +120,36 @@ status aceptarConexion(int sockval,int *sckfd, struct sockaddr_in * address){
 }
 
 /**
-  @brief envia mensaje desde el socket especificado
-  @param sockfd: el socket 
-  @param mensaje: el mensaje
-  @return RED_OK si todo va bien. RED_ERROR en caso contrario
-*/
+ * @ingroup RedServidorIRC
+ *
+ * @brief Envia mensaje desde el socket especificado
+ *
+ * @synopsis
+ * @code
+ * 	status enviar(int sockfd, char *mensaje)
+ * @endcode
+ *
+ * @param[in] sockfd el socket 
+ * @param[in] mensaje el mensaje
+ *
+ * @author
+ * Pablo Marcos Manchon
+ * Dionisio Perez Alvear
+ *
+ *<hr>
+ */
 status enviar(int sockfd, char *mensaje){
 	if(sockfd < 0 || mensaje==NULL){
 		syslog(LOG_INFO,"Error en el envio de paquete");
 		return RED_ERROR;
 	}
 
-	send(sockfd, mensaje, strlen(mensaje), 0);
-
+	if(ssl_active){
+		enviar_datos_SSL(sockfd, mensaje, strlen(mensaje));
+	} else {
+		send(sockfd, mensaje, strlen(mensaje), 0);
+	}
+	
 	return RED_OK;
 }
 

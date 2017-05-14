@@ -1,3 +1,9 @@
+/**
+ * @file conexion_temp.h
+ * @brief estructura y funciones del usuario temporal
+ * @author Pablo Marcos  <pablo.marcos@estudiante.uam.es>
+ * @author Dionisio Perez  <dionisio.perez@estudiante.uam.es>
+ */
 
 #ifndef CONEXION_TEMP_H
 #define CONEXION_TEMP_H
@@ -11,28 +17,32 @@
 
 typedef struct _TempUser {
 
-	int socket;
+	int socket; /**< Socket en el que almacenamos el usuario */
 	char * nick;
 	char *host;
 	char IP[INET6_ADDRSTRLEN];
-	struct _TempUser * previous;
-	struct _TempUser * next;
+	struct _TempUser * previous; /**< Puntero al usuario anterior */
+	struct _TempUser * next; /**< Puntero al usuario siguiente */
 
 } TempUser, *pTempUser;
 
-pTempUser usuarioPrimero;
+pTempUser usuarioPrimero; /**< Almacenamos el primer y ultimo usuario de manera global */
 pTempUser usuarioUltimo;
 
-pthread_mutex_t mutexTempUser;
+pthread_mutex_t mutexTempUser; /**< Semaforo para trabajar con usuarios temporales */
 
-status deleteTempUser(int socket);
 status newTempUser(int socket,  char *ip, char *host);
-pTempUser pullTempUser(int socket);
-status liberaTempUser(pTempUser usuario);
-status liberaTodosTempUser(void);
-status printDebugUsers(void);
+
 status setNickTemporal(pTempUser usuario, char* nick);
 
+pTempUser pullTempUser(int socket);
 
+status deleteTempUser(int socket);
+
+status liberaTempUser(pTempUser usuario);
+
+status liberaTodosTempUser(void);
+
+status printDebugUsers(void);
 
 #endif /* CONEXION_TEMP_H */

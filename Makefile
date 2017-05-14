@@ -1,63 +1,150 @@
-# Makefile 
-################################################################################
+####################################
+# Pablo Marcos Manchón             #
+# Dionisio Pérez Alvear            #
+# Pareja Nº 2                      #
+####################################
 
-# banderas de compilacion
+# Compiladores
 CC = gcc
-CFLAGS = -W -Wall -g
-LDLIBS = -lpthread -lircinterface -lircredes -lirctad -lsoundredes 
+AR = ar 
 
+# Flags de compilacion
+CFLAGS = -L$(LDIR) -I$(IDIR) -g -Wall -W -pedantic `pkg-config --cflags gtk+-3.0` -D_GNU_SOURCE  # -D PRUEBAS_IRC
+LDFLAGS = -lpthread -lircredes -lircinterface -lsoundredes -lirctad -lsoundredes -lpulse -lpulse-simple `pkg-config --libs gtk+-3.0` -lssl -lcrypto -rdynamic 
+
+# Carpetas
+TAR_FILE= G-2302-02-P3.tar.gz
+SDIR = src
+SLDIR = srclib
+IDIR = includes
+LDIR = lib
+ODIR = obj
+MDIR = man
+DDIR = doc
+BDIR = .
+FDIR = files
+CDIR = certs
+EDIR = echo
+CSDIR = cliente_servidor
+MDIR = misc
+MOTD= motd.bash
+NXCHAT2 = cliente_IRC
+NSERVIDOR = servidor_IRC
+
+# Personalizacion colores
 NC='\033[0m'
 GREEN='\033[0;32m'
+BLUE='\033[0;34m'
 
-TAR_FILE= G-2302-02-P1.tar.gz
+_LIB = libredes2.a
+LIB = $(patsubst %,$(LDIR)/%,$(_LIB))
 
-# fuentes a considerar
-SOURCES = thpool.c config.c red_servidor.c funciones_servidor.c conexion_temp.c servidor.c 
+_LOBJ = red_cliente.o irc_cliente.o file_send.o red_servidor.o comandos_noirc.o comandos_cliente.o audiochat.o conexion_temp.o config.o funciones_registro.o ssl.o funciones_servidor.o bot.o
+LOBJ = $(patsubst %,$(ODIR)/%,$(_LOBJ))
 
-OBJECTS = obj/thpool.o obj/config.o obj/red_servidor.o obj/funciones_servidor.o obj/conexion_temp.o obj/servidor.o 
+_OBJ = xchat2.o servidor.o servidor_echo.o cliente_echo.o bot_galletas.o
+OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
-# ejecutable
-EXEC_SOURCES = src/servidor.c
+_BINE = servidor_echo cliente_echo
+BINE = $(patsubst %,$(EDIR)/%,$(_BINE))
 
-all: carpetas compilar
+_BIN = xchat2 servidor $(_BINE) bot_galletas
+BIN = $(patsubst %,$(BDIR)/%,$(_BIN))
 
-compilar: $(OBJECTS) exe
+all: directories certificados $(BIN) mvecho mvcpyxchat chmod
 
-carpetas:
-	mkdir -p obj srclib
+#Crea carpetas
+directories:
+	@mkdir -p $(ODIR)
+	@mkdir -p $(FDIR)
+	@mkdir -p $(LDIR)
+	@mkdir -p $(EDIR)
+	@mkdir -p $(DDIR)
+	@mkdir -p $(CSDIR)
 
-exe: servidor
+# Crea la libreria
+$(LIB): $(LOBJ)
+	@echo "Creando libreria ${BLUE}$@\'${NC}"
+	@echo Objetos incluidos:
+	@$(AR) rcv $@ $^
+	@echo Libreria creada ${GREEN}[OK]${NC}
 
-# receta para hacer un .o de src
-obj/%.o : src/%.c
-	@echo -n compilando objeto \'$<\'...
-	@$(CC) -c $(CFLAGS) $< -c -o $@
+# Crea objetos
+$(LOBJ):$(ODIR)/%.o: $(SLDIR)/%.c
+	@echo -n "Compilando ${BLUE}$@${NC}"
+	@$(CC) -c -o $@ $< $(CFLAGS)
 	@echo ${GREEN}[OK]${NC}
 
-# receta para hacer un ejecutable
-servidor : $(OBJECTS)
-	@echo -n compilando ejecutable \'$@\'...
-	@$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
+# Crea objetos de ejecutables
+$(OBJ):$(ODIR)/%.o: $(SDIR)/%.c
+	@echo -n "Compilando ${BLUE}$@${NC}"
+	@$(CC) -c -o $@ $< $(CFLAGS) 
 	@echo ${GREEN}[OK]${NC}
 
-# para ejecutar el programa
-run:
-	@./servidor
+# Crea ejecutables
+$(BIN):%: $(ODIR)/%.o $(LIB)
+	@echo -n "Enlazando ejecutable ${BLUE}$@${NC}"
+	@$(CC) -o $@ $^ $(LDFLAGS) $(CFLAGS)
+	@echo ${GREEN}[OK]${NC}
 
-#para hacer el tar.gz
-comprimir: clean
-	@rm -f G-2302-02-P1.tar.gz
-	@tar -zcf ../$(TAR_FILE) ../G-2302-02-P1/
-	@mv ../$(TAR_FILE) $(TAR_FILE)
+# Genera los certificados
+certificados:
+	@mkdir -p $(CDIR)
+	@chmod +x ca.sh client.sh server.sh 
+	@echo -n "Generando certificado CA "
+	@./ca.sh 2> /dev/null > /dev/null
+	@echo ${GREEN}[OK]${NC}
+	@echo -n "Generando certificado cliente "
+	@./client.sh 2> /dev/null > /dev/null
+	@echo ${GREEN}[OK]${NC}
+	@echo -n "Generando certificado servidor "
+	@./server.sh 2> /dev/null > /dev/null
+	@echo ${GREEN}[OK]${NC}
 
-doc: 
-	doxygen
+# Borra los certificados
+rmcertificados:
+	@rm -rdf $(CDIR)/*.pem $(CDIR)/*.srl  $(CDIR)/*.key
 
-# limpieza
+# Da permisos de ejecucion a los scripts
+chmod:
+	@chmod +x $(MDIR)/motd.bash
+
+# Libera los puertos mal cerrados
+port:
+	@fuser -k 6669/tcp
+	@fuser -k 6667/tcp
+
+# Mueve binarios echo a la carpeta correspondiente
+mvecho:
+	@mv $(_BINE) $(EDIR)
+
+# Mueve los binarios de xchat y servidor para la prueba del c3po
+mvcpyxchat:
+	@cp xchat2 $(CSDIR)/$(NXCHAT2)
+	@cp servidor $(CSDIR)/$(NSERVIDOR)
+
+# Borra archivos de la carpeta recepcion
+rmfiles:
+	@rm -rf $(FDIR)/$(MOTD)
+
+# Cambia la fecha de todos los archivos
+touch:
+	@touch *
+	@touch */*
+
+# Crea archivo comprimido
+compress: clean doc
+	rm -rf $(TAR_FILE)
+	rm -rf G-2302-02-P3
+	tar -zcvf ../$(TAR_FILE) ../G-2302-02-P3
+	mv ../$(TAR_FILE) $(TAR_FILE)
+
+# Genera la documentacion
+doc: clean 
+	doxygen doc/Doxyfile
+
 .PHONY: clean
-clean:	
-	@rm -fv servidor
-	@rm -r -f G-2302-02-P1
-	@rm -f */*~
-	@rm -f *~
-	@rm -f obj/*.o
+clean: rmcertificados
+	@rm -fr $(BIN) $(LIB) $(OBJ) $(LOBJ) $(BINE)
+	@rm -fr $(CSDIR)/$(NXCHAT2) $(CSDIR)/$(NSERVIDOR)
+	@rm -f $(TAR_FILE)
