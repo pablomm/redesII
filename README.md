@@ -11,5 +11,5 @@ apt-get update
 apt-get install eps-redes2
 exit
 ```
-Pablo Marcos Manchón
+Pablo Marcos Manchón  
 Dionisio Pérez Alvear
